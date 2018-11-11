@@ -1,0 +1,31 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// printpublic.wsf  指定した会衆用区域の地図を生成し印刷する
+// 引数１＝会衆番号
+// 引数２＝区域番号
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);	//	引数１：会衆番号
+var num=WScript.Arguments(1);		//	引数２：区域番号
+//----------------------------------------------------------------
+// ファイル名の作成
+//----------------------------------------------------------------
+var now=new Date();
+var pdffile="que"+(now.getMinutes()*100000+now.getSeconds()*1000+now.getMilliseconds())+".pdf";
+var path1="c:"+qt+"temp"+qt+"quicky"+qt;
+var path2="c:"+qt+"temp"+qt+"quicky"+qt+"pdfque"+qt;
+var cmd="cscript.exe \""+WSHScript("mapgen.wsf")+"\" "+congnum+" "+num+" 0 public \""+path1+pdffile+"\"";
+WshShell.Run(cmd,0,true);
+//----------------------------------------------------------------
+//	印刷システムに渡す
+//----------------------------------------------------------------
+fso.CopyFile(path1+pdffile,path2+pdffile,true);
+fso.DeleteFile(path1+pdffile,true);
+//----------------------------------------------------------------
+//	完了
+//----------------------------------------------------------------
+WScript.StdOut.Write("OK");
+WScript.quit();
+</script>
+</job>

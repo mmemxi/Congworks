@@ -1,0 +1,27 @@
+<job>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// getcwtoken.wsf：トークンIDを生成して返す
+// 引数：なし
+//----------------------------------------------------------------
+var fso=new ActiveXObject("Scripting.FileSystemObject");
+var basepath=fso.getParentFolderName(WScript.ScriptFullName);
+basepath=fso.getParentFolderName(basepath).replace("\\congworks","");
+var token1,token2,t1,t2;
+SQ_Init("congworks.db");
+
+while(1==1)
+	{
+	token1=SQ_Read("CWTokens","","");
+	SQ_Exec("update CWTokens set TokenNo=TokenNo+1;");
+	token2=SQ_Read("CWTokens","","");
+	t1=parseInt(token1[0].TokenNo,10);
+	t2=parseInt(token2[0].TokenNo,10);
+	if (t1+1==t2) break;
+	}
+var result=FixValue(t2,8);
+WScript.StdOut.Write(result);
+</script>
+</job>

@@ -1,0 +1,177 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/summary.js"></script>
+<script language="JavaScript" src="./lib/marker.js"></script>
+<script language="JavaScript" src="./lib/log.js"></script>
+<script language="JavaScript" src="./lib/saveconfig.js"></script>
+<script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// rent.wsf 会衆用区域を貸し出す
+// 引数１＝会衆番号
+// 引数２＝区域番号
+// 引数３＝開始日
+// 引数４＝使用ユーザー名
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);		//	会衆番号
+var num=WScript.Arguments(1);			//	区域番号
+var startday=WScript.Arguments(2);		//	開始日
+var user=WScript.Arguments(3);			//	ユーザー名
+var overday;
+var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
+SQ_Init("congworks.db");
+//----------------------------------------------------------------
+var Cards=new Array();
+var text,stream,Markers;
+var BTB,j,logobj,r;
+//----------------------------------------------------------------
+LoadCard(congnum,num);					//	カード情報読込
+//	終了日の計算 -------------------------------------------------
+if ("spanDays" in Cards[num])			//	区域別の終了日数の定義あり
+	{
+	overday=AddDays(startday,Cards[num].spanDays);
+	}
+else{									//	区域別の終了日数の定義なし
+	overday=AddDays(startday,ConfigAll.AutoEndDefault);
+	}
+if (isCampeign(startday)) overday=AddDays(startday,ConfigAll.AutoEndCampeign);	//	ｷｬﾝﾍﾟｰﾝ期間中の終了日数
+
+overcampeign=isOverCampeign(startday,overday);	//	終了日がキャンペーン日をまたいでいる
+if (overcampeign > 0)
+	{
+	overday=overcampeign;						//	キャンペーン前日で終了する
+	}
+//	ログ処理 ------------------------------------------------------
+logobj=LoadLog(congnum,num);						//	ログ読込
+if (logobj.Status=="Using")				//	他の人が使用開始していた
+	{
+	WScript.StdOut.Write("ng:"+num+":"+logobj.Status);
+	WScript.quit();
+	}
+AddLog(logobj,congnum,num,user,startday,overday);	//	ログ追加
+SaveLog(logobj,congnum,num);						//	ログ書込
+//----------------------------------------------------------------
+// 区域テーブル更新
+//----------------------------------------------------------------
+sql="update PublicList set inuse='true',userid='"+user+"',startday="+startday+",endday=0,limitday="+overday;
+sql+=" where congnum="+congnum+" and num="+num+";";
+SQ_Exec(sql);
+//----------------------------------------------------------------
+//	使用者名マスターに追加
+//----------------------------------------------------------------
+var uobj=new Object();
+uobj.congnum=congnum;
+uobj.userid=user;
+uobj.authority="publicservice";
+SQ_Replace("CWUsers",uobj);
+//----------------------------------------------------------------
+//	マーカーの送り処理
+PushMarkerHistory(congnum,num);		//	20170514追加
+Markers=LoadMarker(congnum,num);
+if (Markers.Count>0)
+	{
+	IncMarkerHistory();
+	SaveMarker(congnum,num,Markers);
+	}
+//----------------------------------------------------------------
+//	特記情報のサイクル加算
+BTB=Cards[num].RTB;
+j=0;
+for(i=0;i<BTB.length;i++)
+	{
+	if ((BTB[i].KBN1=="拒否")&&("Frequency" in BTB[i]))
+		{
+		if (BTB[i].Frequency!=0)
+			{
+			j++;
+			BTB[i].Cycle++;
+			if (BTB[i].Cycle>BTB[i].Frequency) BTB[i].Cycle=1;
+			}
+		}
+	}
+if (j>0) SaveConfig(congnum,num);
+//----------------------------------------------------------------
+// 個人用留守宅情報の更新
+//----------------------------------------------------------------
+CreateSummaryofPerson(congnum,num,true);
+//----------------------------------------------------------------
+// 正常終了
+//----------------------------------------------------------------
+WScript.StdOut.Write("ok");
+WScript.quit();
+//----------------------------------------------------------------
+function LoadCard(congnum,num)
+	{
+	var text,p1,p2,count,name,kubun;
+	var i,j,f,lines,obj,almap,o,s,ovr;
+	Cards[num]=new Object();
+	obj=new Object();
+	obj=ReadXMLFile(ConfigXML(congnum,num),false);
+	Cards[num].name=obj.name;
+	Cards[num].count=obj.count;
+	Cards[num].kubun=obj.kubun;
+	if ("MapType" in obj) Cards[num].MapType=parseInt(obj.MapType,10);else Cards[num].MapType=0;
+	if ("HeaderType" in obj) Cards[num].HeaderType=parseInt(obj.HeaderType,10);else Cards[num].HeaderType=1;
+	if ("spanDays" in obj) Cards[num].spanDays=parseInt(obj.spanDays,10);
+	if ("AllMapPosition" in obj) Cards[num].AllMapPosition=obj.AllMapPosition;
+	if ("AllMapTitle" in obj) Cards[num].AllMapTitle=obj.AllMapTitle;
+	if ("RTB" in obj)	Cards[num].RTB=clone(obj.RTB);
+				else	Cards[num].RTB=new Array();
+	Cards[num].refuses=Cards[num].RTB.length;
+	if ("Buildings" in obj)
+		{
+		Cards[num].Buildings=new Object();
+		Cards[num].Buildings.Count=parseInt(obj.Buildings.Count,10);
+		Cards[num].Buildings.House=parseInt(obj.Buildings.House,10);
+		}
+	Cards[num].Clip=new Array();
+	if ("Clip" in obj)
+		{
+		for(i=0;i<obj.Clip.length;i++)
+			{
+			j=parseInt(obj.Clip[i].Seq,10);
+			Cards[num].Clip[j]=new Object();
+			Cards[num].Clip[j].Area=obj.Clip[i].Area;
+			if ("Zoom" in obj.Clip[i])
+				{
+				Cards[num].Clip[j].Zoom=obj.Clip[i].Zoom;
+				Cards[num].Clip[j].Top=obj.Clip[i].Top;
+				Cards[num].Clip[j].Left=obj.Clip[i].Left;
+				}
+			}
+		}
+	if ("Condominium" in obj)
+		{
+		Cards[num].Condominium=clone(obj.Condominium);
+		}
+	else{
+		Cards[num].Condominium=new Array();
+		}
+	if ("Comments" in obj)
+		{
+		Cards[num].Comments=clone(obj.Comments);
+		}
+	else{
+		Cards[num].Comments=new Array();
+		}
+	}
+
+function Log(message)
+	{
+	var t=new Date();
+	if (!(fso.FileExists("c:"+qt+"tool"+qt+"quicky"+qt+"log.txt")))
+		{
+		f=fso.CreateTextFile("c:"+qt+"tool"+qt+"quicky"+qt+"log.txt",true);
+		}
+	else{
+		f=fso.OpenTextFile("c:"+qt+"tool"+qt+"quicky"+qt+"log.txt",8,true);
+		}
+	f.WriteLine(t+":"+message);
+	f.close();
+	}
+
+</script>
+</job>

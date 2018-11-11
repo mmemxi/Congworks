@@ -1,0 +1,51 @@
+<job>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/file.js"></script>
+<script language="JavaScript" src="./lib/db.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// edititem.wsf 品目の追加変更削除を実行
+// 引数１：年度（数値４桁）
+// 引数２：品目番号
+// 引数３：品目名
+// 引数４：分類（※これがdeleteなら削除）
+// 引数５：集計先
+// 引数６：品目番号タイプ
+// 引数７：集計先タイプ
+//----------------------------------------------------------------
+var nendo=WScript.Arguments(0);
+var code=WScript.Arguments(1);
+var name=WScript.Arguments(2);
+var kubun=WScript.Arguments(3);
+var alter=WScript.Arguments(4);
+var codetype=WScript.Arguments(5);
+var sumtype=WScript.Arguments(6);
+nendo=nendo.trim();
+code=code.trim();
+name=name.trim();
+kubun=kubun.trim();
+alter=alter.trim();
+codetype=codetype.trim();
+sumtype=sumtype.trim();
+//----------------------------------------------------------------
+OpenDB(nendo);
+if (kubun!="delete")
+	{
+	DB[code]=new Object();
+	DB[code].品目番号=code;
+	DB[code].分類=kubun;
+	DB[code].品目名=name;
+	DB[code].集計先=alter;
+	DB[code].コード種別=codetype;
+	DB[code].集計種別=sumtype;
+	}
+else{
+	if (code in DB)
+		{
+		delete DB[code];
+		}
+	}
+UpdateDB();
+WScript.quit();
+</script>
+</job>

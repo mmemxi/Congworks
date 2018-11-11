@@ -1,0 +1,49 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// download.wsf 指定したPDF地図を生成し、ファイル名を返す
+// 引数１＝会衆番号
+// 引数２＝ユーザー名
+// 引数３＝PDFファイル名
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);
+var userid=WScript.Arguments(1);
+var pdffile=WScript.Arguments(2);
+//----------------------------------------------------------------
+	var ppath=PersonalFolder(congnum)+userid+qt;
+	var myXML=ReadXMLFile(ppath+"mybook.xml",false);
+	var i,j,s,result,detail;
+	var src,dst;
+	j=-1;
+	for(i=0;i<myXML.Map.length;i++)
+		{
+		if (pdffile==myXML.Map[i].pdf)
+			{
+			if (myXML.Map[i].kbn=="A")
+				{
+				j=i;
+				detail="[集中]"+myXML.Map[i].name+"("+myXML.Map[i].finish+"まで).pdf";
+				}
+			if (myXML.Map[i].kbn=="B")
+				{
+				j=i;
+				detail="[長期留守]No"+myXML.Map[i].num+"-"+myXML.Map[i].seq+"："+myXML.Map[i].name+"("+myXML.Map[i].finish+"まで).pdf";
+				}
+			break;
+			}
+		}
+	if (j==-1)
+		{
+		WScript.StdOut.Write("");
+		WScript.quit();
+		}
+//	src=ppath+pdffile;
+//	dst=RootFolder()+"pdf"+qt+"download.pdf";
+//	fso.CopyFile(src,dst,true);
+	WScript.StdOut.Write(detail);
+	WScript.quit();
+</script>
+</job>

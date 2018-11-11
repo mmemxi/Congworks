@@ -1,0 +1,22 @@
+<building sequences="1" columns="1" id="ファインコートBIG１今里">
+<sequence stairs="1">
+<stair floors="3">
+<floor rooms="3" id="3F">
+<room>301</room>
+<room>302</room>
+<room>303</room>
+</floor>
+<floor rooms="3" id="2F">
+<room>201</room>
+<room>202</room>
+<room>203</room>
+</floor>
+<floor rooms="4" id="1F">
+<room>101</room>
+<room>102</room>
+<room>103</room>
+<room>105</room>
+</floor>
+</stair>
+</sequence>
+</building>

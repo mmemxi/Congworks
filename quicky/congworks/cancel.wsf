@@ -1,0 +1,87 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/summary.js"></script>
+<script language="JavaScript" src="./lib/marker.js"></script>
+<script language="JavaScript" src="./lib/personal.js"></script>
+<script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// cancel.wsf 個人用区域の貸出をキャンセルする
+// 引数１＝会衆番号
+// 引数２＝ユーザー名
+// 引数３＝PDFファイル名
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);
+var userid=WScript.Arguments(1);
+var pdffile=WScript.Arguments(2);
+//----------------------------------------------------------------
+	var kbn,num,seq,id,name;
+	var a,s;
+	var i,text,maxlogs;
+	var lines=new Array();
+	var tMarker;
+
+	var mypath=PersonalFolder(congnum)+userid;
+	var mybook=mypath+qt+"mybook.xml";
+	var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
+
+	if (!fso.FolderExists(mypath))
+		{
+		WScript.StdOut.Write("");
+		WScript.quit();
+		}
+	if (!fso.FileExists(mybook))
+		{
+		WScript.StdOut.Write("");
+		WScript.quit();
+		}
+
+	var result=userid;
+
+	obj=ReadXMLFile(mybook,true);
+	if (!("Map" in obj))
+		{
+		WScript.StdOut.Write("NO="+result);
+		WScript.quit();
+		}
+
+	for(i=0;i<obj.Map.length;i++)
+		{
+		if (obj.Map[i].pdf==pdffile)
+			{
+			kbn=obj.Map[i].kbn;
+			num=obj.Map[i].num;
+			seq=obj.Map[i].seq;
+			name=obj.Map[i].name;
+			if (kbn=="A")		//	集中インターホン
+				{
+				text=ReadFile(ApartFolder(congnum)+name+".txt");
+				lines=text.split(/\r\n/);
+				maxlogs=lines.length;
+				var stream = fso.CreateTextFile(ApartFolder(congnum)+name+".txt",true);
+				for(i=0;i<maxlogs-1;i++)	stream.WriteLine(lines[i]);
+				stream.close();
+				CreateSummaryofApartment(congnum);
+				RemoveMyMap(userid,"A",congnum,0,0,name);
+				}
+			if (kbn=="B")	//	長期留守宅
+				{
+				tMarkers=LoadMarker(congnum,num);
+				if (tMarkers.Count>0)
+					{
+					tMarkers.Map[seq].User="";
+					SaveMarker(congnum,num,tMarkers);
+					}
+				CreateSummaryofPerson(congnum,num,true);
+				RemoveMyMap(userid,"B",congnum,num,seq,"");
+				}
+			break;
+			}
+		}
+	WScript.StdOut.Write(result);
+	WScript.quit();
+
+</script>
+</job>

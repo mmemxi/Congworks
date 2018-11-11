@@ -1,0 +1,74 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// mylist.wsf 指定ユーザーの所持区域リストを表示する
+// 引数１：会衆番号
+// 引数２：ユーザー名
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);
+var username=WScript.Arguments(1);
+//----------------------------------------------------------------
+var buf,s,obj,i,j,cells,l,num,seq,trfunc;
+var tbl1,tbl2;
+var update=false;
+var delfile;
+
+var mypath=PersonalFolder(congnum)+username;
+var mybook=mypath+qt+"mybook.xml";
+var today=new Date();
+var today8=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
+
+if (!fso.FolderExists(mypath)) {WScript.echo("no folder");Results("");WScript.quit();}
+if (!fso.FileExists(mybook)) {WScript.echo("no book");Results("");WScript.quit();}
+
+obj=ReadXMLFile(mybook,true);
+if (!("Map" in obj))
+	{
+	WScript.echo("no map("+mybook+")");Results("");WScript.quit();
+	}
+
+//	終了している区域の処理
+for(i=0;i<obj.Map.length;i++)
+	{
+	if (obj.Map[i].finish<today8)
+		{
+		delfile=mypath+qt+obj.Map[i].pdf;
+		if (fso.FileExists(delfile))
+			{
+			try	{
+				fso.DeleteFile(delfile,true);
+				}
+			catch(e){}
+			}
+		obj.Map.splice(i,1);
+		i--;
+		update=true;
+		continue;
+		}
+	}
+if (update)
+	{
+	WriteXMLFile(obj,mybook);
+	}
+if (obj.Map.length==0)
+	{
+	Results("");WScript.quit();
+	}
+var result="";
+for(i=0;i<obj.Map.length;i++)
+	{
+	result+=obj.Map[i].kbn+","+obj.Map[i].num+","+obj.Map[i].seq+",";
+	result+=obj.Map[i].name+","+obj.Map[i].counts+","+obj.Map[i].finish+","+obj.Map[i].pdf+"<br>";
+	}
+Results(result);
+WScript.quit();
+
+function Results(str)
+	{
+	WScript.StdOut.Write(result);
+	}
+</script>
+</job>

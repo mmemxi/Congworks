@@ -1,0 +1,119 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/building.js"></script>
+<script language="JavaScript" src="./lib/vml.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// viewA.wsf 集中インターホンの詳細を表示する
+// 引数１＝会衆番号:ユーザー名:区域番号:地図番号:建物名
+//----------------------------------------------------------------
+var targetstr=WScript.Arguments(0);
+//----------------------------------------------------------------
+	targetstr=targetstr.trim();
+	targetstr=targetstr.replace("_"," ");
+	var tbl=targetstr.split(":");
+	var result,congnum,num,seq,card;
+	congnum=tbl[0];
+	num=tbl[2];
+	seq=tbl[3];
+
+	var i,id,s;
+	var BTB;
+	var vml=new Poly();
+
+	mapsize=1;
+	marginx=38;		//	10mm;
+	marginy=113;	//	30mm;
+
+	//	マップ画像のコピー準備
+/*
+	var src,dst;
+	src=NumFolder(congnum,num)+seq+".png";
+	dst=basepath+qt+"sqlite"+qt+"map";
+
+	if (!fso.FolderExists(dst)) fso.CreateFolder(dst);
+	try	{
+		fso.CopyFile(src,dst+qt+num+"-"+seq+".png",true);
+		}
+	catch(e){}
+*/
+	vml.mapsize=1;
+	vml.width=2126;
+	vml.height=2362;
+
+	//	建物ＩＤを取得
+	card=ReadXMLFile(ConfigXML(congnum,num),true);
+	BTB=card.RTB;
+	id=-1;
+	for(i=0;i<BTB.length;i++)
+		{
+		if (BTB[i].Name==tbl[4]){id=i;break;}
+		}
+	if (id==-1) 
+		{
+		WScript.StdOut.Write("nodata:"+tbl[4]);
+		WScript.quit();
+		}
+	ABuilding=ReadXMLFile(ApartFolder(congnum)+BTB[id].Name+".xml",true);
+
+	s="<div style='position:relative;'>";
+	s+="<div style='position:absolute;top:0px;left:0px;z-index:1;'>";
+	s+="<img src='./quicky/data/"+congnum+"/"+num+"/"+seq+".png'>";
+	s+="</div>";
+
+	//	網掛けの合成
+	if (BTB[i].Position!="")
+		{
+		vml.AddObject(BTB[i].Position,"","",1,1,"#88ff88");
+		}
+	if (BTB[i].Writing!="")
+		{
+		ss=BTB[i].Writing+",,,";
+		rx=ss.split(",");
+		wstr=rx[0];
+		wsize=parseInt(rx[1],10);
+		x1=parseInt(rx[2],10);
+		y1=parseInt(rx[3],10);
+		
+		tts="<span style='font-size:"+wsize+"px;white-space:nowrap;'>"+wstr+"</span>";
+//		TEST.innerHTML=tts;
+//		tx=TEST.offsetWidth;
+//		ty=TEST.offsetHeight;
+		tx=100;ty=100;
+		if (tx>ty) tw=tx;else tw=ty;
+		ix=x1;iy=y1;
+		s+="<div style='position:absolute;z-index:5;font-size:"+wsize+"px;white-space:nowrap;width:"+tw+"px;height:"+tw+"px;";
+		s+="left:"+ix+"px;top:"+iy+"px;";
+		s+="'>"+wstr+"</div>";
+		if (rx[4]!="")
+			{
+			ss=rx[4];
+			while(1==1)
+				{
+				if (ss.indexOf("&",0)==-1) break;
+				ss=ss.replace("&",",");
+				}
+			vml.AddArrow(ss,1,1,true);
+			}
+		}
+	vs="<div style='position:absolute;z-index:6;width:2126px;height:2362px;'>"+vml.Draw(true)+"</div>";
+	s+=vs;
+	//	ビル情報を重ねる
+	if (ABuilding!="")
+		{
+		bs="<div style='position:absolute;top:0px;left:px;z-index:3;'>";
+		bs+=CreateBuildingImage(ABuilding.building[0],congnum,num,seq,1,1);
+		bs+="</div>";
+		}
+	s+=bs;
+
+	s+="</div>";
+	result=s;
+
+	WScript.StdOut.Write(result);
+	WScript.quit();
+
+</script>
+</job>

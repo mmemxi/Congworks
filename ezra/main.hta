@@ -1,0 +1,220 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=shift-jis">
+<meta HTTP-EQUIV="imagetoolbar" CONTENT="no">
+<link rel=stylesheet href="./sys/default.css">
+<title>Ezra</title>
+</head>
+<body onload="boot()" onbeforeunload="unboot()" onkeydown="return KeyDown()" onkeyup="return KeyUp()" style="overflow:scroll;" oncontextmenu="context();return false;" ondragstart="return false;">
+<div id="Drag" style="z-index:2;"></div>
+<div id="Mask" style="z-index:1;"></div>
+<div id="TEST" style="z-index:10;potision:absolute;top:0px;left:0px;white-space:nowrap;width:1px;visibility:hidden;"></div>
+<div id="Stage" style="z-index:0;overflow;scroll;position:absolute;top:0px;left:0px;"></div>
+<script language="JavaScript">
+//---------------------------------------------------------------
+// このバージョンに残っている課題(1.40)
+//・在庫調査用紙の印刷にまだExcelを使用している
+//---------------------------------------------------------------
+var Version="1.40";
+String.prototype.trim = function()
+	{
+    return this.replace(/^[ ]+|[ ]+$/g, '');
+	}
+var excel = new ActiveXObject("Excel.Application");
+excel.Application.Visible=false;
+excel.Application.DisplayAlerts=false;
+var macrobook;
+var WshShell = new ActiveXObject("WScript.Shell");
+var Shell = new ActiveXObject("Shell.Application");
+var Keys=new Array();
+var HTMLs=new Array();
+var Cards=new Array();
+var FloatingMenu,ImageMap;
+var Help=0;
+var Shift=false;
+var todayYear,todayMonth,todayDate;
+var nowmode="";
+var cursorkey=new Array();
+var AutoScrollSpeed=0;
+//---------------------------------------------------------------
+function boot()
+	{
+	var today=new Date();
+	todayYear=today.getFullYear();
+	todayMonth=today.getMonth()+1;
+	todayDate=today.getDate();
+	//	処理対象の年度決定処理
+	if (todayMonth>=9)	todayYear++;					//　９月から新奉仕年度
+	if ((todayMonth==9)&&(todayDate<15)) todayYear--;	//	ただし9/15までは旧奉仕年度
+	Menu1_Year=todayYear;
+	Menu2_Year=todayYear;
+	cline=decodeURI(document.URL.substring(7,document.URL.length));
+	i=cline.lastIndexOf("\\",cline.length);
+	basepath=cline.substring(0,i);
+	WshShell.CurrentDirectory=basepath;
+	document.title="王国会館文書管理システム-Ezra "+Version;
+	x=(screen.width-800)/2;y=(screen.height-640)/2;
+	OpenConfig();
+	MainMenu();
+	}
+function unboot()
+	{
+	excel.Application.Quit();
+	}
+function ClearKey()
+	{
+	for (i in Keys)
+		{
+		delete Keys[i];
+		}
+	}
+function WriteLayer(Layer,str)
+	{
+	var s;
+	if (Layer in HTMLs) s=HTMLs[Layer];
+	else	{
+			ClearLayer(Layer);
+			s="";
+			}
+	s+=str;
+	window[Layer].innerHTML=s;
+	HTMLs[Layer]=s;
+	}
+function ClearLayer(Layer)
+	{
+	HTMLs[Layer]="";
+	window[Layer].innerHTML="";
+	window[Layer].style.top=0;
+	window[Layer].style.left=0;
+	}
+function AddKey(Layer,KeyNum,Message,Func)
+	{
+	var s="";
+	s+="<button class=size2 onClick='"+Func+"'><b>（"+KeyNum+"）</b></button><span class=size3";
+	s+=" style='cursor:hand' onClick='"+Func+"'>　"+Message+"</span><br>";
+	Keys[KeyNum]=Func;
+	WriteLayer(Layer,s);
+	}
+function AddKey0(Layer,KeyNum,Message,Func)
+	{
+	var s="";
+	s+="<button class=size2 onClick='"+Func+"'><b>("+KeyNum+")"+Message+"</b></button>";
+	Keys[KeyNum]=Func;
+	WriteLayer(Layer,s);
+	}
+function AddKeys(KeyNum,Message,Func)
+	{
+	var s="";
+	s="<button class=size2 onClick='"+Func+"'><b>（"+KeyNum+"）</b></button><span class=size3";
+	s+=" style='cursor:hand' onClick='"+Func+"'>　"+Message+"</span><br>";
+	Keys[KeyNum]=Func;
+	return s;
+	}
+function KeyDown()
+	{
+	var k=event.keyCode;
+	var cmd;
+	var dx,dy;
+	cmd=-1;
+	if ((k>=96)&&(k<=105)) cmd=k-96;
+	if ((k>=48)&&(k<=57)) cmd=k-48;
+	if (k==27) cmd=11;
+	if ((cmd!=-1)&&(cmd in Keys))	eval(Keys[cmd]);
+	if (k==16) Shift=true;
+	if (nowmode!="MAIN")
+		{
+		if ((k!=38)&&(k!=40)&&(k!=37)&&(k!=39)) return true;
+		dx=document.body.clientWidth/2;
+		dy=document.body.clientHeight/2;
+		cursorkey[k]=true;
+		AutoScrollSpeed=1;
+ 		AutoScroll();
+		return false;
+		}
+	return true;
+	}
+
+function AutoScroll()
+	{
+	var keyon=false;
+	var dx=0,dy=0;
+	if (cursorkey[38])	dy=-1;
+	if (cursorkey[40])	dy=1;
+	if (cursorkey[37])	dx=-1;
+	if (cursorkey[39])	dx=1;
+	if ((dx==0)&&(dy==0)) return;
+	if (AutoScrollSpeed<32) AutoScrollSpeed*=2;
+	window.scrollBy(dx*AutoScrollSpeed,dy*AutoScrollSpeed);
+	setTimeout("AutoScroll()",20);
+	}
+
+function KeyUp()
+	{
+	var k=event.keyCode;
+	if (k==16) Shift=false;
+	if (nowmode!="MAIN")
+		{
+		cursorkey[k]=false;
+		return false;
+		}
+	return true;
+	}
+
+function context()
+	{
+	if (11 in Keys) eval(Keys[11]);
+	}
+//------------------------------------------------------------------------------------
+function MainMenu()
+	{
+	Help=0;
+	nowmode="MAIN";
+	ClearKey();
+	ClearLayer("Stage");
+	WriteLayer("Stage","<table border=0 width=100%><tr><td align=center>");
+	WriteLayer("Stage","<hr width=80%><span class=size3>王国会館文書管理システム</span><br>");
+	WriteLayer("Stage","<span class=size7><font color=blue>Ezra</font></span><span class=size2>Ver"+Version+"</span><br>");
+	WriteLayer("Stage","<span class=size2>Established Zion's Radiancy Audit</span><br>");
+	WriteLayer("Stage","<hr width=80%><span class=size4>メインメニュー</span><br><br></td></tr>");
+	WriteLayer("Stage","<tr><td align=center>");
+	WriteLayer("Stage","<table border=0><tr><td Valign=middle>");
+	AddKey("Stage",1,"品目リスト","MENU1()");
+	AddKey("Stage",2,"入荷品目","MENU2()");
+	AddKey("Stage",3,"在庫調査用紙","MENU3()");
+	AddKey("Stage",4,"月ごとの文書移動表","MENU4Top=0;MENU4()");
+	AddKey("Stage",9,"終了","window.close()");
+	WriteLayer("Stage","</td></tr></table></td></tr></table><br>");
+	}
+</script>
+<script src="./sys/file.js"></script>
+<script src="./sys/db.js"></script>
+<script src="./sys/menu1.js"></script>
+<script src="./sys/menu2.js"></script>
+<script src="./sys/menu3.js"></script>
+<script src="./sys/menu4.js"></script>
+<script src="./sys/analyze.js"></script>
+<script src="./sys/config.js"></script>
+<script src="./sys/im.js"></script>
+<script src="./sys/print.js"></script>
+</body>
+<HTA:APPLICATION ID="EZRA"
+APPLICATIONNAME="Ezra"
+BORDER="thick"
+BORDERSTYLE="static"
+CAPTION="yes"
+ICON=""
+INNERBORDER="yes"
+MAXIMIZEBUTTON="yes"
+MINIMIZEBUTTON="yes"
+SHOWINTASKBAR="yes"
+SINGLEINSTANCE="yes"
+SYSMENU="yes"
+VERSION="1.40"
+WINDOWSTATE="maximize"
+SCROLL="yes"
+SCROLLFLAT="yes"
+SELECTION="no"
+CONTEXTMENU="no"
+NAVIGABLE="yes"
+/>
+</html>

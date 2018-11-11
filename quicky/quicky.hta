@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="shift-jis"?>
+<HTA:APPLICATION ID="QUICKY"
+APPLICATIONNAME="Quicky"
+BORDER="dialog"
+BORDERSTYLE="static"
+CAPTION="yes"
+ICON="./sys/cwministrylogo.png"
+INNERBORDER="no"
+MAXIMIZEBUTTON="no"
+MINIMIZEBUTTON="yes"
+SHOWINTASKBAR="yes"
+SINGLEINSTANCE="yes"
+SYSMENU="no"
+VERSION="3.04"
+WINDOWSTATE="maximize"
+SCROLL="no"
+SCROLLFLAT="yes"
+SELECTION="no"
+CONTEXTMENU="no"
+NAVIGABLE="yes"
+/>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=shift-jis">
+<meta HTTP-EQUIV="imagetoolbar" CONTENT="no">
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<link rel=stylesheet href="./sys/default.css">
+<style>
+v\:* { behavior: url(#default#VML); }
+</style>
+<title>Congworks for Ministry</title>
+</head>
+<body onload="boot()" onbeforeunload="unboot()" style="overflow:hidden;" oncontextmenu="context();return false;" ondragstart="return false;" onresize="Resize()" onselectstart="return false">
+<div id="Drag" style="potision:absolute;top:0px;left:0px;z-index:5;"></div>
+<div id="Mask" style="potision:absolute;top:0px;left:0px;z-index:4;"></div>
+<div id="Popup" style="potision:absolute;top:0px;left:0px;z-index:3;"></div>
+<div id="Terop" style="potision:absolute;top:0px;left:0px;z-index:2;"></div>
+<div id="TEST" style="z-index:10;potision:absolute;top:0px;left:0px;white-space:nowrap;visibility:hidden;display:inline-block;"></div>
+<div id="Stage" style="z-index:1;overflow;hidden;position:absolute;top:0px;left:0px;"></div>
+<div id="BG" style="z-index:0;overflow;hidden;position:absolute;top:0px;left:0px;"></div>
+<div id="NPANEL" style="position:absolute;top:0px;left:0px;z-index:2;overflow:hidden;"></div>
+<div id="NMAIN" style="position:absolute;top:100px;left:0px;z-index:1;border:1px solid black;overflow:hidden;background-color:#bbbbbb;visibility:hidden;" onmousedown="NM_mousedown()" onmousemove="NM_mousemove()" onmouseup="NM_mouseup()" onmouseout="NM_mouseout()" onmousewheel="NM_wheel()"></div>
+<script language="JavaScript">
+var Version="3.04";
+String.prototype.trim = function()
+	{
+    return this.replace(/^[ ]+|[ ]+$/g, '');
+	}
+String.prototype.trim2 = function()
+	{
+    return this.replace(/^[\"]+|[\"]+$/g, '');
+	}
+var d$=function(id){return document.getElementById(id)};
+var WshShell = new ActiveXObject("WScript.Shell");
+var Shell = new ActiveXObject("Shell.Application");
+var Keys=new Array();
+var HTMLs=new Array();
+var Cards=new Array();
+var FloatingMenu,ImageMap;
+var MSIE;
+var ShiftKey=false;
+var CtrlKey=false;
+var MaxWidth,MaxHeight;
+//------------------------------------------------------------------------------------------
+var congnum;		//	会衆番号
+var congname;		//	会衆名（congcfg.name)
+var congcfg;		//	会衆に関する設定
+//------------------------------------------------------------------------------------------
+function boot()
+	{
+	var s,p1,p2,ua;
+	//	基準パスの設定
+	cline=decodeURI(document.URL.substring(7,document.URL.length));
+	i=cline.lastIndexOf("\\",cline.length);
+	basepath=cline.substring(0,i);
+	WshShell.CurrentDirectory=basepath;
+
+	//	SQlite開始
+	SQ_Init("congworks.db");
+
+	//	バージョンチェック
+	ua=navigator.userAgent;
+	p1=ua.indexOf("Trident/",0);
+	if (p1==-1)
+		{
+		alert("お使いのブラウザは、Internet Explorer5.5以降ではありません。\n最新版のInternet Explorerをダウンロードしてください。");
+		window.close();
+		}
+	p2=ua.indexOf(";",p1);
+	MSIE=parseInt(ua.substring(p1+8,p2),10);	//	Trident/7.0以降＝IE11
+	MSIE+=4;									//	Trident7=IE11;
+
+	//	キーイベント設定
+	document.onkeydown=KeyDown;
+	document.onkeyup=KeyUp;
+
+	Init_DragField();
+	FloatingMenu=new DragField("メニュー");
+	ImageMap=new MapField("");
+	MaxWidth=window.innerWidth;
+	MaxHeight=window.innerHeight;
+//	window.resizeTo(MaxWidth,MaxHeight);
+//	window.moveTo(0,0);
+
+	//	会衆番号を取得
+	var cml=GetCommandLine();
+	if (cml[0]==undefined)	congnum=0;else congnum=cml[0];
+	if (congnum!=0)	boot2();
+	else{
+		if (fso.FileExists(LocalFolder()+"congnum.txt"))
+			{
+			lscongnum=ReadFile(LocalFolder()+"congnum.txt");
+			if (lscongnum!=""){congnum=lscongnum;boot2();}
+			else SelectCongnum();
+			}
+		else SelectCongnum();
+		}
+	}
+// 会衆を選択する処理-----------------------------------------------------
+function SelectCongnum()
+	{
+	HideLayer("BG");
+	var s,i,obj,num,dir,folders;
+	var conglist=new Array();
+
+	dir=fso.GetFolder(basepath+"\\data");
+	folders=new Enumerator(dir.SubFolders);
+	for(; !folders.atEnd(); folders.moveNext())
+		{
+		obj=folders.item();
+		if (isNaN(obj.Name)) continue;
+		num=fso.GetBaseName(obj.Name);
+		num=parseInt(num,10);
+		conglist.push(num);
+		}
+
+	if (conglist.length==0)
+		{
+		alert("会衆が１つも定義されていませんので、Congworksを起動できません。\n終了します。");
+		window.close();
+		return;
+		}
+	if (conglist.length==1)
+		{
+		congnum=conglist[0];
+		boot2();
+		return;
+		}
+	ClearKey();
+	ClearLayer("Stage");
+	s="<div style='text-align:center;font-size:16px;width:100%'><br><br><form>会衆番号を選択してください：<br><br>";
+	s+="<select size=1 name=congname>";
+	for(i=0;i<conglist.length;i++)
+		{
+		s+="<option value='"+conglist[i]+"'>"+conglist[i]+"</option>";
+		}
+	s+="</select><br><br><input type=button value='Congworks for Ministryの開始' onclick='SelectCongnum_Exec()'></form></div>";
+	WriteLayer("Stage",s);
+	window.scrollTo(0,0);
+	document.body.focus();
+	}
+function SelectCongnum_Exec()
+	{
+	congnum=document.forms[0].congname.value;
+	WriteFile(LocalFolder()+"congnum.txt",congnum);
+	ClearLayer("Stage");
+	setTimeout("boot2()",10);
+	}
+
+// 会衆が決定してからのメイン処理-----------------------------------------
+function boot2()
+	{
+
+	//	会衆別の処理
+	OpenConfig();
+	CountCondominiums();
+
+	//	会衆名を取得
+	congname=ConfigAll.CongName;
+	document.title="Congworks for Ministry "+Version+"("+congnum+":"+congname+")";
+
+	//	区域の強制終了
+	if ("ChiefClient" in ConfigAll)
+		{
+		if (GetDriveSerialNumber("c")==ConfigAll.ChiefClient) ForceEnd();
+		}
+	else{
+		ForceEnd();
+		}
+	LoadAllCards();
+
+	//	サマリ情報の作成
+	ClearTemporaryFolder();
+	CreateSummaryofApartment();
+	CreateSummaryofAllPerson();		//	全区域のサマリ
+
+	//	SQliteセットアップ
+	SQliteSetup();
+
+	//	メインメニュー
+	MainMenu();
+	}
+
+function unboot()
+	{
+	}
+
+function ClearKey()
+	{
+	for (i in Keys)
+		{
+		delete Keys[i];
+		}
+	}
+function WriteLayer(Layer,str)
+	{
+	var s;
+	if (Layer in HTMLs)
+		{
+		s=HTMLs[Layer];
+		}
+	else s="";
+	s+=str;
+	window[Layer].innerHTML=s;
+	HTMLs[Layer]=s;
+	}
+function ClearLayer(Layer)
+	{
+	HTMLs[Layer]="";
+	window[Layer].innerHTML="";
+	window[Layer].style.top="0px";
+	window[Layer].style.left="0px";
+	}
+function HideLayer(Layer)
+	{
+	window[Layer].style.visibility="hidden";
+	}
+function ShowLayer(Layer)
+	{
+	window[Layer].style.visibility="visible";
+	}
+function KeyDown()
+	{
+	var k=event.keyCode;
+	if (k==16) ShiftKey=true;
+	if (k==17) CtrlKey=true;
+	var tag=event.srcElement.tagName;
+	if (tag=="INPUT")	return true;
+	var cmd=-1;
+	if ((k>=96)&&(k<=105)) cmd=k-96;
+	if ((k>=48)&&(k<=57)) cmd=k-48;
+	if (k==27) cmd=11;
+	if ((cmd!=-1)&&(cmd in Keys))
+		{
+		eval(Keys[cmd]);
+		}
+	return true;
+	}
+function KeyUp()
+	{
+	var k=event.keyCode;
+	if (k==16) ShiftKey=false;
+	if (k==17) CtrlKey=false;
+	}
+function context()
+	{
+	if (11 in Keys) eval(Keys[11]);
+	}
+function Resize()
+	{
+	window.resizeTo(MaxWidth,MaxHeight);
+	return;
+	}
+function MENU9()
+	{
+	window.close();
+	}
+//------------------------------------------------------------------------------------
+function MainMenu()
+	{
+	var s;
+	ClearKey();
+	ClearLayer("Stage");
+	SetOverflow("y");
+
+	s="<form><div style='text-align:center;'>";
+	s+=SysImage("congworks.png")+"<br>for Ministry<br><br>";
+	if (congnum!=0)
+		{
+		s+="<span class=size3>"+congname+"("+congnum+")</span><br>";
+		}
+	if ("ChiefClient" in ConfigAll)
+		{
+		if (ConfigAll.ChiefClient==GetDriveSerialNumber("c"))
+			{
+			s+="<span class=size3><b>Chief Client</b></span><br>";
+			}
+		}
+	s+=hr()+"</div>";
+	s+="<table border=0 style='width:"+(MaxWidth-40)+"px;'>";
+	s+="<tr><td align=center>";
+	s+="<table width=500 style='border:0px;margin:0px;padding:0px;'><tr>";
+	s+="<td width=50% valign=top style='border:outset 4px #cccccc;padding:20px;'>";
+	s+="<div style='text-align:center;'>"+SysImage("会衆の区域.png")+"</div><br><br>";
+	s+=AddBKeys(1,"区域一覧","MENU1()");
+	s+="</td><td width=50% style='border:outset 4px #cccccc;padding:20px;'>";
+	s+="<div style='text-align:center;'>"+SysImage("個人の区域.png")+"</div><br><br>";
+	s+=AddBKeys(2,"長期留守宅","MENU6A()");
+	s+=AddBKeys(3,"集中インターホン","MENU5()");
+	s+="</td></tr><tr><td colspan=2 align=center style='border:outset 4px #cccccc;padding:20px;'>";
+	s+="<div style='text-align:center;'>"+SysImage("区域係.png")+"</div><br><br>";
+	s+=AddBKeys(4,"マーカー管理","MENU6()");
+	s+=AddBKeys(5,"報告書作成","MENU2()");
+	s+=AddBKeys(6,"メンテナンス","MENU3()");
+	s+=AddBKeys(9,"終了","MENU9()");
+	s+="</td></tr></table></td></tr></table><br>";
+	s+="</form>";
+	WriteLayer("Stage",s);
+	window.scrollTo(0,0);
+	document.body.focus();
+	}
+function GetCommandLine()
+	{
+	var cml=QUICKY.commandLine;
+	var res, reg, mat;
+	reg = /"([^"]+)"|([^ ]+)/g;
+	res = [];
+	while (mat = reg.exec(cml))
+		res[res.length] = mat[1] || mat[2];
+	return res.slice(1);
+	}
+</script>
+<script src="./sys/vml.js"></script>
+<script src="./sys/file.js"></script>
+<script src="./sys/menu1.js"></script>
+<script src="./sys/menu2.js"></script>
+<script src="./sys/menu3.js"></script>
+<script src="./sys/menu5.js"></script>
+<script src="./sys/menu6.js"></script>
+<script src="./sys/image.js"></script>
+<script src="./sys/print.js"></script>
+<script src="./sys/config.js"></script>
+<script src="./sys/refuses.js"></script>
+<script src="./sys/mapfield.js"></script>
+<script src="./sys/dragfield.js"></script>
+<script src="./sys/all.js"></script>
+<script src="./sys/building.js"></script>
+<script src="./sys/xml.js"></script>
+<script src="./sys/utf8.js"></script>
+<script src="./sys/log.js"></script>
+<script src="./sys/marker.js"></script>
+<script src="./sys/rmap.js"></script>
+<script src="./sys/condominium.js"></script>
+<script src="./sys/comments.js"></script>
+<script src="./sys/summary.js"></script>
+<script src="./sys/personal.js"></script>
+<script src="./sys/newmapeditor.js"></script>
+<script src="./sys/form.js"></script>
+<script src="./sys/sqlite.js"></script>
+<script src="./sys/setup.js"></script>
+</body>
+</html>

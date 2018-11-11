@@ -1,0 +1,8 @@
+<script language="JavaScript">
+attachEvent("onfocus",nofocus);
+function nofocus()
+	{
+	this.blur();
+	}
+</script>
+

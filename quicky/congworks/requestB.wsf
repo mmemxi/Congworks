@@ -1,0 +1,76 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/summary.js"></script>
+<script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// requestB.wsf 長期留守宅の貸出候補を表示する
+// 引数１：会衆番号
+// 引数２：ユーザー名
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);
+var username=WScript.Arguments(1);
+//----------------------------------------------------------------
+// キャンペーン期間中は出さない
+var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
+var now=new Date();
+var today=now.getFullYear()*10000+(now.getMonth()+1)*100+now.getDate();
+if (isCampeign(today))
+	{
+	WScript.StdOut.Write("<<campeign>>");
+	WScript.quit();
+	}
+//----------------------------------------------------------------
+	var buf,tbl,s,obj,i,j,cells,l,num,seq,trfunc;
+	var nisu;
+	var sfile=SummaryFolder(congnum)+"person.txt";
+	if (!fso.FileExists(sfile))	CreateSummaryofAllPerson(congnum);
+
+	buf=ReadFile(sfile);
+	tbl=buf.split("\r\n");l
+	lbl=new Array();j=-1;
+
+	for(i=0;i<tbl.length;i++)
+		{
+		tbl[i]=tbl[i].trim();
+		if (tbl[i]=="") continue;
+		if (tbl[i].indexOf(",",0)==-1) continue;
+		obj=tbl[i].split(",");
+		if (obj[6]!="") continue;
+		j++;
+		lbl[j]=new Object();
+		lbl[j].num=parseInt(obj[0],10);
+		lbl[j].seq=parseInt(obj[1],10);
+		lbl[j].name=obj[2];
+		lbl[j].count=obj[4];
+		lbl[j].last=obj[5];
+		}
+	lbl.sort(GetListB_Sort);
+
+	var result="";
+	for(i=0;i<lbl.length;i++)
+		{
+		result+=lbl[i].num+","+lbl[i].seq+","+lbl[i].name+","+lbl[i].count+","+lbl[i].last+"<br>";
+		}
+	WScript.StdOut.Write(result);
+	WScript.quit();
+
+function GetListB_Sort(a,b)
+	{
+	if (a.num<b.num) return -1;
+	if (a.num>b.num) return 1;
+	if (a.seq<b.seq) return -1;
+	if (a.seq>b.seq) return 1;
+	return 0;
+	}
+
+function Log(filename,str)
+	{
+	var f=fso.CreateTextFile(filename,true);
+	f.write(str);
+	f.close();
+	}
+</script>
+</job>

@@ -1,0 +1,144 @@
+<job>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/file.js"></script>
+<script language="JavaScript" src="./lib/db.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// menu01.wsf 品目リストを取得する
+// 引数１：年度（数値４桁）
+//----------------------------------------------------------------
+var nendo=WScript.Arguments(0);
+nendo=nendo.trim();
+var Report=new Array();
+var ReportMax=new Array();
+var ReportX=new Array();
+var ReportY=new Array();
+var ReportRange=new Object();
+//----------------------------------------------------------------
+// DBファイル（年度別）の一覧を取得する
+//----------------------------------------------------------------
+var text;
+//----------------------------------------------------------------
+// 指定年度のＤＢファイルの中身を展開する
+//----------------------------------------------------------------
+if (fso.FileExists(DBFile(nendo)))
+	{
+	OpenDB(nendo);
+	text=ReadFile(DBFile(nendo));
+	}
+else{
+	CreateNewDB(nendo);
+	text=ReadFile(DBFile(nendo));
+	}
+text=CreateDBList(nendo)+"\n"+text;
+Results(text);
+WScript.quit();
+//----------------------------------------------------------------
+function GetReport(yearmonth)
+	{
+	var result="";
+	var filename=ReportFolder()+yearmonth+".csv";
+	var data=ReadFile(filename);
+	if (data=="") return "";
+	var spr,i,j,dtl,yyyymm,code,num,yyyy,mm,seq,nend;
+	var pos,page,code,name,l;
+	Report[0]=new Array();
+	Report[1]=new Array();
+
+	spr=data.split("\r\n");
+	for(i in spr)
+		{
+		spr[i]+=",end,end,end";
+		dtl=spr[i].split(",");
+		if (dtl[0]=="*")
+			{
+			page=parseInt(dtl[1],10);
+			ReportMax[page]=parseInt(dtl[2],10);
+			ReportX[page]=eval(dtl[3]);
+			ReportY[page]=eval(dtl[4]);
+			continue;
+			}
+		if (dtl[0]=="end") break;
+		if (dtl[1]=="end") break;
+		if (dtl[2]=="end") break;
+		page=parseInt(dtl[0],10);
+		pos=parseInt(dtl[1],10);
+		Report[page][pos]=new Object();
+		code=dtl[2];
+		Report[page][pos].品目=code;
+		Report[page][pos].エラー=false;
+		if (code=="????") Report[page][pos].エラー=true;
+		if (code in DB) name=DB[code].品目名;
+		else	{
+				name="???";
+				AutoAddMaster(code);
+				if (code in DB) name=DB[code].品目名;
+				}
+		Report[page][pos].品目名=name;
+		if (name=="???") Report[page][pos].エラー=true;
+		}
+	return true;
+	}
+//----------------------------------------------------------------
+function AutoAddMaster(num)
+	{
+	var s=num+"";
+	var n1=s.substring(0,2);
+	var n2=s.substring(2,4);
+	var nen=2000+parseInt(n2,10);
+	var result=false;
+	var name,kubun,alter;
+	switch(n1)
+		{
+		case "72":
+					name=nen+" カレンダー";
+					kubun="年ごとの品目";
+					alter=num;
+					result=true;
+					break;
+		case "69":
+					name="聖書を調べる－"+nen;
+					kubun="年ごとの品目";
+					alter=num;
+					result=true;
+					break;
+		case "57":
+					name="「目ざめよ！」製本　"+nen;
+					kubun="年ごとの品目";
+					alter=num;
+					result=true;
+					break;
+		case "56":
+					name="「ものみの塔」製本　"+nen;
+					kubun="年ごとの品目";
+					alter=num;
+					result=true;
+					break;
+		case "59":
+					name=nen+" 年鑑";
+					kubun="年ごとの品目";
+					alter=num;
+					result=true;
+					break;
+		case "25":
+					name="Watchtower Library-"+nen;
+					kubun="Watchtower Library";
+					alter=num;
+					result=true;
+					break;
+		}
+	if (result)
+		{
+		DB[num]=new Object();
+		DB[num].品目名=name;
+		DB[num].分類=kubun;
+		DB[num].集計先=alter;
+		}
+	}
+//----------------------------------------------------------------
+function Results(result)
+	{
+	WScript.StdOut.Write(result);
+	}
+</script>
+</job>

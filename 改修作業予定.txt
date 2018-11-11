@@ -1,0 +1,126 @@
+===============================================
+●2018/10/26(バージョン3.01据置)
+修正内容
+・ヒストリー機能を廃止
+・SQliteモジュールの導入
+・SQlite化の初期段階として、報告書発行ログ(reportlog.txt)をテーブル(ReportLogs)に置換
+実施予定：2018/10/28
+実施日：2018/10/28済
+===============================================
+●2018/10/29（バージョン3.02）
+修正内容
+・XAMPP側で、テキストファイルを介さず標準出力で処理結果を取得する方法に切り替え
+・トークンIDの生成処理を追加
+①トークンIDはSQliteテーブル「CWTokens」で生成する。通し番号(TokenNo、Long型）で８桁の値とし、生成するごとに＋１する。
+②Quicky側では、起動時にトークンIDがLocalコンフィグに保存されていなければ生成し保存。
+③Congworks側では、ログイン時にトークンIDが保存されていなければ生成し保存。ローカルストレージに保存する。
+④Xampp側プログラムで、テキストファイルを介さず標準出力で処理結果を返すテスト。※主要な変更点
+対象プログラム
+	mainbody.hta					バージョン表記修正のみ
+	\sys\config.js					ローカルコンフィグOpen時、ConfigLocal.TokenIDがなければ生成して保存。
+	\congworks\getcwtoken.wsf		新設。８桁のトークンを生成して標準出力に返す。
+	xampp\htdocs\congworks\以下
+	index.php						CookieにCWTokenがあるかチェックし、なければ生成。次画面移行時にCookieに保存。
+	mylist.php						テキストファイルを介さないよう変更
+	viewA.php						テキストファイルを介さないよう変更
+	viewB.php						テキストファイルを介さないよう変更
+	rentA.php						テキストファイルを介さないよう変更
+	rentB.php						テキストファイルを介さないよう変更
+	cancel.php						テキストファイルを介さないよう変更
+	download.php					テキストファイルを介さないよう変更
+	requestA.php					テキストファイルを介さないよう変更
+	requestB.php					テキストファイルを介さないよう変更
+	print.php						テキストファイルを介さないよう変更
+	mylist.bat						廃止
+	viewA.bat						廃止
+	viewB.bat						廃止
+	rentA.bat						廃止
+	rentB.bat						廃止
+	download.bat					廃止
+	cancel.bat						廃止
+	requestA.bat					廃止
+	requestB.bat					廃止
+	print.bat						廃止
+
+	xampp\htdocs\congworks\pp以下
+	index.php						CookieにCWTokenがあるかチェックし、なければ生成。次画面移行時にCookieに保存。
+	newlist.php						テキストファイルを介さないよう変更
+	verify.php						テキストファイルを介さないよう変更
+	rent.php						テキストファイルを介さないよう変更
+	cancelpp.php					テキストファイルを介さないよう変更
+	newlist.bat						廃止
+	verify.bat						廃止
+	rent.bat						廃止
+	cancelpp.bat					廃止
+
+
+※とりあえずトークンは生成するが、まだ何も使用しない。
+実施予定：2018/11/1（木）
+実施日：2018/11/1済
+===============================================
+●2018/11/2（バージョン3.03）
+・Congworks共通モジュール化の開始
+①会衆区域貸し出し(rent.wsf)
+②会衆区域キャンセル(cancelpp.wsf)
+③個人区域貸し出し(rentB.wsf)
+④個人区域キャンセル(cancel.wsf)
+⑤アパート区域貸し出し(rentA.wsf)
+⑥アパート区域キャンセル(cancel.wsf)
+・ユーザー名(users.txt,users2.txt)をデータベース化する
+  rent.wsf		貸し出し時、ユーザー名をテーブルに更新する
+  verify.wsf	users.txtからユーザー一覧を取得するのではなく、テーブルから取得するように変更
+  setup.js		CreateUsersを実行することでセットアップ（すでに作成済）
+  menu1.js		UserPad(),UserPad2()を変更、DeleteUPad1,DeleteUPad2を変更
+  file.js		UserFile(),UserFile2()を廃止する
+  rentA.wsf		個人ユーザー名をCWUsersに登録する
+  rentB.wsf		個人ユーザー名をCWUsersに登録する
+
+※モジュールの共通仕様：
+・congworksフォルダ下で完結する。他のフォルダにあるファイルを使用しない。
+・ただしSQlite関係のファイルは除く。
+・処理内容は引数で制御する。引数先頭にトークンIDを必ず渡す。
+・処理結果はc:\temp\quicky\トークンID.txtに返す。
+・呼び出し＆結果受け取りは、RunWSF(cmd)関数で行なう。
+
+以下の部分はおいおい追加していく。
+⑪個人区域一覧データの取得
+⑫アパート区域一覧データの取得
+
+実施予定：2018/11/8
+実施日：2018/11/8
+
+===============================================
+●2018/11/10（バージョン3.04）
+・会衆区域リストをSQlite化する(PublicList)
+・セットアップはCreatePublicList()で行なう
+・Quicky:SaveConfig関数の中に、CreatePiblicList_One(num)を呼び出す個所を追加することにより、カード情報の更新に連動してSQliteを更新する
+  （カード情報の変更、特記情報の追加、アパートの追加・変更）
+・Quicky:区域のログ更新処理の際、テーブルPublicListを更新する処理を追加する(savelog)
+・Congworksのnewlist.wsfのデータ取得方法を、ディレクトリからのフォルダ一覧取得ではなく、SQliteテーブル(PublicList)からの取得にする
+・ForceEndをディレクトリ一覧からではなく、PublicListから処理する
+・Quickyの区域一覧をテーブルから取得するよう変更
+
+未作業
+・XAMPPの公開ディレクトリをQuickyのsqliteディレクトリにする
+・Ezraをバッチファイル非依存、相対ディレクトリに対応させる
+・ReadJSON,WriteJSONを実装する
+
+
+
+実施予定：2018/11/15
+実施日：
+
+===============================================
+
+
+
+●後続バージョン
+・SQliteアクセス機能を導入する
+①コンフィグ設定（オール）
+・menu1.jsをメンテ部と貸し出し部に分ける
+・スポット情報をSQlite化
+・アパートログをSQlite化
+・ビル構造をすべてbuildingフォルダに統一する
+・区域ログをSQlite化
+・個人ログをSQlite化
+・アパート区域、前回から-1日が対象になっていないバグを修正

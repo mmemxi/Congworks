@@ -1,0 +1,75 @@
+<job>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/file.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// menu3set.wsf ラックの内容変更を実行
+// 引数１：年月
+// 引数２：ラック位置
+// 引数３：品目コード
+// 引数４：数量
+//----------------------------------------------------------------
+var Anenget=WScript.Arguments(0);
+var Apos=WScript.Arguments(1);
+var Acode=WScript.Arguments(2);
+var Asuryo=WScript.Arguments(3);
+Anenget=Anenget.trim();
+Apos=Apos.trim();
+Acode=Acode.trim();
+Asuryo=Asuryo.trim();
+//------------------------------------------------------------------------------------
+var Rack=new Array();
+//------------------------------------------------------------------------------------
+var spr,s,i,j,dtl,yyyymm,code,num,yyyy,mm,seq,nend;
+var filename=RackFile(Anenget);
+
+//	ラックの入力
+var data=ReadFile(filename);
+var pos,code;
+Rack=new Array();
+if (data!="")
+	{
+	spr=data.split("\r\n");
+	for(i in spr)
+		{
+		spr[i]+=",end,end,end";
+		dtl=spr[i].split(",");
+		if (dtl[0]=="end") break;
+		if (dtl[1]=="end") break;
+		if (dtl[2]=="end") break;
+		pos=parseInt(dtl[0],10);
+		Rack[pos]=new Object();
+		Rack[pos].品目=dtl[1];
+		Rack[pos].数量=parseInt(dtl[2],10);
+		}
+	}
+
+//	今回のコード・数量をセット
+if (Asuryo!="none")
+	{
+	if (!(Apos in Rack))
+		{
+		Rack[Apos]=new Object();
+		}
+	Rack[Apos].品目=Acode;
+	Rack[Apos].数量=parseInt(Asuryo,10);
+	}
+else{
+	if (Apos in Rack)
+		{
+		delete Rack[Apos];
+		}
+	}
+//	ラックの出力
+var f=fso.CreateTextFile(filename,true);
+for(i=0;i<=299;i++)
+	{
+	if (!(i in Rack)) continue;
+	if (Rack[i]=="") continue;
+	s=i+","+Rack[i].品目+","+Rack[i].数量;
+	f.WriteLine(s);
+	}
+f.close();
+WScript.quit();
+</script>
+</job>

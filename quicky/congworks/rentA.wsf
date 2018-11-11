@@ -1,0 +1,102 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/personal.js"></script>
+<script language="JavaScript" src="./lib/marker.js"></script>
+<script language="JavaScript" src="./lib/summary.js"></script>
+<script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// rentA.wsf 集中インターホンの区域を貸し出す
+// 引数１＝会衆番号:ユーザー名:区域番号:地図番号:建物名
+//----------------------------------------------------------------
+var targetstr=WScript.Arguments(0);
+//----------------------------------------------------------------
+	targetstr=targetstr.trim();
+	var tbl=targetstr.split(":");
+	var result,user,congnum,num,seq,inx;
+	var i,Id,s,ifile,card;
+	congnum=tbl[0];
+	user=tbl[1];
+	num=tbl[2];
+	seq=tbl[3];
+	tbl[4]=tbl[4].replace("_"," ");
+	Id=tbl[4];
+
+	//	環境設定を取得
+	var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
+
+	//	他のユーザーに先取りされた
+	if (!isAvailable("A",congnum,num,seq,Id))
+		{
+		WScript.StdOut.Write("ng");
+		WScript.quit();
+		}
+
+	//	区域詳細を取得
+	card=ReadXMLFile(ConfigXML(congnum,num),true);
+
+	//	建物ＩＤを取得
+	var BTB=card.RTB;
+	inx=-1;
+	for(i=0;i<BTB.length;i++)
+		{
+		if (BTB[i].Name==tbl[4]){inx=i;break;}
+		}
+	if (inx==-1)
+		{
+		WScript.StdOut.Write("ng");
+		WScript.quit();
+		}
+
+	var ymd,text;
+	var stream,text,s,cmd,q;
+	var today=new Date();
+	var overday;
+
+	//使用開始情報の書き込み
+	stream = fso.OpenTextFile(ApartFolder(congnum)+Id+".txt", 8,true,-2);
+	ymd=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
+	overday=AddDays(ymd,ConfigAll.AutoEndApart);
+	s=user+","+ymd+",,"+overday;
+	stream.WriteLine(s);
+	stream.Close();
+	CreateSummaryofApartment(congnum);		//	サマリ情報の作り直し
+
+	//	個人フォルダの編集
+	var pdffile=AddMyMap(user,"A",congnum,num,seq,inx,BTB[inx].Person,overday);
+
+	//	地図データの作成
+	var cmd="cscript.exe \""+WSHScript("mapgen.wsf")+"\" "+congnum+" "+num+" "+seq+" \""+Id+"\" \""+pdffile+"\"";
+	WshShell.Run(cmd,0,true);
+
+	//	ユーザー名を登録
+	SQ_Init("congworks.db");
+	var uobj=new Object();
+	uobj.congnum=congnum;
+	uobj.userid=user;
+	uobj.authority="personalservice";
+	SQ_Replace("CWUsers",uobj);
+
+	//	終了
+	WScript.StdOut.Write("ok");
+	WScript.quit();
+
+function Log(message)
+	{
+	var t=new Date();
+	if (!(fso.FileExists("c:"+qt+"tool"+qt+"quicky"+qt+"log.txt")))
+		{
+		f=fso.CreateTextFile("c:"+qt+"tool"+qt+"quicky"+qt+"log.txt",true);
+		}
+	else{
+		f=fso.OpenTextFile("c:"+qt+"tool"+qt+"quicky"+qt+"log.txt",8,true);
+		}
+	f.WriteLine(t+":"+message);
+	f.close();
+	}
+
+</script>
+</job>

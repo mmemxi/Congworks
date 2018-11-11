@@ -1,0 +1,13 @@
+<script language="JavaScript">
+attachEvent("onmouseover",cursoron);
+attachEvent("onmouseout",cursoroff);
+function cursoron()
+	{
+	this.filters["glow"].strength=4;
+	}
+function cursoroff()
+	{
+	this.filters["glow"].strength=1;
+	}
+</script>
+

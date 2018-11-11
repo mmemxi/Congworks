@@ -1,0 +1,90 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/marker.js"></script>
+<script language="JavaScript" src="./lib/building.js"></script>
+<script language="JavaScript" src="./lib/vml.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// viewB.wsf 長期留守宅の詳細を表示する
+// 引数１＝会衆番号:ユーザー名:区域番号:地図番号
+//----------------------------------------------------------------
+var Building=new Object();
+var Markers;
+//----------------------------------------------------------------
+var targetstr=WScript.Arguments(0);
+//----------------------------------------------------------------
+	targetstr=targetstr.trim();
+	targetstr=targetstr.replace("_"," ");
+	var tbl=targetstr.split(":");
+	var result,congnum,num,seq;
+	var i,j,s,vhist;
+	congnum=tbl[0];
+	num=tbl[2];
+	seq=tbl[3];
+	var mcount;
+
+	//	マップ画像のコピー準備
+/*	var src,dst;
+	src=NumFolder(congnum,num)+seq+".png";
+	dst=basepath+qt+"sqlite"+qt+"map";
+	if (!fso.FolderExists(dst)) fso.CreateFolder(dst);
+	try	{
+		fso.CopyFile(src,dst+qt+num+"-"+seq+".png",true);
+		}
+	catch(e){}
+*/
+	//	ビル情報の読込
+	Building=ReadXMLFile(NumFolder(congnum,num)+"building.xml",true);
+	if (Building=="")	Building=new Object();
+	if (!("building" in Building))	Building.building=new Array();
+
+	//	マーカーの件数カウント
+	Markers=LoadMarker(congnum,num);
+	mcount=0;
+	for(i in Markers.Map)
+		{
+		if (i!=seq) continue;
+		for(j=0;j<Markers.Map[i].Points.length;j++)
+			{
+			vhist=parseInt(Markers.Map[i].Points[j].History,10);
+			if (vhist!=2) continue;
+			mcount++;
+			}
+		}
+	//	マーカー情報をビルに反映させる
+	SetMarkersToBuilding(1);
+
+	//	地図画像（ベース）
+	s="<div style='position:relative;'>";
+	s+="<div style='position:absolute;top:0px;left:0px;z-index:1;'>";
+	s+="<img src='./quicky/data/"+congnum+"/"+num+"/"+seq+".png'>";		//	680x756px
+	s+="</div>";
+
+	//	ビル情報を重ねる
+	if (Building!="")
+		{
+		sb="<div style='position:absolute;top:30mm;left:10mm;z-index:3;'>";
+		for(i in Building.building)
+			{
+			rmap=parseInt(Building.building[i].map,10);
+			if (rmap!=seq) continue;
+			sb+=CreateBuildingImage(Building.building[i],congnum,num,seq,1,1);
+			}
+		sb+="</div>";
+		s+=sb;
+		}
+
+	//	マーカー情報の合成
+	s+="<div style='position:absolute;top:0px;left:0px;z-index:5;'>";
+	s+=DrawMarker(Markers,seq,1,1,2);
+	s+="</div>";
+
+	s+="</div>";
+	result=s;
+	WScript.StdOut.Write(result);
+	WScript.quit();
+
+</script>
+</job>

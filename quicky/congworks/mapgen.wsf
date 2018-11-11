@@ -1,0 +1,57 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/lib01.js"></script>
+<script language="JavaScript" src="./lib/lib02.js"></script>
+<script language="JavaScript" src="./lib/lib03.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/mapgen.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/vml.js"></script>
+<script language="JavaScript" src="./lib/building.js"></script>
+<script language="JavaScript" src="./lib/marker.js"></script>
+<script language="JavaScript" src="./lib/rmap.js"></script>
+<script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// mapgen.wsf w’è‚µ‚½’n}PDF‚ğì¬‚·‚é
+// MapGen(congnum,num,seq,id,outfilename);
+// ’Êí’n}‚Ìê‡Fcongnum=‰ïO”Ô† num=‹æˆæ”Ô† seq=’n}”Ô†(0‚È‚ç‚»‚Ì‹æˆæ‚·‚×‚Ä)
+//                 id=public
+// ’·Šú—¯ç‚Ìê‡Fcongnum=‰ïO”Ô† num=‹æˆæ”Ô† seq=’n}”Ô† id=personi•¶š—ñj
+// W’†ƒCƒ“ƒ^[ƒzƒ“Fcongnum=‰ïO”Ô† num=‹æˆæ”Ô†@seq=’n}”Ô† id=•¨Œ”Ô†
+//----------------------------------------------------------------
+var Cards=new Array();
+var RMAP_VX=3240;
+var RMAP_VY=8186;
+RMAP_VX=800;
+RMAP_VY=600;
+var RMAP_Width=680;
+var RMAP_Height=600;
+var nums="‡@‡A‡B‡C‡D‡E‡F‡G‡H‡I‡J‡K‡L‡M‡N‡O‡P‡Q‡R‡S";
+var Building=new Object();
+var Markers;
+var tmk;
+var Spots=new Array();
+var cd=fso.getParentFolderName(WScript.ScriptFullName);
+cd=cd.replace("congworks","");
+WshShell.CurrentDirectory=cd;
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);
+var Pnum=WScript.Arguments(1);
+var Pseq=WScript.Arguments(2);
+var Pid=WScript.Arguments(3);
+var Pfile=WScript.Arguments(4);
+var logOpened=false;
+//----------------------------------------------------------------
+var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
+MapGen(congnum,Pnum,Pseq,Pid,Pfile);
+//----------------------------------------------------------------
+function MapGen(congnum,num,seq,id,outfilename)
+	{
+	LoadCard(congnum,num);
+	if (id=="public") {MapGen_Public(congnum,num,seq,outfilename);return;}
+	if (id=="person") {MapGen_Person(congnum,num,seq,outfilename);return;}
+	MapGen_Apart(congnum,num,seq,id,outfilename);
+	}
+</script>
+</job>

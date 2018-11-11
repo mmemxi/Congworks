@@ -1,0 +1,46 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// print.wsf 指定したPDF地図を印刷する(PDFPrint.jsに渡す)
+// 引数１＝会衆番号
+// 引数２＝ユーザー名
+// 引数３＝PDFファイル名
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);	//	引数１：会衆番号
+var Param1=WScript.Arguments(1);	//	引数２：ユーザー名
+var Param2=WScript.Arguments(2);	//	引数３：PDFファイル名
+var pdffile=PersonalFolder(congnum)+Param1+qt+Param2;
+var dstfolder="c:"+qt+"temp"+qt+"quicky"+qt+"pdfque";
+var dstfile=dstfolder+qt+"("+Param1+")"+Param2;
+//----------------------------------------------------------------
+// エラーチェック
+//----------------------------------------------------------------
+if (!fso.FolderExists(dstfolder))					//	印刷キューのフォルダが無い
+	{
+	WScript.StdOut.Write("Error:NoQue");
+	WScript.quit();
+	}
+if (!fso.FileExists(dstfolder+qt+"waiting.txt"))		//	印刷用常駐アプリが動いていない
+	{
+	WScript.StdOut.Write("Error:NoPrintSystem");
+	WScript.quit();
+	}
+if (!fso.FileExists(pdffile))						//	印刷対象のＰＤＦファイルが無い
+	{
+	WScript.StdOut.Write("Error:NoPrintFile");
+	WScript.quit();
+	}
+if (fso.FileExists(dstfile))						//	印刷対象のＰＤＦファイルが有る（前の印刷中）
+	{
+	WScript.StdOut.Write("Error:PleaseWait");
+	WScript.quit();
+	}
+//----------------------------------------------------------------
+//	印刷システムに渡す
+//----------------------------------------------------------------
+	fso.CopyFile(pdffile,dstfile,true);
+	WScript.StdOut.Write("OK");
+	WScript.quit();
+</script>
+</job>

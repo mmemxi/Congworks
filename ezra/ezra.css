@@ -1,0 +1,340 @@
+	body{
+		background-color:#ffffff;
+		color:#000000;
+		font-size:15px;
+		}
+	a	{
+		color:#0000ff;
+		text-decoration:none;
+		}
+        a:hover	{
+		color:#0000ff;
+		text-decoration:underline;
+		}
+a:active{
+		color:#ff00ff;
+		}
+a:visited{
+		color:#0000ff;
+		}
+td.norm	{
+		font-color:white;
+		font-weight:bold;
+		font-family:‚l‚r ‚oƒSƒVƒbƒN;
+		}
+td.title{
+		font-color:white;
+		font-weight:bold;
+		font-family:‚l‚r ‚o–¾’©;
+		}
+td.mini	{
+		font-color:white;
+		font-weight:bold;
+		font-family:‚l‚r ‚o–¾’©;
+		}
+td.rackTop
+		{
+		width:100px;
+		cursor:pointer;
+		font-size:12px;
+		color:#000000;
+		background-color:#ffffff;
+		border-top:1px solid black;
+		border-left:1px solid black;
+		border-right:1px solid black;
+		border-bottom:1px solid transparent;
+		padding:0px;
+		margin:0px;
+		text-align:center;
+		vertical-align:middle;
+		}
+td.rackBottom
+		{
+		width:100px;
+		cursor:pointer;
+		font-size:12px;
+		color:#000000;
+		background-color:#bbffff;
+		border-top:1px solid transparent;
+		border-left:1px solid black;
+		border-right:1px solid black;
+		border-bottom:1px solid black;
+		padding:0px;
+		margin:0px;
+		text-align:center;
+		vertical-align:middle;
+		white-space:nowrap;
+		}
+.HEAD	{
+		color:#ffffff;
+		background-color:#000000;
+		text-align:center;
+		white-space:nowrap;
+		border-top:1px solid black;
+		border-left:1px solid black;
+		border-right:1px solid white;
+		border-bottom:1px solid white;
+		padding:0px;
+		margin:0px;
+		font-size:12px;
+		white-space:nowrap;
+		}
+.HEAD1	{
+		color:#ffffff;
+		background-color:#000000;
+		text-align:center;
+		white-space:nowrap;
+		border-top:1px solid black;
+		border-left:1px solid black;
+		border-right:1px solid white;
+		border-bottom:1px solid black;
+		padding:0px;
+		margin:0px;
+		font-size:12px;
+		white-space:nowrap;
+		}
+.HEAD2	{
+		color:#ffffff;
+		background-color:#000000;
+		text-align:center;
+		white-space:nowrap;
+		border-top:1px solid black;
+		border-left:1px solid black;
+		border-right:1px solid white;
+		border-bottom:1px solid white;
+		padding:0px;
+		margin:0px;
+		font-size:12px;
+		white-space:nowrap;
+		}
+div.abs	{
+		position:absolute;
+		top:0px;
+		left:0px;
+		}
+	.size7
+		{
+		font-size:44px;
+		}
+	.size6
+		{
+		font-size:34px;
+		}
+	.size5
+		{
+		font-size:26px;
+		}
+	.size4
+		{
+		font-size:20px;
+		}
+	.size3
+		{
+		font-size:15px;
+		}
+	.size2
+		{
+		font-size:12px;
+		}
+	.size1
+		{
+		font-size:9px;
+		}
+
+//----------------------------------------
+.font{
+	font-family:Meiryo UI;
+	-ms-transform: rotate(0.028deg);
+	}
+.points
+	{
+	color:#ff0000;
+	font-size:75%;
+	}
+.dialog
+	{
+	background-color:#fff8ff;
+	color:#222222;
+	border-radius:16px;
+	box-shadow: 5px 5px 10px #888;
+	padding:10px;
+	border:1px solid #ccc;
+	text-align:center;
+	-ms-transform: rotate(0.028deg);
+	white-space:nowrap;
+	}
+.button
+	{
+	border-radius:4px;
+	box-shadow: 0 2px 1px #fff inset;
+	padding:6px;
+	border:1px solid #ccc;
+	background-image:url("./img/buttonbg.png");
+	font-size:16px;
+	color:	#333333;
+	font-weight:bold;
+	text-align:center;
+	cursor:pointer;
+	-ms-transform: rotate(0.028deg);
+	white-space:nowrap;
+	}
+.buttondisabled
+	{
+	border-radius:4px;
+	box-shadow: 0 2px 1px #fff inset;
+	padding:6px;
+	border:1px solid #ccc;
+	background-image:url("./img/buttonbg.png");
+	font-size:16px;
+	color:	#bbbbbb;
+	font-weight:bold;
+	text-align:center;
+	-ms-transform: rotate(0.028deg);
+	white-space:nowrap;
+	}
+.tbox
+	{
+	border-radius:3px;
+	box-shadow: inner 0 0 4px rgba(0, 0, 0, 0.2);
+	font-size:18px;
+	height:28px;
+	font-family:Meiryo UI;
+	-ms-transform: rotate(-0.028deg);
+	padding:3px;
+	margin:3px;
+	ime-mode:disabled;
+	}
+.tpulldown
+	{
+	border-radius:3px;
+	box-shadow: inner 0 0 4px rgba(0, 0, 0, 0.2);
+	font-size:14px;
+	height:28px;
+	font-family:Meiryo UI;
+	-ms-transform: rotate(-0.028deg);
+	padding:3px;
+	margin:3px;
+	}
+.teloptext
+	{
+	font-weight:bold;
+	color:#ffffff;
+	font-family:Meiryo UI;
+	-ms-transform: rotate(-0.028deg);
+	}
+.bevel
+	{
+	border-radius:8px;
+	border-top:2px #aaaaaa solid;
+	border-left:2px #aaaaaa solid;
+	border-right:2px #eeeeee solid;
+	border-bottom:2px #ffffff solid;
+	}
+.SetButton_Off
+	{
+	font-weight:bold;
+	font-size:16px;
+	color:#777777;
+	font-family:Meiryo UI;
+	-ms-transform: rotate(-0.028deg);
+	width:180px;
+	height:40px;
+	text-align:center;
+	vertical-align:middle;
+	white-space:nowrap;
+	background-color:#eeeeee;
+	border-radius:6px;
+	border-top:2px #ffffff solid;
+	border-left:2px #eeeeee solid;
+	border-right:2px #aaaaaa solid;
+	border-bottom:2px #aaaaaa solid;
+	cursor:pointer;
+	box-shadow: 5px 5px 10px #333;
+	padding:6px;
+	}
+.SetButton_Off:hover
+	{
+	color:#333333;
+	background-color:#dddddd;
+	border-top:2px #aaaaaa solid;
+	border-left:2px #aaaaaa solid;
+	border-right:2px #eeeeee solid;
+	border-bottom:2px #ffffff solid;
+	}
+.SetButton_On
+	{
+	font-weight:bold;
+	font-size:22px;
+	color:#666666;
+	font-family:Meiryo UI;
+	-ms-transform: rotate(-0.028deg);
+	width:120px;
+	height:28px;
+	text-align:center;
+	vertical-align:middle;
+	white-space:nowrap;
+	background-color:#bbbbbb;
+	border-radius:6px;
+	border-top:2px #aaaaaa solid;
+	border-left:2px #aaaaaa solid;
+	border-right:2px #eeeeee solid;
+	border-bottom:2px #ffffff solid;
+	cursor:pointer;
+	box-shadow: 5px 5px 10px #333;
+	padding:10px;
+	}
+.MiniButton
+	{
+	font-weight:bold;
+	font-size:20px;
+	color:#444444;
+	font-family:Meiryo UI;
+	-ms-transform: rotate(-0.028deg);
+	text-align:center;
+	vertical-align:middle;
+	white-space:nowrap;
+	background-color:#eeeeee;
+	border-radius:6px;
+	border-top:2px #ffffff solid;
+	border-left:2px #eeeeee solid;
+	border-right:2px #aaaaaa solid;
+	border-bottom:2px #aaaaaa solid;
+	cursor:pointer;
+	}
+.MiniButton:hover
+	{
+	color:#222222;
+	background-color:#dddddd;
+	border-top:2px #aaaaaa solid;
+	border-left:2px #aaaaaa solid;
+	border-right:2px #eeeeee solid;
+	border-bottom:2px #ffffff solid;
+	}
+.Fields
+	{
+	background-color:#f8f8ff;
+	border-radius:6px;
+	border-top:2px #aaaaaa solid;
+	border-left:2px #aaaaaa solid;
+	border-right:2px #eeeeee solid;
+	border-bottom:2px #ffffff solid;
+	height:30px;
+	margin:4px;
+	padding:6px;
+	}
+.FieldAreas
+	{
+	background-color:#f8f8ff;
+	border-radius:6px;
+	border-top:2px #aaaaaa solid;
+	border-left:2px #aaaaaa solid;
+	border-right:2px #eeeeee solid;
+	border-bottom:2px #ffffff solid;
+	margin:4px;
+	}
+.formbox
+	{
+	white-space:nowrap;
+	text-align:right;
+	vertical-align:middle;
+	}

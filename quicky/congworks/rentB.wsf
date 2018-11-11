@@ -1,0 +1,82 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/personal.js"></script>
+<script language="JavaScript" src="./lib/marker.js"></script>
+<script language="JavaScript" src="./lib/summary.js"></script>
+<script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// rentB.wsf 長期留守宅の区域を貸し出す
+// 引数１＝会衆番号:ユーザー名:区域番号:地図番号
+//----------------------------------------------------------------
+var targetstr=WScript.Arguments(0);
+//----------------------------------------------------------------
+	targetstr=targetstr.trim();
+	targetstr=targetstr.replace("_"," ");
+	var tbl=targetstr.split(":");
+	var result,user,congnum,num,seq;
+	var tmk,i,j,s,log,overday,mcount;
+	congnum=tbl[0];
+	user=tbl[1];
+	num=tbl[2];
+	seq=tbl[3];
+
+	//	環境設定を取得
+	var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
+
+	//	他のユーザーに先取りされた
+	if (!isAvailable("B",congnum,num,seq,user))
+		{
+		WScript.StdOut.Write("ng");
+		WScript.quit();
+		}
+
+	//使用開始情報の書き込み
+	tmk=LoadMarker(congnum,num);
+	if (tmk.Count>0)
+		{
+		tmk.Map[seq].User=user;
+		SaveMarker(congnum,num,tmk);
+		}
+	CreateSummaryofPerson(congnum,num,true);
+	mcount=0;
+	for(i in tmk.Map)
+		{
+		if (i!=seq) continue;
+		for(j=0;j<tmk.Map[i].Points.length;j++)
+			{
+			vhist=parseInt(tmk.Map[i].Points[j].History,10);
+			if (vhist!=2) continue;
+			mcount++;
+			}
+		}
+
+	//	終了期限の取得
+	log=ReadXMLFile(NumFolder(congnum,num)+"log.xml",false);
+	f=fso.FileExists(NumFolder(congnum,num)+"log.xml");
+	overday=log.Latest.Limit;
+	//	個人フォルダの編集
+	var pdffile=AddMyMap(user,"B",congnum,num,seq,0,mcount,overday);
+
+	//	地図データの作成
+	var cmd="cscript.exe \""+WSHScript("mapgen.wsf")+"\" "+congnum+" "+num+" "+seq+" person \""+pdffile+"\"";
+	WshShell.Run(cmd,0,true);
+
+	//	ユーザー名を登録
+	SQ_Init("congworks.db");
+	var uobj=new Object();
+	uobj.congnum=congnum;
+	uobj.userid=user;
+	uobj.authority="personalservice";
+	SQ_Replace("CWUsers",uobj);
+
+	//	終了
+	WScript.StdOut.Write("ok");
+	WScript.quit();
+
+
+</script>
+</job>

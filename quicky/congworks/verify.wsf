@@ -1,0 +1,63 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// verify.wsf 会衆用新規区域の貸出前確認
+// 引数１＝会衆番号
+// 引数２＝区域番号
+//----------------------------------------------------------------
+var congnum=WScript.Arguments(0);
+var num=WScript.Arguments(1);
+var str;
+var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
+SQ_Init("congworks.db");
+//(1)１行目：区域名----------------------------------------------------------------
+var dfile=ConfigXML(congnum,num);
+var cobj;
+if (fso.FileExists(dfile))
+	{
+	cobj=ReadXMLFile(dfile,false);
+	str="№"+num+":"+cobj.name+"("+cobj.kubun+")";
+	}
+WScript.StdOut.Write(str+"\n");
+//(2)２行目：最短使用可能日--------------------------------------------------------
+str=GetAvailableDate(congnum,num);
+WScript.StdOut.Write(str+"\n");
+//(3)３行目：キャンペーン期間------------------------------------------------------
+var cpdays=true;
+var i;
+str="";
+if (ConfigAll=="") cpdays=false;
+else{
+	if (!("Campeigns" in ConfigAll))	cpdays=false;
+	else{
+		for(i=0;i<ConfigAll.Campeigns.length;i++)
+			{
+			if (str!="") str+=",";
+			str+=ConfigAll.Campeigns[i].Start+"-"+ConfigAll.Campeigns[i].End;
+			}
+		}
+	}
+if (cpdays)
+	{
+	WScript.StdOut.Write(str+"\n");
+	}
+else{
+	WScript.StdOut.Write("00000000-00000000\n");
+	}
+//(4)４行目以降：ユーザー一覧----------------------------------------------------------
+var users=SQ_Read("CWUsers","congnum="+congnum+" and authority='publicservice'","userid");
+var txt="";
+for(i=0;i<users.length;i++)
+	{
+	if (i>0) txt+="\n";
+	txt+=users[i].userid;
+	}
+WScript.StdOut.Write(txt);
+WScript.quit();
+</script>
+</job>
