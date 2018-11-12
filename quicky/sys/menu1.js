@@ -46,10 +46,6 @@ function MENU1()
 	var corder="num";
 	var clast;
 	var cobj;
-	if (Menu1_Filter_status=="使用可能")	cwhere+=" and inuse='false'";
-	if (Menu1_Filter_status=="未使用")		cwhere+=" and inuse='false'";
-	if (Menu1_Filter_status=="使用中")		cwhere+=" and inuse='true'";
-	if (Menu1_Filter_kubun!="")				cwhere+=" and kubun='"+Menu1_Filter_kubun+"'";
 	var ctbl=SQ_Read("PublicList",cwhere,"");
 
 	//	使用状況を配列オブジェクトに追加する---------------------------------------------
@@ -63,6 +59,7 @@ function MENU1()
 			Menu1_Filter_kubuncount++;
 			kbn[kubun]=Menu1_Filter_kubuncount;
 			}
+		if ((Menu1_Filter_kubun!="")&&(Menu1_Filter_kubun!=kubun)){ctbl.splice(i,1);i--;continue;}
 
 		if (cobj.inuse=="true")
 			{
@@ -98,8 +95,15 @@ function MENU1()
 		//	フィルターによる表示制御
 		if ((Menu1_Filter_status=="使用可能")&&(cobj.Avail!="true"))
 			{
-			ctbl.splice(i,1);
-			i--;
+			ctbl.splice(i,1);i--;continue;
+			}
+		if ((Menu1_Filter_status=="未使用")&&(cobj.inuse=="true"))
+			{
+			ctbl.splice(i,1);i--;continue;
+			}
+		if ((Menu1_Filter_status=="使用中")&&(cobj.inuse!="true"))
+			{
+			ctbl.splice(i,1);i--;continue;
 			}
 		}
 	//	ソートキー-----------------------------------------------------------------
@@ -199,13 +203,13 @@ function MENU1()
 		//	右端セルの表示
 		if (ctbl[i].Status.indexOf("使用中",0)!=-1)
 			{
-			s+="<td style='cursor:pointer;white-space:nowrap;' title='使用終了情報の入力を行います' onClick='MENU1E("+num+")'";
+			s+="<td style='cursor:pointer;white-space:nowrap;' title='使用終了情報の入力を行います' onClick='MENU1E_End("+num+")'";
 			s+=" bgcolor='#ffff00'";
 			}
 		else{
 			if (ctbl[i].Avail=="true")
 				{
-				s+="<td style='cursor:pointer;white-space:nowrap;' title='新規使用開始の入力を行います' onClick='MENU1E("+num+")'";
+				s+="<td style='cursor:pointer;white-space:nowrap;' title='新規使用開始の入力を行います' onClick='MENU1E_Start("+num+")'";
 				s+=" bgcolor='#aaffff'";
 				}
 			else{
@@ -432,7 +436,6 @@ function MENU1B(num)
 	s+="<input type=button value='コメント追加' onClick='AddComment("+num+")'><br>"+hr();
 	s+="<input type=button value='更新' onClick='MENU1B_Exec("+num+")'>";
 	s+="<input type=button value='地図一覧へ' onClick='MENU1P("+num+")'>";
-	s+="<input type=button value='使用状況入力へ' onClick='MENU1E("+num+")'>";
 	s+="<input type=button value='この区域を削除する' onClick='MENU1Del("+num+")'><br>";
 	s+="<input type=button value='戻る' onClick='LoadCard("+num+");MENU1()'></form>";
 	WriteLayer("Stage",s);
@@ -864,6 +867,7 @@ function MENU1E(num)
 
 function MENU1E_Start(num)
 	{
+	window.scrollTo(0,0);
 	var s,ymd;
 	var today=new Date();
 	if ("spanDays" in Cards[num])		//	カードごとの自動終了日数が設定されている？
@@ -1108,6 +1112,7 @@ function MENU1E_Start_RollBack(num)
 
 function MENU1E_End(num)
 	{
+	window.scrollTo(0,0);
 	var i,j,text,maxlogs,seq,obj,l;
 	var lines=new Array();
 	for(i in sts) delete sts[i];

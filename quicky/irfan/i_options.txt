@@ -1,0 +1,268 @@
+-------------------------------------------------------------------------------
+ファイル名    ：'options.txt' - IrfanView のコマンドラインオプション
+作者名        ：Irfan Skiljan
+メールアドレス：irfanview@gmx.net
+ホームページ  ：http://www.irfanview.com
+-------------------------------------------------------------------------------
+
+IrfanView で使える全てのコマンドラインオプション：
+--------------------------------------------------------
+
+  /one                  - １つだけ起動
+  /fs                   - 全画面表示で起動
+  /bf                   - 画面の大きさに合わせて起動
+  /title=text           - タイトルバーのタイトルを 'text' として起動
+  /pos=(x,y)            - IrfanView ウインドウの位置(x,y)を指定して起動
+  /convert=filename     - ファイル名(形式も含めて)を指定して変換
+                          (注意: その他のオプションについてはパターンヘルプファイルをご覧ください)
+  /slideshow=txtfile    - "txtfile" で指定した画像をスライドショーで表示
+  /slideshow=folder     - "folder" で指定したフォルダでスライドショーを開始
+  /thumbs               - 縮小画像の一覧モードで起動
+  /killmesoftly         - 起動している全ての IrfanView を終了
+  /closeslideshow       - スライドショーで最後の画像を表示後に IrfanView を終了
+  /page=X               - 複数のページを含む画像の ページ番号を指定(X)して開く
+  /crop=(x,y,w,h)       - 画像の一部を起点(x,y)及び幅と高さ(w,h)で指定して切り出す
+  /print                - 画像を標準のプリンタで印刷後 IrfanView を終了
+  /print="Name"         - 画像を特定のプリンタで印刷後 IrfanView を終了
+  /resize=(w,h)         - 画像を w (幅) と h (高さ)にリサイズする
+  /resize_long=X        - 長辺を指定(X)してリサイズする
+  /resize_short=X       - 短辺を指定(X)してリサイズする
+  /resample=(w,h)       - 画像を w (幅) と h (高さ)にリサンプルする
+  /capture=X            - 画面全体を取り込み、IrfanViewで表示します
+  /ini                  - Windowsフォルダに INI/LST ファイルを保存する
+  /ini="Folder"         - 指定したフォルダに INI/LST ファイルを保存する
+  /clippaste            - クリップボードから画像を貼り付け
+  /clipcopy             - クリップボードに画像をコピー
+  /slient               - コマンドライン実行時の読み込み/書き込みエラーを表示しない
+  /invert               - ポジ/ネガ反転画像を作成
+  /dpi=(x,y)            - DPI 値を変更する
+  /scan                 - TWAIN 機器から画像入力を行う (TWAIN ダイアログを表示)
+  /scanhidden           - TWAIN 機器から画像入力を行う (TWAIN ダイアログをを非表示)
+  /batchscan=(options)  - シミュレートメニュー: ファイル→一括変換（以下の例を参照）
+  /bpp=BitsPerPixel     - 入力画像を指定したBPPに変更する
+  /swap_bw              - 白黒反転をする
+  /gray                 - 入力画像をグレイスケールに変換する
+  /rotate_r             - 入力画像を右回転する
+  /rotate_l             - 入力画像を左回転する
+  /filepattern="x"      - 特定のファイルのみ処理を行う
+  /sharpen=X            - 画像にシャープフィルタを適用（値:X）
+  /contrast=X           - 画像にコントラストを適用（値:X）
+  /bright=X             - 画像に明るさを適用（値:X）
+  /gamma=X              - 画像にガンマ補正を適用（値:X）
+  /advancedbatch        - 画像に一括変換詳細オプションを適用 (INI ファイルから)
+  /hide=X               - ツールバー(1)、ステータスバー(2)、メニューバー(4)、キャプション(8)を隠す
+  /aspectratio          - /resize と /resample オプションでアスペクト比を保存する
+  /info=txtfile         - 画像情報を指定したファイル(txtfile) に書き出す
+  /fullinfo             - /info と合わせて指定すると EXIF, IPTC, コメント データを出力する
+  /append=tiffile       - "tiffile" で指定したファイルにTIF画像を追加する
+  /multitif=(tif,files) - 入力画像から複数ページのTIF画像を作成する
+  /panorama=(X,files)   - 入力ファイルからパノラマ画像を作成する X = 連結方向 (1 又は 2)
+  /jpgq=X               - JPG 保存画質を設定する
+  /tifc=X               - TIF 保存圧縮形式を指定する
+  /wall=X               - 画像を壁紙にする
+  /extract=(file,ext)   - 複数ページ画像の全てのページを展開する
+  /import_pal=palfile   - 指定したパレットをインポートして画像に適用する (PAL フォーマット)
+  /monitor=X            - EXE-スライドショーをモニタ X で実行
+
+
+注意：
+- 小文字で記述しなければ認識されません！
+- ファイル名（必要な場合）は最初のパラメーターで入力してください
+- スペースの含まれたファイル名を指定する場合は "" を使用してください （例: "dummy test file.jpg"）
+- ファイル名は常にフルパスで記述してください
+- 一回のコマンド入力でいくつかのパラメータを組み合わせることができます
+- ワイルドカードは /convert /print /info オプションのみサポートされています
+- コマンドライン最大長はウィンドウズに依存します
+
+
+"convert" の実行例：
+  i_view32.exe c:\test.bmp /convert=c:\giftest.gif
+  ⇒ 'c:\test.bmp'を'c:\giftest.gif'に、ウインドウを表示せずに変換 (^^)
+  i_view32.exe c:\*.jpg /convert=d:\temp\*.gif
+  i_view32.exe c:\*.jpg /resample=(500,300) /aspectratio /convert=d:\temp\*.png
+  i_view32.exe c:\test.bmp /convert=c:\test_$Wx$H.jpg
+  (注意: サウンド/ビデオ ファイル以外の IrfanView で読み書きできる全ての形式をサポート)
+
+"slideshow" の実行例：
+  i_view32.exe /slideshow=c:\mypics.txt
+  (注意: 指定するテキストファイルの内容は、一行毎に各画像のフルパスもしくは、
+   "i_view32.exe" からの相対パスを記述して下さい。）
+  i_view32.exe /slideshow=c:\images\
+  i_view32.exe /slideshow=c:\images\*.jpg
+  i_view32.exe /slideshow=c:\images\test*.jpg
+
+"closeslideshow" の実行例：
+  i_view32.exe /slideshow=c:\mypics.txt /closeslideshow
+  ⇒ 'c:\mypics.txt' で指定された最後の画像表示後に、IrfanView を自動で終了。
+
+"thumbnails" の実行例：
+  i_view32.exe c:\test\image1.jpg /thumbs
+  ⇒ 'image1.jpg' を開くと同時に、'c:\test' フォルダの画像をサムネイルの一覧ウインドウで開く。
+  または
+  i_view32.exe c:\test /thumbs
+  ⇒ 'c:\test' フォルダのサムネイルを表示する
+
+"killmesoftly" の実行例：
+  i_view32.exe /killmesoftly
+  ⇒ 起動している全ての IrfanView を終了する。
+
+"page" の実行例：
+  i_view32.exe c:\test.tif /page=3
+  ⇒ 複数のページを含む 'c:\test.tif' の３ページ目を開く。 
+
+"crop" の実行例：
+  i_view32 c:\test.jpg /crop=(10,10,300,300)
+  ⇒ 'c:\test.jpg' を開き、起点を x=10,y=10 とする 幅=300, 高さ=300 ピクセルの部分を切り出す。
+
+"print" の実行例：
+  i_view32.exe c:\test.jpg /print
+  ⇒ 'c:\test.jpg' を開き、標準に指定されているプリンタで印刷後、IrfanView を自動で終了する。
+  i_view32.exe c:\test.jpg /print="Printer Name"
+  ⇒ 'c:\test.jpg' を開き、指定したプリンタで印刷後、IrfanViewを自動で終了する。
+  i_view32.exe c:\*.jpg /print
+  => "C:\" の JPG ファイルを設定されているプリンタで全て印刷し IrfanView を自動で終了する
+
+"resize" の実行例：
+  i_view32 c:\test.jpg /resize=(300,300) /resample
+  ⇒ 'c:\test.jpg' を開き、幅=300、高さ=300にリサンプルする
+  (注意: リサンプルは INI ファイル内のリサンプル設定を使用します)
+  i_view32.exe c:\test.jpg /resize=(300,300) /aspectratio
+  ⇒ 'c:\test.jpg' を開き、幅=最大300、高さ=最大300、でアスペクト比から計算しリサイズする
+  i_view32.exe c:\test.jpg /resize=(300,0) /aspectratio
+  ⇒ 'c:\test.jpg' を開き、幅=300、高さ=アスペクト比から計算 でリサイズする
+  i_view32.exe c:\test.jpg /resize_long=300 /aspectratio /resample
+  ⇒ 'c:\test.jpg' を開き、長辺=300、短辺=アスペクト比から計算 でリサンプルする
+  i_view32.exe c:\test.jpg /resize=(300,0)
+  ⇒ 'c:\test.jpg' を開き、幅=300、高さ=オリジナルサイズ
+  i_view32 c:\test.jpg /resize=(150p,150p)
+  ⇒ 'c:\test.jpg' を開き、幅=150%、高さ=150%、でリサイズする
+
+"capture" の実行例:
+  i_view32.exe /capture
+  ⇒ 画面全体をキャプチャーしてIrfanViewで表示
+  i_view32.exe /capture=1
+  ⇒ ウィンドウ全体をキャプチャーしてIrfanViewで表示
+  i_view32.exe /capture=2
+  ⇒ ウィンドウの内側をキャプチャーしてIrfanViewで表示
+  詳細指定例:
+  i_view32.exe /capture=1 /convert=c:\test.jpg
+  ウィンドウをキャプチャーしてファイルに保存
+  i_view32.exe /capture=1 /convert=c:\capture_$U(%d%m%Y_%H%M%S).jpg
+  ウィンドウをキャプチャーしてファイルに保存（タイムスタンプ付ファイル名）
+
+"ini" の実行例:
+  i_view32.exe /ini
+  i_view32.exe c:\test.jpg /ini
+  i_view32.exe c:\test.jpg /ini="c:\temp\"
+
+"clippaste" の実行例:
+  i_view32.exe /clippaste
+  i_view32.exe /clippaste /convert=c:\test.gif
+
+"clipcopy" の実行例:
+  i_view32.exe c:\test.jpg /clipcopy
+  i_view32.exe c:\test.jpg /clipcopy /killmesoftly
+
+"invert" の実行例:
+  i_view32.exe c:\test.jpg /invert
+
+"dpi" の実行例:
+  i_view32.exe c:\test.jpg /dpi=(72,72)
+
+"scan" の実行例:
+  i_view32.exe /scan
+  i_view32.exe /scanhidden
+  i_view32.exe /scanhidden /dpi=(150,150)
+  i_view32.exe /scan /convert=c:\test.gif
+  i_view32.exe /scanhidden /convert=c:\test.gif
+  i_view32.exe /print /scan
+
+"batchscan" の実行例:
+  options = 一括ダイアログの全8オプション:
+  ファイル名, インデックス, 増分, 桁数, スキップ, 出力フォルダ, 保存形式, 複数ファイルTIF
+  i_view32.exe /batchscan=(scanfile,1,1,2,1,c:\temp,bmp,0)
+  i_view32.exe /batchscan=(scanfile,1,1,2,1,c:\temp,bmp,0) /dpi=(150,150)
+  i_view32.exe /batchscan=(scanfile,1,1,2,0,c:\temp,tif,1)
+  i_view32.exe /batchscan=(scanfile,1,1,2,1,c:\temp,bmp,0) /scanhidden
+
+"bpp" の実行例:
+  i_view32.exe c:\test.jpg /bpp=8
+  サポートしている BPP-値: 1, 4, 8, 24 (減色/増色)
+  ⇒ 'c:\test.jpg' を開き、256 色に減色する
+
+"filepattern" の実行例:
+  i_view32.exe c:\images\ /thumbs /filepattern="*.jpg"
+  ⇒ "c:\images\" フォルダの中の、JPG ファイルのサムネイルのみを表示
+  i_view32.exe c:\images\ /thumbs /filepattern="123*.jpg"
+  ⇒ "c:\images\" フォルダの中の、ファイル名が "123*" の JPG ファイルのサムネイルのみを表示
+
+"sharpen" の実行例:
+  i_view32.exe c:\test.jpg /sharpen=33
+
+"hide" の実行例:
+  値 (組み合わせ時は各値を合計する):
+    ツールバー      1
+    ステータスバー  2
+    メニューバー    4
+    キャプション    8
+  i_view32.exe c:\test.jpg /hide=1
+  ⇒ 'c:\test.jpg' を開き、ツールバーのみを隠す
+  i_view32.exe c:\test.jpg /hide=3
+  ⇒ 'c:\test.jpg' を開き、ツールバーとステータスバーを隠す
+  i_view32.exe c:\test.jpg /hide=12
+  ⇒ 'c:\test.jpg' を開き、キャプションとメニューバーを隠す
+  i_view32.exe c:\test.jpg /hide=15
+  ⇒ 'c:\test.jpg' を開き、全てを隠す
+
+"info" の実行例:
+  i_view32.exe c:\test.jpg /info=c:\test.txt
+  i_view32.exe c:\*.jpg /info=c:\jpgs.txt
+  i_view32.exe c:\test.jpg /info=c:\test.txt /fullinfo
+
+"append" の実行例:
+  i_view32.exe c:\test.jpg /append=c:\test.tif
+  ⇒ 'c:\test.jpg' を開き、そのファイルを 'c:\test.tif' に追加する
+
+"multitif" の実行例:
+  記述方法: /multitif=(tifname,file1,...,fileN)
+  最初のファイルは作成結果のファイル名
+  i_view32.exe /multitif=(c:\test.tif,c:\test1.bmp,c:\dummy.jpg)
+  ⇒ 後ろの二つのファイルから複数ページのTIF画像 (c:\test.tif) を作成する
+
+"panorama" の実行例:
+  文法: /panorama=(X,file1,...,fileN)
+  最初の引数 (X) は連結方向を指定: 1 = 水平方向, 2 = 垂直方向
+  i_view32.exe /panorama=(1,c:\test1.bmp,c:\dummy.jpg)
+  => Create horizontal panorama image from 2 other files
+
+"jpgq" の実行例:
+  i_view32.exe c:\test.jpg /jpgQ=75 /convert=c:\new.jpg
+  ⇒ 'c:\test.jpg' を開き、c:\new.jpg、画質 = 75 で保存する
+  指定画質範囲: 1 ～ 100
+
+"tifc" の実行例:
+  i_view32.exe c:\test.jpg /tifC=4 /convert=c:\new.tif
+  ⇒ 'c:\test.jpg' を開き、c:\new.tif、圧縮形式 = Fax4 で保存する
+  指定可能形式: 0 - None, 1 - LZW, 2 - Packbits, 3 - Fax3, 4 - Fax4, 5 = Huffman, 
+  6 - JPG, 7 - ZIP
+
+"wallpaper" の実行例:
+  i_view32.exe c:\test.jpg /wall=0
+  ⇒ 'c:\test.jpg' を開き、壁紙にする（中央に表示）
+  i_view32.exe c:\test.jpg /wall=1
+  ⇒ 'c:\test.jpg' を開き、壁紙にする（並べて表示）
+  i_view32.exe c:\test.jpg /wall=2
+  ⇒ 'c:\test.jpg' を開き、壁紙にする（拡大して表示）
+
+"extract" の実行例:
+  i_view32.exe c:\multipage.tif /extract=(c:\temp,jpg)
+  ⇒ 'c:\multipage.tif' を開き、全てのページを 'c:\temp' にJPGファイルとして保存する
+
+"monitor" の実行例:
+  MySlideshow.exe /monitor=2
+  ⇒ スライドショーファイルをモニタ 2 で実行
+
+"advancedbatch" の実行例:
+  i_view32.exe c:\test.jpg /advancedbatch /convert=c:\image.jpg
+  (いくつかの詳細一括変換オプションはサポートされていません: 上書き, 削除, サブフォルダ, 全ページ)
+  => 'c:\test.jpg' を開き、詳細一括変換オプションを適用して新しいファイルとして保存

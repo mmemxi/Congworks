@@ -11,6 +11,8 @@
 <script language="JavaScript" src="./lib/marker.js"></script>
 <script language="JavaScript" src="./lib/rmap.js"></script>
 <script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="./lib/json.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // mapgen.wsf éwíËÇµÇΩínê}PDFÇçÏê¨Ç∑ÇÈ
@@ -35,6 +37,7 @@ var Spots=new Array();
 var cd=fso.getParentFolderName(WScript.ScriptFullName);
 cd=cd.replace("congworks","");
 WshShell.CurrentDirectory=cd;
+SQ_Init("congworks.db");
 //----------------------------------------------------------------
 var congnum=WScript.Arguments(0);
 var Pnum=WScript.Arguments(1);

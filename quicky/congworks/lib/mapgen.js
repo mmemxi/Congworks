@@ -1,17 +1,7 @@
 //----------------------------------------------------------------
 function LoadSpots(congnum)
 	{
-	var i;
-	var s=ReadXMLFile(AllFolder(congnum)+"spots.xml",true);
-	if (s=="")
-		{
-		Spots=new Array();
-		}
-	else
-		{
-		Spots=clone(s.Spots);
-		for(i=0;i<Spots.length;i++) Spots[i].active=false;
-		}
+	Spots=ReadJSON(congnum,"spots","");
 	}
 //----------------------------------------------------------------
 function PublishPDF(html,outfilename)

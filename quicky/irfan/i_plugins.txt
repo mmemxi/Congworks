@@ -1,0 +1,222 @@
+-------------------------------------------------------------------------------
+ファイル名      ：'plugins.txt' - IrfanView のプラグインに関する説明
+作者名          ：Irfan Skiljan
+メールのアドレス：irfanview@gmx.net
+ホームページ    ：http://www.irfanview.com
+-------------------------------------------------------------------------------
+
+
+最新の IrfanView には、必ず最新のプラグインを対応させて使ってください！
+
+
+- プラグインのインストールはどうやるの？
+  
+  1) IrfanViewのページにアクセスする: http://www.irfanview.com
+  2) "ダウンロード→プラグイン" と移動
+  3) プラグインをダウンロードする
+  4) プラグインファイルをダブルクリック
+  5) プラグインが自動的にIrfanViewフォルダにインストールされます
+
+
+ダウンロードできる場所:
+
+次のアドレスからプラグインをダウンロードできます:
+   http://www.irfanview.com/plugins.htm
+   http://www.irfanview.net/plugins.htm
+
+
+注意: 詳細情報についてはPluginsフォルダの中の "i_plugins.txt" を参照してください
+
+
+
+現時点で利用可能なプラグイン：
+
+
+1) 8BF_FILTERS.DLL - IrfanView で Adobe Photoshop 8BF フィルタを読み込み可能にする
+   注意: 古めの/特別な 8BF ファイルは追加のシステム DLLファイルが必要な場合があります:
+   ---------------------------------------------------------------------------
+   Msvcrt10.dll
+   Plugin.dll
+   ---------------------------------------------------------------------------
+   これらの DLL ファイルを Windows->System または System32 フォルダにコピーしてください
+   これらの DLL ファイルはこちらからダウンロード可能です:
+   http://irfanview.tuwien.ac.at/plugins/8bf_tools.zip
+
+2) AWD.DLL - IrfanView で Artweaver ファイルを開く
+        Boris Eyrich に感謝
+
+3) B3D.DLL - IrfanView で BodyPaint 3D ファイルを開く
+
+4) CRW.DLL - IrfanView で Canon CRW/CR2 ファイル (高解像度版) を開く
+   注意: このプラグインは Canon DLLs が必要です
+   http://irfanview.tuwien.ac.at/plugins/canon_crw.zip
+   (概要とインストールについては "Readme_Canon.txt" を参照してください！)
+
+5) CADIMAGE (CS_DXF, CS_DWG, CS_HPGL).DLL - IrfanView で DXF/DWG/HPGL 形式ファイルを開く
+   http://www.cadsofttools.com/Download/IrfanViewPlugins.zip
+   にて最新版とライセンスを取得してください。（シェアウェア, サードパーティープラグイン）
+
+6) DICOM: IrfanView で Dicom medical ファイル (DCM, ACR, IMA) を開く
+                 Wolfgang Krug 、Chris Rorden、に感謝
+                 注意: DICOM/ACR/IMA 形式 は特定のヘッダーがないので、IrfanViewはこの形式を認識できない。
+                 もしこれらの形式を読み込みたい場合は拡張子を ".dcm", ".acr", ".ima" にしてください。
+
+7) DJVU.DLL - IrfanView で AT&T DJVU 形式のファイルを開く (DJVU version 2).
+
+8) EAFSH.DLL - IrfanView で EA Sports FSH ファイルを読み込み/書き出しを行う
+   GreyMana が作成してくれました、ありがとう！: http://www.greymana.de.
+
+9) ECW.DLL - IrfanView で ECW (Enhanced Compressed Wavelet) ファイルを読み込む
+
+10) EFFECTS.DLL - フィルタ情報を含む
+
+11) EMAIL.DLL - IrfanView で 画像をメールで送る
+
+12) EXIF.DLL - IrfanView で JPG ファイルから EXIF 情報を表示
+
+13) FFACTORY.DLL - IrfanView で Filter Factory(*.8BF) 形式(Photoshop 用フィルタ) ファイルを利用する
+                     このプラグインは Michael Johannhanwahr の Filter Factory library がベースになっている: www.icnet.de.
+                     Michael に感謝!
+
+14) FLASH.DLL - IrfanView で Flash/Shockwave 形式のファイルを開く
+
+15) FORMATS.DLL - IrfanView で マイナーな形式の画像を開く
+対応している形式：
+                  - PSP - Paint Shop Pro 形式
+                  - IFF/LBM 形式 (Amiga Interchange File 形式)
+                  - G3 Fax 形式
+                  - RAS/SUN 形式
+                  - Bio-RAD Confocal image 形式
+                  - Mosaic 形式
+                  - YUV 形式
+                  - XBM 形式
+                  - XPM 形式
+                  - GEM-IMG 形式
+                  - WBMP - WAP Bitmap
+                  - SGI 形式 (Silicon Graphics Image)
+                  - RLE 形式 (Utah RLE Image)
+                  - TTF 形式 (True Type Font)
+                  - RAW 形式 (RAW data)
+                  - Digital camera RAW 形式s (CRW CR2 DNG NEF RAF ORF MRW ERF DCR SRF X3F PEF EFF)
+                  - DDS 形式 (Direct Draw Surface)
+                  - SFW 形式 (Seattle Film Works JPG file)
+                  - CAM 形式 (Casio CAM JPG file)
+                  - KDC 形式 (Kodak Digital Camera files)
+                  - WAD 形式 (WAD3 game files)
+                  - WAL 形式 (Quake 2 textures)
+                  - PIC 形式 (Softimage PICT)
+                  - FITS 形式 (Flexible Image Transport System)
+                  - HDR 形式 (High Dynamic Range)
+                  - PVR 形式 (DreamCast textures)
+
+                  注意: G3 形式 は特定のヘッダーがないので、IrfanViewはこの形式を認識できない。
+                  もしこの形式を読み込みたい場合は拡張子を ".g3" にしなければならない。
+
+                  注意: Mosaic 形式 は特定のヘッダーがないので、IrfanViewはこの形式を認識できない。
+                  もしこの形式を読み込みたい場合は拡張子を ".mos" にしなければならない。
+
+                  注意: XBM 形式 は特定のヘッダーがないので、IrfanViewはこの形式を認識できない。
+                  もしこの形式を読み込みたい場合は拡張子を ".xbm" にしなければならない。
+
+                  注意: XPM 形式 は特定のヘッダーがないので、IrfanViewはこの形式を認識できない。
+                  もしこの形式を読み込みたい場合は拡張子を ".xpm" にしなければならない。
+
+                  注意: WBMP 形式 は特定のヘッダーがないので、IrfanViewはこの形式を認識できない。
+                  もしこの形式を読み込みたい場合は拡張子を ".wbmp" にしなければならない。
+
+16) FPX.DLL - IrfanView で FlashPix 形式の画像を開く
+
+17) FUNLTDIV.DLL - IrfanView で Filters Unlimited ファイル (Photoshop フィルタ)を利用する
+                     このプラグインは Michael Johannhanwahr のライブラリがベースになっている: www.icnet.de
+                     Thanks Michael!
+
+18) FTP.DLL - IrfanView で サムネイルウィンドウから FTP でファイル送信する
+
+19) HDP.DLL - IrfanView で HDP/WDP (MS HD Photo) ファイルを開く
+
+20) ICONS.DLL - IrfanView の関連付けファイルのための追加アイコンを使用可能にする
+
+21) ICS.DLL - IrfanView で ICS (Image Cytometry Standard) ファイルを開く
+    Cris Luengoに感謝!
+
+22) IMPDF.DLL - IrfanView で PDF (Portable Document Format) ファイルを作成する
+    ComSquare AG に感謝!
+
+23) IPTC.DLL - IrfanView で JPG ファイルの IPTC/コメント 情報を表示/編集
+
+24) IV_PLAYER.EXE - IrfanView で ビデオ/サウンド/音楽CD ファイルを再生する
+    (AVI, MPG, WAV, MIDI, CDA, WMA, ASF, AIF, SND, WMA/WMV)
+
+25) JPEG2000.DLL - IrfanView で JPEG 2000 形式の画像を 読み込み/書き込み する
+
+26) JPG_TRANSFORM.DLL - IrfanView で JPG 可逆処理をする
+
+27) JPM.DLL - IrfanView で JPM の形式を開く
+
+28) KDC.DLL - IrfanView で Kodak Digital Camera 形式の画像を開く
+
+29) LCMS.DLL - IrfanView で JPG/TIF の組み込みカラーを使用できる
+                 Marti Maria に感謝!
+
+30) LDF.DLL - IrfanView で LuraDocument LDF ファイルを 読み込み/書き込み する
+                IrfanView は LDF 形式で最大 4096x4096 ピクセルまで保存できる。1つの LDFファイルには6ページまで作成できる。 
+                このプラグインは LuraTech GmbH, Germany のSDKがベースになっている: www.luratech.com
+
+31) LOGOMANAGER.DLL - IrfanView で Nokia Logo ファイルを開く: NLM/NOL/NGG/NSL/OTB/GSM
+                 Mike Bradley に感謝: http://www.logomanager.co.uk
+
+32) LWF.DLL - IrfanView で LuRaDocument LDF 形式の画像を 読み込み/書き込み する
+                 このプラグインは LuraTech GmbH, Germany のSDKがベースになっている: www.luratech.com
+                 ありがとう！
+
+33) MED.DLL - IrfanView で MED/OctaMED サウンドファイルを再生する
+
+34) MNG.DLL - IrfanView で MNG/JNG ファイルの 読み込み/再生 する
+
+35) MP3.DLL - IrfanView で MP3/MP2/MP1 ファイルを再生
+
+36) MPG.DLL - IrfanView で MPEG ファイルのフレーム展開を可能にする
+
+37) MRC.DLL - IrfanView で MRC ファイルを開く
+
+38) MR-SID.DLL - IrfanView で LizardTech's SID ファイルを開く
+
+39) NERO.DLL - IrfanView で Nero Burning ROM (www.nero.com) を使用して、
+    スライドショーを データCD または ビデオCD に書き込む
+
+40) PAINT.DLL - IrfanView で 線、円、矢印、直線画像などの描画が可能になる
+                 Matteo Italia に感謝!
+
+41) PHOTOCD.DLL - IrfanView で Kodak PhotoCD 形式の画像を開く
+
+42) PNGOUT.DLL - 最適化 PNG の保存
+                Ken Silverman に作成していただきました。ありがとう！
+                プラグイン URL: http://advsys.net/ken/utils.htm#pngout
+
+43) POSTSCRIPT.DLL - IrfanView で PS, EPS, PDF 形式のファイルを開く
+                注意: AFPL Ghostscript が必要:
+                http://www.ghostscript.com/awki/AFPL_Ghostscript_8.54
+                直接リンク:
+                ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/AFPL/gs854/gs854w32.exe
+
+44) QUICKTIME.DLL - IrfanView で Apple Quicktime ファイルを再生
+               (MOV, 3GP, MP4, MacPICT, QTIF, FLI/FLC)
+                      注意: Apple Quicktime のインストールし、設定で有効にすることが必要:
+                      [基本設定]→[ビデオ]
+                      Apple からダウンロードしてください: http://www.apple.com/quicktime/download/
+
+45) RA_PLAYER.DLL - IrfanView で Real Audio RA 形式のファイルを再生
+                      注意: リアルプレイヤーのインストールが必要
+                      Real Networks からダウンロードしてください: www.real.com
+
+46) SFF.DLL - IrfanView で 構造化 Fax ファイルを再生
+
+47) SLIDESHOW.EXE - IrfanView で EXE/SCR 形式スライドショーを作成
+   (単独で実行できる EXE/SCR ファイル)
+
+48) SOUNDPLAYER.DLL - IrfanView で OGG (Ogg Vorbis) ファイルを再生
+
+49) VIDEO.DLL - IrfanView で ビデオ/サウンド ファイルを再生
+    (AVI, MPG/MPEG, WAV, MOV, MID/RMI, AIF, AU/SND, WMA/WMV)
+
+50) VTF.DLL - IrfanView で VTF (Valve Texture) ファイルを開く

@@ -1,0 +1,48 @@
+---------------------------------------------------------------------
+ファイル名    ：'about.txt' - IrfanView の紹介
+作者名        ：Irfan Skiljan
+メールアドレス：irfanview@gmx.net
+ホームページ  ：http://www.irfanview.com
+---------------------------------------------------------------------
+
+IrfanView って何？
+
+IrfanView とは、高速なフリーウェアの
+画像表示/形式変換 ソフトです。(Windows 9x/ME/NT/2000/XP/2003/Vista 用)
+
+IrfanView は高速でコンパクトで、極度に少ないシステムリソースしか使用しません。
+初心者にとって簡単で、プロにとっても心強いものを目指しています。
+
+対応するファイル形式：
+AIF, ANI/CUR, ASF, AU/SND, AVI, AWD, B3D, BMP/DIB, CAD formats, CLP, DDS, 
+Dicom/ACR, DJVU, ECW, EMF/WMF, EPS/PS/PDF, FITS, FPX (FlashPix), FSH,  G3, GIF,
+HDR, HDP/WDP, ICO/ICL/EXE/DLL, IFF/LBM, IMG (GEM), JPG2000, JPG, JPM, KDC, LDF,
+LWF, MED, MID/RMI, MNG/JNG,OV, MP3, MPG, MrSID, NLM/NOL/NGG, OGG, PBM/PGM/PPM,
+PCX/DCX, PhotoCD, PNG, PSD, PSP, PVR, RAS/SUN, RAW, Real Audio (RA), RLE, SFF,
+SFW, SGI/RGB, SWF/FLV, TGA, TIF, TTF, TXT, WAD, WAV, WBMP, XBM, XPM, CRW/CR2,
+VTF, DNG, NEF, ORF, RAF, MRW, DCR, X3F, PEF, SRF, EFF, DXF, DWG, HPGL, CGM, SVG,
+etc.
+ 
+IrfanView の色々な特徴：
+複数言語対応、サムネイル機能、スライドショー、フォルダ内の素早い閲覧(フォルダ間の素早い移動)、
+ファイル形式/名前 の一括変換、複数ページ画像の編集、ファイル検索、画像のメール送信、印刷機能、
+ペイントプラグイン - 直線、円、矢印、直線画像などの描画,
+カラープロファイルのサポート、色数の変更、スキャナーからの読み込み、切り取り/切り出し、IPTC 編集、
+画面キャプチャー、JPGロスレス操作、色々なフィルタ(シャープ、ぼかし、PhotoShopプラグインフィルタの使用 他)、
+EXE/SCRの作成、ホットキー(ショートカットキー)、様々なコマンドラインオプション、50以上のプラグイン 等々。
+
+Microsoft Media Player プラグイン: IrfanView で以下を読み込み可能にする
+形式: ASF, AU/SND/AIF, AVI, MID/RMI, MOV, MP3, MPG/MPEG, WAV, WMA, WMV. 
+Apple QuickTime (PlugIn)をサポート: IrfanView で以下を読み込み可能にする
+形式: MOV, QTIF, Mac PICT, FLI/FLC.
+
+「世界で初めて」 アニメーションGIF に対応したグラフィックビューアーです！
+
+商用使用しない限りフリーウェアです！
+
+楽しんでね！(^^)
+
+-------------------------------------------------------------------------------
+IrfanView は "手入れなし" のソフトとして提供しています。
+記述されたことに一切保障はありません。
+-------------------------------------------------------------------------------

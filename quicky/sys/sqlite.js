@@ -318,3 +318,28 @@ function SQ_WriteUTF8(filename,buffer)
 	catch(e){return false;}
 	return true;
 	}
+//---------------------------------------------------------------------------
+function ReadJSON(key1,key2,key3)
+	{
+	var cwhere="";
+	var v,i,s;
+	var jstr;
+	var result=new Array();
+	i=0;
+	cwhere="key1='"+key1+"' and key2='"+key2+"' and key3='"+key3+"'";
+	jstr=SQ_Read("JSON",cwhere,"");
+	if (jstr.length==0) return "";
+	s=jstr[0].body.replace(/'/g, '\"');
+	result=JSON.parse(s);
+	return result;
+	}
+//---------------------------------------------------------------------------
+function WriteJSON(key1,key2,key3,obj)
+	{
+	var wobj=new Object();
+	wobj.key1=key1;
+	wobj.key2=key2;
+	wobj.key3=key3;
+	wobj.body=JSON.stringify(obj).replace(/\"/g,"'");
+	SQ_Replace("JSON",wobj);
+	}

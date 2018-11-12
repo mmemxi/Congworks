@@ -1,0 +1,4 @@
+[Info]
+Creator = Samuel Plentz|www.SamuelPlentz.de.vu
+Size    = 16
+Buttons = 19

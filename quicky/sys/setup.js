@@ -6,6 +6,7 @@ function SQliteSetup()
 //	CreateUsers();
 //	CreateConfig();
 //	LogSetUp();
+	CreateSpots();
 	}
 //-----------------------------------------------------------------------------
 function CreatePublicList()
@@ -72,6 +73,22 @@ function CreatePublicList_One(num)
 		card.endday="20000101";
 		}
 	return card;
+	}
+//-----------------------------------------------------------------------------
+function CreateSpots()
+	{
+	var i;
+	var s=ReadXMLFile(AllFolder()+"spots.xml",true);
+	if (s=="")
+		{
+		Spots=new Array();
+		}
+	else
+		{
+		Spots=clone(s.Spots);
+		for(i=0;i<Spots.length;i++) Spots[i].active=false;
+		}
+	WriteJSON(congnum,"spots","",Spots);
 	}
 //-----------------------------------------------------------------------------
 function SQGetDate(str)

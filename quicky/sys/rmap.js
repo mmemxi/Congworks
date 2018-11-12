@@ -353,6 +353,8 @@ function RMAP_LoadSpots()
 	{
 	var i;
 	RMAP_SpotsLoaded=true;
+	RMAP_Spots=ReadJSON(congnum,"spots","");
+/*
 	var s=ReadXMLFile(AllFolder()+"spots.xml",true);
 	if (s=="")
 		{
@@ -363,6 +365,7 @@ function RMAP_LoadSpots()
 		RMAP_Spots=clone(s.Spots);
 		for(i=0;i<RMAP_Spots.length;i++) RMAP_Spots[i].active=false;
 		}
+*/
 	}
 
 function RMAP_SaveSpots()
