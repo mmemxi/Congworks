@@ -60,4 +60,5 @@ function CloseConfig()
 	{
 	WriteXMLFile(ConfigAll,IniXML("all"));
 	WriteXMLFile(ConfigLocal,IniXML("local"));
+	WriteJSON(congnum,"config","all",ConfigAll);	//	JSON‚É‚à•Û‘¶
 	}

@@ -83,7 +83,7 @@ echo "</script>";
 <div style="width:100%;margin:0 auto;text-align:center;">
 <img src="./img/icons/congworks.png"><br>
 <img src="./img/buttons/個人の区域.png"><br>
-Version 0.31<br>
+Version 3.04<br>
 <img src="./img/lines/ライン１.png"><br><br>
 <form onsubmit="GoFoward();return false;">
 会衆名：<select name=congnum size=1>

@@ -25,16 +25,6 @@ var targetstr=WScript.Arguments(0);
 	seq=tbl[3];
 	var mcount;
 
-	//	マップ画像のコピー準備
-/*	var src,dst;
-	src=NumFolder(congnum,num)+seq+".png";
-	dst=basepath+qt+"sqlite"+qt+"map";
-	if (!fso.FolderExists(dst)) fso.CreateFolder(dst);
-	try	{
-		fso.CopyFile(src,dst+qt+num+"-"+seq+".png",true);
-		}
-	catch(e){}
-*/
 	//	ビル情報の読込
 	Building=ReadXMLFile(NumFolder(congnum,num)+"building.xml",true);
 	if (Building=="")	Building=new Object();

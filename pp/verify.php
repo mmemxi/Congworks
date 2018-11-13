@@ -42,7 +42,7 @@ for($i=0;$i<count($out);$i++)
 echo $out[0];
 echo "</textarea>";
 echo "<textarea id=\"PHP4\">";
-echo $out[1];
+echo $out[2];
 echo "</textarea>";
 ?></div>
 <?php
@@ -236,7 +236,7 @@ function isBeforeCampeign(today)
 	for(i=0;i<Campeigns.length;i++)
 		{
 		if (today>=Campeigns[i].Start) continue;
-		nisu=CalcDays(today,Campeigns[i].End);
+		nisu=CalcDays(today,Campeigns[i].Start);
 		if ((nisu>0)&&(nisu<=14)) {r=true;break;}
 		}
 	return r;

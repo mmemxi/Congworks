@@ -168,22 +168,3 @@ function AddDays(ymd,adds)
 	s+="";
 	return s;
 	}
-//------------------------------------------------------------------------------------
-// campeign.js‚ÉˆÚ“®‚µ‚½‚Ì‚Å”pŽ~
-//------------------------------------------------------------------------------------
-/*
-function isCampeign(day)
-	{
-	var ConfigAll=ReadXMLFile(IniXML("all"),false);
-	if (ConfigAll=="")
-		{
-		return false;
-		}
-	if (!("Campeign" in ConfigAll))
-		{
-		return false;
-		}
-	if ((ConfigAll.Campeign.Start<=day)&&(ConfigAll.Campeign.End>=day)) return true;
-	return false;
-	}
-*/

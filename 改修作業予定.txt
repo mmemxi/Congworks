@@ -101,22 +101,21 @@
 ・ForceEndをディレクトリ一覧からではなく、PublicListから処理する
 ・Ezraをバッチファイル非依存、相対ディレクトリに対応させる
 ・ReadJSON,WriteJSONを実装する（最初に導入したのはspot.xmlの内容。引数は(会衆番号,"spots","")の３つ
+・ConfigAll及びキャンペーン情報をJSONに保存する方式に切り替える（現時点では併用とし、最終的に旧ファイルを廃止する。newlist.wsf以外のwsfからはまだ撤去していない）
+・newlist.wsfを廃止。pp/newlist.phpをwsf実行に依存しない形に書き換えた
+・BuildingFormatテーブルを新設。（今のところ定義だけ）
 
 実施予定：2018/11/18
 実施日：
 
-・ConfigAll及びキャンペーン情報をJSONに保存する方式に切り替える
-・newlist.wsfを廃止。pp/newlist.phpをwsf実行に依存しない形に書き換える
 
 ===============================================
-
-
-
 ●後続バージョン
-・SQliteアクセス機能を導入する
-①コンフィグ設定（オール）
+・building.xml（カード別にある）をテーブルに変更する。(テーブル名：BuildingFormat)
+・アパートおよび集合住宅の追加時、既存の物件名と同じにすることは許されない。物件名の変更時も他の物件と同じにできない。（会衆内で）
+・サマリー情報(apartment.txt,person.txt)の生成処理をSQliteに置換する。
+・ConfigAllをXMLから読んでいる個所を、JSONからの読み取りに変更していく
 ・menu1.jsをメンテ部と貸し出し部に分ける
-・スポット情報をSQlite化
 ・アパートログをSQlite化
 ・ビル構造をすべてbuildingフォルダに統一する
 ・区域ログをSQlite化

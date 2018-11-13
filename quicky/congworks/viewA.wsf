@@ -27,18 +27,6 @@ var targetstr=WScript.Arguments(0);
 	marginx=38;		//	10mm;
 	marginy=113;	//	30mm;
 
-	//	マップ画像のコピー準備
-/*
-	var src,dst;
-	src=NumFolder(congnum,num)+seq+".png";
-	dst=basepath+qt+"sqlite"+qt+"map";
-
-	if (!fso.FolderExists(dst)) fso.CreateFolder(dst);
-	try	{
-		fso.CopyFile(src,dst+qt+num+"-"+seq+".png",true);
-		}
-	catch(e){}
-*/
 	vml.mapsize=1;
 	vml.width=2126;
 	vml.height=2362;

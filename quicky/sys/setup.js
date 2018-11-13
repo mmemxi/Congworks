@@ -1,12 +1,94 @@
 //-----------------------------------------------------------------------------
 function SQliteSetup()
 	{
-//	CreatePublicList();
-//	CreateReportLogs();
-//	CreateUsers();
-//	CreateConfig();
-//	LogSetUp();
-	CreateSpots();
+//	CreatePublicList();		//	2018/10新設
+//	CreateReportLogs();		//	2018/10新設
+//	CreateUsers();			//	2018/10新設
+//	CreateSpots();			//	2018/11新設
+//	CreateConfig();			//	2018/11/14新設
+	CreateBuildingFormat();	//	2018/11/14新設
+	}
+//-----------------------------------------------------------------------------
+function CreateBuildingFormat()
+	{
+	var dir,folders,files,fitem,num;
+	var fullpath,ext;
+	var bobj,obj,cobj,i,n,fn;
+	var arr=new Array();
+
+	//	以前の定義を削除する
+	SQ_Exec("delete from BuildingFormat where congnum="+congnum+";");
+
+	//	全区域をループする
+	dir=fso.GetFolder(DataFolder());
+	folders=new Enumerator(dir.SubFolders);
+	for(; !folders.atEnd(); folders.moveNext())
+		{
+		fitem=folders.item();
+		if (isNaN(fitem.Name)) continue;
+		num=fso.GetBaseName(fitem.Name);
+		if (fso.FileExists(BuildingFile(num)))
+			{
+			bobj=ReadXMLFile(BuildingFile(num),true);
+			for(i=0;i<bobj.building.length;i++)
+				{
+				n=bobj.building[i].id;
+				obj=new Object();
+				obj.congnum=congnum;
+				obj.type=1;
+				obj.num=num;
+				obj.seq=bobj.building[i].map;
+				obj.name=n;
+				obj.body=JSON.stringify(bobj.building[i]).replace(/\"/g,"'");
+				arr.push(obj);
+				}
+			}
+		if (fso.FileExists(ConfigXML(num)))
+			{
+			cobj=ReadXMLFile(ConfigXML(num),false);
+			if ("RTB" in cobj)
+				{
+				for(i=0;i<cobj.RTB.length;i++)
+					{
+					if (cobj.RTB[i].KBN1!="集中インターホン") continue;
+					fullpath=ApartFolder()+cobj.RTB[i].Name+".xml";
+					if (!fso.FileExists(fullpath)) continue;
+					bobj=ReadXMLFile(fullpath,false);
+					obj=new Object();
+					obj.congnum=congnum;
+					obj.type=2;
+					obj.num=num;
+					obj.seq=cobj.RTB[i].Num;
+					obj.name=cobj.RTB[i].Name;
+					obj.body=JSON.stringify(bobj).replace(/\"/g,"'");
+					arr.push(obj);
+					}
+				}
+			}
+		}
+
+	//	Apartmentフォルダを精査する（個人用集合住宅と全体集合住宅から）
+	dir=fso.GetFolder(ApartFolder());
+	files=new Enumerator(dir.Files);
+	for(; !files.atEnd(); files.moveNext())
+		{
+		fitem=files.item().Name+"";
+		fullpath=ApartFolder()+fitem;
+		ext=fso.GetExtensionName(fitem).toLowerCase();
+		if (ext!="xml") continue;
+		n=fso.GetBaseName(fitem);
+		bobj=ReadXMLFile(fullpath,false);
+		if (!("Type" in bobj)) continue;
+		obj=new Object();
+		obj.congnum=congnum;
+		obj.type=3;
+		obj.num=bobj.Num;
+		obj.seq=bobj.Seq;
+		obj.name=n;
+		obj.body=JSON.stringify(bobj).replace(/\"/g,"'");
+		arr.push(obj);
+		}
+	SQ_Insert("BuildingFormat",arr);
 	}
 //-----------------------------------------------------------------------------
 function CreatePublicList()
@@ -174,45 +256,5 @@ function CreateUsers()
 //-----------------------------------------------------------------------------
 function CreateConfig()
 	{
-	var cfg=new Object();
-	ExecSQlite("DELETE FROM CWConfig;");
-	cfg.congnum=34173;
-	cfg.AutoEndDefault=60;
-	cfg.AutoEndApart=60;
-	cfg.BlankMin=28;
-	cfg.ChiefClient=-2009870003;
-	cfg.RemoteHost="ftp.congworks.890m.com";
-	cfg.RemoteUser="u616822746";
-	cfg.RemotePassword="jw34173";
-	cfg.RemoteDirectory="/public_html";
-	InsertSQlite("CWConfig",cfg);
-	}
-//-----------------------------------------------------------------------------
-// LogSetUp()
-//-----------------------------------------------------------------------------
-function LogSetUp()
-	{
-	var i,j,k=0;
-	var obj=new Array();
-	var log;
-	alert("LogSetup:Start");
-	ExecSQlite("DELETE FROM Preaching_PublicLog;");
-	for(i in Cards)
-		{
-		log=LoadLog(i);
-		if (log.History.length==0) continue;
-		for(j=0;j<log.History.length;j++)
-			{
-			obj[k]=new Object();
-			obj[k].congnum=congnum;
-			obj[k].num=i;
-			obj[k].user=log.History[j].User;
-			obj[k].start=log.History[j].Rent;
-			obj[k].end=log.History[j].End;
-			obj[k].endlmt=log.History[j].Limit;
-			k++;
-			}
-		}
-	InsertSQlite("Preaching_PublicLog",obj);
-	alert("LogSetup:End");
+	WriteJSON(congnum,"config","all",ConfigAll);
 	}

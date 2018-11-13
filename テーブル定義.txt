@@ -59,5 +59,29 @@
 	key2		キー２
 	key3		キー３
 	body		JSON文字列
+//------------------------------------------------------------------
+テーブル：
+	BuildingFormat（ビルの構造を記憶する。以下の３種類を保持する）
+    (1)通常のアパート(numフォルダのbuilding.xml内)
+    (2)個人区域用アパート(apartmentフォルダ内)
+    (3)集合住宅(apartmentフォルダ内)
+定義：
+create table BuildingFormat(congnum integer,type integer,num integer,seq integer,name text,body text,primary key(congnum,type,num,seq,name));
+項目：
+	congnum		会衆番号
+	type		1:通常  2:個人集合住宅  3:会衆集合住宅
+	num			区域番号
+	seq			地図番号
+	name		物件名
+	body		JSON文字列（ダブルクォーテーションをシングルに置換してある）
+	※区域番号・地図番号は、区域上の所在場所とする。集合住宅のように、実質の区域地図番号とは別である
+//------------------------------------------------------------------
+テーブル：
+	ApartList
+定義：
+	//	区域番号,地図番号,建物名,物件番号,件数,群れ区分,使用有無,使用者名,使用開始日,使用終了日,使用期限
+	create table ApartList(congnum integer,num integer,seq integer,name text,bnum integer,count integer,kubun text,inuse boolean,userid text,startday integer,endday integer,limitday integer,primary key(congnum,name));
+作成：
+
 
 	
