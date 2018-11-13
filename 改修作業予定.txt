@@ -91,24 +91,22 @@
 
 ===============================================
 ●2018/11/10（バージョン3.04）
-・会衆区域リストをSQlite化する(PublicList)
-・セットアップはCreatePublicList()で行なう
+・ベースをcongworks側とし、XAMPPの基準ディレクトリとする
+・会衆区域リストをSQlite化する(PublicList) セットアップはCreatePublicList()で行なう
+・Quickyの区域一覧をテーブル(PublicList)から取得するよう変更
+・Quicky:区域のログ更新処理の際、テーブルPublicListを更新する処理を追加する(savelog)
 ・Quicky:SaveConfig関数の中に、CreatePiblicList_One(num)を呼び出す個所を追加することにより、カード情報の更新に連動してSQliteを更新する
   （カード情報の変更、特記情報の追加、アパートの追加・変更）
-・Quicky:区域のログ更新処理の際、テーブルPublicListを更新する処理を追加する(savelog)
 ・Congworksのnewlist.wsfのデータ取得方法を、ディレクトリからのフォルダ一覧取得ではなく、SQliteテーブル(PublicList)からの取得にする
 ・ForceEndをディレクトリ一覧からではなく、PublicListから処理する
-・Quickyの区域一覧をテーブルから取得するよう変更
-
-未作業
-・XAMPPの公開ディレクトリをQuickyのsqliteディレクトリにする
 ・Ezraをバッチファイル非依存、相対ディレクトリに対応させる
-・ReadJSON,WriteJSONを実装する
+・ReadJSON,WriteJSONを実装する（最初に導入したのはspot.xmlの内容。引数は(会衆番号,"spots","")の３つ
 
-
-
-実施予定：2018/11/15
+実施予定：2018/11/18
 実施日：
+
+・ConfigAll及びキャンペーン情報をJSONに保存する方式に切り替える
+・newlist.wsfを廃止。pp/newlist.phpをwsf実行に依存しない形に書き換える
 
 ===============================================
 
