@@ -8,6 +8,7 @@
 <script language="JavaScript" src="./lib/campeign.js"></script>
 <script language="JavaScript" src="./lib/json.js"></script>
 <script language="JavaScript" src="./lib/log.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // cancel.wsf 個人用区域の貸出をキャンセルする
@@ -15,6 +16,7 @@
 // 引数２＝ユーザー名
 // 引数３＝PDFファイル名
 //----------------------------------------------------------------
+SQ_Init("congworks.db");
 var congnum=WScript.Arguments(0);
 var userid=WScript.Arguments(1);
 var pdffile=WScript.Arguments(2);
@@ -76,7 +78,7 @@ var pdffile=WScript.Arguments(2);
 					tMarkers.Map[seq].User="";
 					SaveMarker(congnum,num,tMarkers);
 					}
-				CreateSummaryofPerson(congnum,num,true);
+				CreateSummaryofPerson(congnum,num);
 				RemoveMyMap(userid,"B",congnum,num,seq,"");
 				}
 			break;
@@ -84,6 +86,5 @@ var pdffile=WScript.Arguments(2);
 		}
 	WScript.StdOut.Write(result);
 	WScript.quit();
-
 </script>
 </job>

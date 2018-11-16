@@ -57,7 +57,7 @@ function MENU6A()
 			kbn[kubun]=Menu6_Filter_kubuncount;
 			}
 		}
-	var cobj=getPublicLogs();
+	var cobj=getPublicLogs(0);
 
 	//	見出し---------------------------------------------------------------------
 	s="<table border=1 cellpadding=5 cellspacing=0><tr class=HEAD>";
@@ -140,9 +140,9 @@ function MENU6A()
 			s+="<td align=right"+trfunc+">"+num+"</td>";				//	区域番号
 			s+="<td"+trfunc+">"+Cards[num].name+"</td>";				//	区域名
 			s+="<td"+trfunc+">"+Cards[num].kubun+"</td>";				//	区分名
-			s+="<td align=right"+trfunc+">"+j+"</td>";				//	地図番号
-			s+="<td align=right"+trfunc+">"+mmap[j].Count+"</td>";	//	留守宅件数
-			s+="<td align=center"+trfunc+">"+SplitDate(GetOverDay(num))+"</td>";
+			s+="<td align=right"+trfunc+">"+j+"</td>";					//	地図番号
+			s+="<td align=right"+trfunc+">"+mmap[j].Count+"</td>";		//	留守宅件数
+			s+="<td align=center"+trfunc+">"+SplitDate(cobj[num].limitday)+"</td>";
 			if (mmap[j].Using)
 				{
 				s+="<td"+trfunc+" bgcolor='#ffff00'>使用中（"+mmap[j].User+"）</td>";
@@ -347,7 +347,7 @@ function MENU6B()
 			kbn[kubun]=Menu6_Filter_kubuncount;
 			}
 		}
-	var cobj=getPublicLogs();
+	var cobj=getPublicLogs(0);
 	//	見出し---------------------------------------------------------------------
 	s="<table border=1 cellpadding=5 cellspacing=0><tr class=HEAD>";
 	s+="<td align=center class=size2 width=50>区域番号</td>";
@@ -502,7 +502,7 @@ function MENU6C_Output()
 	var s,obj,i,j,cells,l,num,seq,trfunc,ctr,edited;
 	var kubun,mmap,mapnum,m,vhist,vchar,dchar;
 
-	var cobj=getPublicLogs();
+	var cobj=getPublicLogs(0);
 
 	TaskList=new Array();
 	ClearKey();
@@ -776,7 +776,7 @@ function GetRemoteWorks(filename)
 	var res,i,j,s;
 	var num,seq,f;
 
-	var cobj=getPublicLogs();
+	var cobj=getPublicLogs(0);
 
 	res=ReadXMLfromUTF8(filename,true);
 	if (res=="") return false;

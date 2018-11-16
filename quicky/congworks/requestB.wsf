@@ -28,8 +28,6 @@ if (isCampeign(today))
 	var buf,tbl,s,obj,i,j,cells,l,num,seq,trfunc;
 	var nisu;
 	var sfile=SummaryFolder(congnum)+"person.txt";
-	if (!fso.FileExists(sfile))	CreateSummaryofAllPerson(congnum);
-
 	buf=ReadFile(sfile);
 	tbl=buf.split("\r\n");l
 	lbl=new Array();j=-1;

@@ -39,7 +39,7 @@ function MENU1()
 	Menu1_Filter_kubuncount=0;
 	
 	//	SQliteテーブルの読込(全カード)
-	ctbl=getPublicLogs();
+	ctbl=getPublicLogs(0);
 	for(i in ctbl)
 		{
 		cobj=ctbl[i];
@@ -337,7 +337,7 @@ function MENU1A_Exec()
 	SaveLog(obj,num);
 	AllMaps=new Array();
 	LoadCard(num);
-	CreateSummaryofPerson(num,true);
+	CreateSummaryofPerson(num,true,"");
 	MENU1();
 	}
 //------------------------------------------------------------------------------------
@@ -463,15 +463,13 @@ function MENU1B_Exec(num)
 	else{
 		cd.spanDays=0;
 		}
-	s="("+num+")"+Cards[num].name+"→"+name;
-	s+="、分割数＝"+Cards[num].count+"→"+count+"、区分＝"+Cards[num].kubun+"→"+kubun;
 	if (cd.spanDays==0)
 		{
 		delete cd.spanDays;
 		}
 	SaveConfig(num);
 	LoadCard(num);
-	CreateSummaryofPerson(num,true);
+	CreateSummaryofPerson(num,true,"");
 	MENU1();
 	}
 
@@ -1035,9 +1033,8 @@ function MENU1E_Start_RollBack(num)
 
 	RollBackLog(obj,num);
 	SaveLog(obj,num);
-	s="("+num+")"+Cards[num].name;
 	LoadCard(num);
-	CreateSummaryofPerson(num,true);
+	CreateSummaryofPerson(num,true,"");
 	MENU1EExit();
 	}
 
@@ -1196,7 +1193,7 @@ function MENU1E_End_Exec(num)
 	SetLogSummary(obj);
 	SaveLog(obj,num);
 	LoadCard(num);
-	CreateSummaryofPerson(num,true);
+	CreateSummaryofPerson(num,true,"");
 	MENU1EExit();
 	}
 
@@ -1277,7 +1274,7 @@ function MENU1E_Complete_Exec(num)
 	FinishLog(obj,num,true);
 	SaveLog(obj,num);
 	LoadCard(num);
-	CreateSummaryofPerson(num,true);
+	CreateSummaryofPerson(num,true,"");
 	MENU1EExit();
 	}
 
@@ -1298,7 +1295,7 @@ function MENU1E_End_Cancel(num)
 		}
 
 	LoadCard(num);
-	CreateSummaryofPerson(num,true);
+	CreateSummaryofPerson(num,true,"");
 	MENU1EExit();
 	}
 
@@ -2119,8 +2116,8 @@ function ExecMoveMap()
 	s="区域"+num+"-"+s+"→区域"+num2+"へ";
 	LoadCard(num);
 	LoadCard(num2);
-	CreateSummaryofPerson(num,true);
-	CreateSummaryofPerson(num2,true);
+	CreateSummaryofPerson(num,true,"");
+	CreateSummaryofPerson(num2,true,"");
 
 	Cards[num].count-=enc;
 	if (Cards[num].count>0)
@@ -2352,9 +2349,8 @@ function ExecDeleteMap()
 			}
 		}
 	str+="）を削除しました。";
-	s="区域番号＝"+num+"、地図番号＝"+s;
 	LoadCard(num);
-	CreateSummaryofPerson(num,true);
+	CreateSummaryofPerson(num,true,"");
 	Cards[num].count-=enc;
 	if (Cards[num].count>0)
 		{
@@ -2365,8 +2361,6 @@ function ExecDeleteMap()
 	else{
 		var fdir=NumFolderPath(num);
 		fso.DeleteFolder(fdir,true);
-		s="("+num+")"+Cards[num].name;
-		s+="、分割数＝"+Cards[num].count+"、区分＝"+Cards[num].kubun;
 		delete Cards[num];
 		MENU1();
 		str+="\n（区域番号"+num+"は地図が無くなったので、削除されました。）";
@@ -2719,7 +2713,6 @@ function LoadAllCards()
 		num=parseInt(num,10);
 		LoadCard(num);
 		}
-	CreateSummaryofAllPerson();
 	}
 //-------------------------------------------------------------------
 // 2018/5/23追加　指定された区域またはアパートの最短使用可能日を取得
@@ -2728,7 +2721,6 @@ function GetAvailableDate(num)
 	{
 	var str,sts,atbl,d,i;
 	var d0,nisu;
-	var log=getPublicLogs(num);
 	if (isNaN(num))	//	アパートの場合
 		{
 		sts=GetApartmentStatus(num);
@@ -2739,8 +2731,11 @@ function GetAvailableDate(num)
 		}
 
 	//	通常の区域の場合
+	var log=getPublicLogs(num);
+
 	d=log.Lastuse;						//	最終使用日
 	if (log.inuse=="true") return d;	//	使用中の場合は開始日を返す
+
 	//	未使用の場合、前回終了日の次の日から順に可能な日を模索する（ループ）
 	d0=d;
 	nisu=0;

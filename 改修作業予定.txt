@@ -112,16 +112,15 @@
 ※注意
 LoadLog(),CheckCardLog処理が毎回呼び出されて非常に遅くなっているのを改善する必要がある。
 
-・CheckCardLogによって作られているCards[num].プロパティの項目を廃止し、他の項目に置換する。
+・CheckCardLogによって作られているCards[num].プロパティの項目を廃止し、他の項目に置換する。CheckCardLog自体を廃止。
 	Cards[num].status=nowstatus;	//->廃止済
-	Cards[num].lastuse=lastuse;		//->CreateSummaryofPerson以外廃止済
+	Cards[num].lastuse=lastuse;		//->廃止済
 	Cards[num].Available=avail;		//->廃止済
 	Cards[num].Blank=luse;			//->廃止済
-	Cards[num].NowUsing=nowusing;	//->CreateSummaryofPerson以外廃止済
+	Cards[num].NowUsing=nowusing;	//->廃止済
 	Cards[num].LastUser=lastuser;	//->廃止済
-
-CreateSummaryofPerson関係は、CongworksもQuickyもサマリ処理に問題があるので要改善
-
+・CreateSummaryofPerson関係は、CongworksもQuickyもサマリ処理に問題があるので要改善（改善済）
+・GetOverDayもログを読んでいたので廃止
 ・他にもLoadLog処理があるなら整理していく
 実施予定：2018/11/18
 実施日：

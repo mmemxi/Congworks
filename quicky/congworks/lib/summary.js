@@ -51,70 +51,41 @@ function CreateSummaryofApartment(congnum)
 	f.close();
 	}
 //------------------------------------------------------------------------------------
-function CreateSummaryofAllPerson(congnum)
-	{
-	var f,s,i,j,k,num;
-	var dir,folders,fitem,obj;
-	var bfile=SummaryFolder(congnum)+"person.txt";
-	f=fso.CreateTextFile(bfile,true);
-
-	dir=fso.GetFolder(DataFolder(congnum));
-	folders=new Enumerator(dir.SubFolders);
-	for(; !folders.atEnd(); folders.moveNext())
-		{
-		fitem=folders.item();
-		if (isNaN(fitem.Name)) continue;
-		num=fso.GetBaseName(fitem.Name);
-		num=parseInt(num,10);
-		s=CreateSummaryofPerson(congnum,num,false);
-		if (s!="") f.WriteLine(s);
-		}
-	f.close();
-	}
+// 個人用サマリ作成（Quickyと違い、常に１つの区域だけを対象とし、戻り値はない）
 //------------------------------------------------------------------------------------
-function CreateSummaryofPerson(congnum,num,mode)
+function CreateSummaryofPerson(congnum,num)
 	{
-	var mapnum,mnum,i,j,vhist,s,ss,str,f,result,tmk,log;
+	var mapnum,mnum,i,j,vhist,s,ss,str,f,tmk,log;
 	var card,cobj,mobj,tmk,c;
 	var bfile=SummaryFolder(congnum)+"person.txt";
 	var ary1=new Array();
 	var ary2=new Array();
 	s="";ss="";f="";
-	result="";
 
-	if (mode)	//	一つの区域だけを対象にする
+	//	現行サマリを読み(ary1)、対象区域№の行を除外した新テーブル(ary2)を作る。
+	s=ReadFile(bfile);
+	ary1=s.split("\r\n");
+	j=0;
+	for(i=0;i<ary1.length;i++)
 		{
-		s=ReadFile(bfile);
-		ary1=s.split("\r\n");
-		j=0;
-		for(i=0;i<ary1.length;i++)
+		if ((ary1[i].indexOf(num+",",0)!=0)&&(ary1[i]!=""))
 			{
-			if ((ary1[i].indexOf(num+",",0)!=0)&&(ary1[i]!=""))
-				{
-				ary2[j]=ary1[i];
-				j++;
-				}
+			ary2[j]=ary1[i];
+			j++;
 			}
-		j--;
 		}
-	else		//	すべての区域を対象にする
-		{
-		ary2=new Array();
-		}
+	j--;
 
 	//	対象の区域の詳細読込
 	card=new Object();
 	cobj=ReadXMLFile(ConfigXML(congnum,num),false);
 	if (cobj=="")
 		{
-		if (mode)
-			{
-			f=fso.CreateTextFile(bfile,true);
-			str=ary2.join("\r\n");
-			f.Write(str);
-			f.close();
-			}
-		return "";
+		f=fso.CreateTextFile(bfile,true);
+		str=ary2.join("\r\n");
+		f.Write(str);
+		f.close();
+		return;
 		}
 	card.count=cobj.count;	//	地図枚数
 	card.name=cobj.name;	//	区域名
@@ -147,17 +118,14 @@ function CreateSummaryofPerson(congnum,num,mode)
 			}
 		}
 
-	//	対象の区域が使用中でないか、キャンペーン中であるとき
+	//	対象の区域が使用中でないか、キャンペーン中であるとき、出力してそれで終わり
 	if ((!card.NowUsing)||(isCampeign(card.lastuse)))
 		{
-		if (mode)	//	一つの区域のみ処理するモードなら、出力してそれで終わり
-			{
-			f=fso.CreateTextFile(bfile,true);
-			str=ary2.join("\r\n");
-			f.Write(str);
-			f.close();
-			}
-		return "";
+		f=fso.CreateTextFile(bfile,true);
+		str=ary2.join("\r\n");
+		f.Write(str);
+		f.close();
+		return;
 		}
 
 	//	マーカー情報の読込
@@ -186,17 +154,14 @@ function CreateSummaryofPerson(congnum,num,mode)
 		}
 	tmk.Count=c;
 
-	//	対象のマーカーが０個のとき
+	//	対象のマーカーが０個のとき、終了
 	if (tmk.Count<1)
 		{
-		if (mode)
-			{
-			f=fso.CreateTextFile(bfile,true);
-			str=ary2.join("\r\n");
-			f.Write(str);
-			f.close();
-			}
-		return "";
+		f=fso.CreateTextFile(bfile,true);
+		str=ary2.join("\r\n");
+		f.Write(str);
+		f.close();
+		return;
 		}
 
 	//	地図ごとに有効マーカー数を数える
@@ -230,16 +195,9 @@ function CreateSummaryofPerson(congnum,num,mode)
 		s=num+","+j+","+card.name+","+card.kubun+","+mmap[j].Count+","+card.Limit+","+mmap[j].User;
 		ary2.push(s);
 		}
-	if (mode)
-		{
-		f=fso.CreateTextFile(bfile,true);
-		str=ary2.join("\r\n");
-		f.Write(str);
-		f.close();
-		return "";
-		}
-	else{
-		str=ary2.join("\r\n");
-		return str;
-		}
+
+	f=fso.CreateTextFile(bfile,true);
+	str=ary2.join("\r\n");
+	f.Write(str);
+	f.close();
 	}

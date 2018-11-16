@@ -105,16 +105,6 @@ function FixValue(num,len)
 		}
 	return s;
 	}
-//---------------------------------------------------------------------------------
-function GetOverDay(num)
-	{
-	var obj=LoadLog(num);
-	if (obj.Status=="Using")
-		{
-		return obj.Latest.Limit;
-		}
-	return "";
-	}
 
 //---------------------------------------------------------------
 function PDFPrint(pdffile)

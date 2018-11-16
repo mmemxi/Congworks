@@ -37,16 +37,18 @@ function CreateSummaryofAllPerson()
 	{
 	var f,s,i,j,k,num;
 	var bfile=SummaryFolder()+"person.txt";
+	var cobj=getPublicLogs(0);
+
 	f=fso.CreateTextFile(bfile,true);
 	for(num in Cards)
 		{
-		s=CreateSummaryofPerson(num,false);
+		s=CreateSummaryofPerson(num,false,cobj[num]);
 		if (s!="") f.WriteLine(s);
 		}
 	f.close();
 	}
 
-function CreateSummaryofPerson(num,mode)
+function CreateSummaryofPerson(num,mode,cobj)
 	{
 	var mapnum,mnum,i,j,vhist,s,ss,str,f,result,tmk;
 	var bfile=SummaryFolder()+"person.txt";
@@ -54,6 +56,8 @@ function CreateSummaryofPerson(num,mode)
 	var ary2=new Array();
 	s="";ss="";f="";
 	result="";
+
+	if (cobj=="") cobj=getPublicLogs(num);		//	ログオブジェクトを渡されていなければ、単一の区域ログを取得する
 
 	if (mode)	//	一つの区域だけを対象にする
 		{
@@ -76,7 +80,7 @@ function CreateSummaryofPerson(num,mode)
 		}
 
 	//	対象の区域が使用中でないか、キャンペーン中であるとき
-	if ((!Cards[num].NowUsing)||(isCampeign(Cards[num].lastuse)))
+	if ((cobj.inuse=="false")||(isCampeign(cobj.Lastuse)))
 		{
 		if (mode)
 			{
@@ -130,7 +134,7 @@ function CreateSummaryofPerson(num,mode)
 	for(j=1;j<=mapnum;j++)
 		{
 		if (mmap[j].Count==0) continue;
-		s=num+","+j+","+Cards[num].name+","+Cards[num].kubun+","+mmap[j].Count+","+GetOverDay(num)+","+mmap[j].User;
+		s=num+","+j+","+Cards[num].name+","+Cards[num].kubun+","+mmap[j].Count+","+cobj.limitday+","+mmap[j].User;
 		ary2.push(s);
 		}
 	if (mode)

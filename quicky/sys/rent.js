@@ -8,11 +8,11 @@
 // .Avail    使用可能か(true/false/disable、使用中なら常にfalse、未使用なら日数に応じて使用不可(disable)/使用可能(true)）
 // .Status   状態文字列（使用中ならいつから開始か、未使用なら何日前からか）
 //---------------------------------------------------------
-function getPublicLogs(num=0)
+function getPublicLogs(num)
 	{
 	var now=new Date();
 	var today=now.getFullYear()*10000+(now.getMonth()+1)*100+now.getDate();
-	var i,cobj,num;
+	var i,j,cobj;
 	var robj=new Array();
 	var cwhere="congnum="+congnum;
 	if (num!=0) cwhere+=" and num="+num;
@@ -21,7 +21,7 @@ function getPublicLogs(num=0)
 	for(i=0;i<ctbl.length;i++)
 		{
 		cobj=ctbl[i];
-		num=cobj.num;
+		j=cobj.num;
 		//	使用中の区域-----------------------------------------------
 		if (cobj.inuse=="true")
 			{
@@ -54,9 +54,9 @@ function getPublicLogs(num=0)
 				cobj.Avail="false";
 				}
 			}
-		robj[num]=clone(ctbl[i]);
+		robj[j]=clone(ctbl[i]);
 		}
-	if (num==0) return ctbl[0];
+	if (num!=0) return ctbl[0];
 		else	return robj;
 	}
 

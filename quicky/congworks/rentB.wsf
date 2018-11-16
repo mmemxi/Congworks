@@ -44,7 +44,7 @@ var targetstr=WScript.Arguments(0);
 		tmk.Map[seq].User=user;
 		SaveMarker(congnum,num,tmk);
 		}
-	CreateSummaryofPerson(congnum,num,true);
+	CreateSummaryofPerson(congnum,num);
 	mcount=0;
 	for(i in tmk.Map)
 		{

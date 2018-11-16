@@ -78,7 +78,7 @@ for(i=0;i<BTB.length;i++)
 if (j>0)	SaveConfig(congnum,num);
 //----------------------------------------------------------------
 // 個人用留守宅情報の更新
-CreateSummaryofPerson(congnum,num,true);
+CreateSummaryofPerson(congnum,num);
 //----------------------------------------------------------------
 WScript.StdOut.Write("ok");
 WScript.quit();

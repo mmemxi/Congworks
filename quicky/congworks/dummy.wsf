@@ -1,0 +1,20 @@
+<job>
+<script language="JavaScript" src="base.js"></script>
+<script language="JavaScript" src="./lib/common.js"></script>
+<script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/summary.js"></script>
+<script language="JavaScript" src="./lib/marker.js"></script>
+<script language="JavaScript" src="./lib/personal.js"></script>
+<script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="./lib/json.js"></script>
+<script language="JavaScript" src="./lib/log.js"></script>
+<script language="JavaScript">
+//----------------------------------------------------------------
+// dummy.wsf   cancel.wsfのデバッグ用
+//----------------------------------------------------------------
+var congnum=34173;
+var num=2;
+CreateSummaryofPerson(congnum,num);
+WScript.quit();
+</script>
+</job>

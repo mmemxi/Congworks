@@ -55,7 +55,7 @@ function SetAllMap()
 	var al,ct1,ct2,ct3;
 
 	//	使用状況テーブルの取得
-	var cobj=getPublicLogs();
+	var cobj=getPublicLogs(0);
 
 	vml.mapsize=1;
 	vml.width=AllMapX;
@@ -70,16 +70,16 @@ function SetAllMap()
 			vcmd="CloseFloatings();ClearLayer(\"Popup\");MENU1E("+i+");";
 			vtitle=AllMaps[i].Name;
 			cl="";
-			if (cobj[i].Available=="true")	{cl="#00ffff";charcl="#0000ff";}
-			if (cobj[i].Available=="false")	{cl="#ffff00";charcl="#000000";}
-			if (cobj[i].Available=="disable")
+			if (cobj[i].Avail=="true")	{cl="#00ffff";charcl="#0000ff";}
+			if (cobj[i].Avail=="false")	{cl="#ffff00";charcl="#000000";}
+			if (cobj[i].Avail=="disable")
 				{
 				cl="#ff0000";charcl="#ff0000";
 				vcmd='a=0;';
 				}
 			vtitle+="<br>"+cobj[i].Status;
 			al=i+"<br>";
-			if (cobj[i].Available=="true")
+			if (cobj[i].Avail=="true")
 				{
 				ct1=cobj[i].Blank;
 				ct2=Math.floor(ct1/28);
