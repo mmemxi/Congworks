@@ -11,11 +11,12 @@
 作成：
 	setup.jsのCreateReportLogs()
 //------------------------------------------------------------------
-●CWTokens
-作成日：2018/10/29
-定義：create table CWTokens (TokenNo integer);
-項目：	TokenNo			トークン通し番号（自動カウントアップされる）
-キー：なし
+テーブル：
+	CWTokens
+定義：
+	create table CWTokens (TokenNo integer);
+項目：
+	TokenNo			トークン通し番号（自動カウントアップされる）
 //------------------------------------------------------------------
 テーブル：
 	CWUsers
@@ -60,6 +61,27 @@
 	key3		キー３
 	body		JSON文字列
 //------------------------------------------------------------------
+テーブル：
+	PublicLogs
+定義：
+	create table PublicLogs(congnum integer,num integer,status text,userid text,startday integer,endday integer,limitday integer,body text,primary key(congnum,num));
+項目：
+	congnum		会衆番号（数値）
+	num			区域番号（数値）
+	status		状態(Free/Using)（最新状況）
+	userid		使用者（最新状況）
+	startday	開始日（最新状況）
+	endday		終了日（最新状況）
+	limitday	期限日（最新状況）
+	body		ログ本体(JSON)
+	※status～limitdayの部分は、ログ本体の最終サマリーから取得する「最新状況」。
+
+
+
+
+
+以下、未完成
+
 テーブル：
 	BuildingFormat（ビルの構造を記憶する。以下の３種類を保持する）
     (1)通常のアパート(numフォルダのbuilding.xml内)

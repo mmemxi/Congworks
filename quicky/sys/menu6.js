@@ -34,7 +34,7 @@ function MENU6()
 //------------------------------------------------------------------------------------
 function MENU6A()
 	{
-	var s,obj,i,cells,l,num,seq,trfunc;
+	var s,obj,i,j,cells,l,num,seq,trfunc;
 	var kubun,mmap,mapnum,m,vhist,vchar,dchar;
 	ClearKey();
 	ClearLayer("Stage");
@@ -57,6 +57,7 @@ function MENU6A()
 			kbn[kubun]=Menu6_Filter_kubuncount;
 			}
 		}
+	var cobj=getPublicLogs();
 
 	//	見出し---------------------------------------------------------------------
 	s="<table border=1 cellpadding=5 cellspacing=0><tr class=HEAD>";
@@ -94,8 +95,8 @@ function MENU6A()
 	//	一覧表---------------------------------------------------------------------
 	for(num in Cards)
 		{
-		if (!Cards[num].NowUsing) continue;				//	使用中でない区域は除く
-		if (isCampeign(Cards[num].lastuse)) continue;	//	キャンペーン中に開始した区域は対象外
+		if (cobj[num].inuse!="true") continue;				//	使用中でない区域は除く
+		if (isCampeign(cobj[num].Lastuse)) continue;		//	キャンペーン中に開始した区域は対象外
 		if ((Menu6_Filter_kubun!="")&&(Cards[num].kubun!=Menu6_Filter_kubun)) continue;
 		Markers=LoadMarker(num);
 		if (Markers.Count<1) continue;
@@ -323,7 +324,7 @@ function MENU6Return(num,seq,userid)
 //------------------------------------------------------------------------------------
 function MENU6B()
 	{
-	var s,obj,i,cells,l,num,seq,trfunc,ctr,edited;
+	var s,obj,i,j,cells,l,num,seq,trfunc,ctr,edited;
 	var kubun,mmap,mapnum,m,vhist,vchar,dchar;
 	ClearKey();
 	ClearLayer("Stage");
@@ -346,7 +347,7 @@ function MENU6B()
 			kbn[kubun]=Menu6_Filter_kubuncount;
 			}
 		}
-
+	var cobj=getPublicLogs();
 	//	見出し---------------------------------------------------------------------
 	s="<table border=1 cellpadding=5 cellspacing=0><tr class=HEAD>";
 	s+="<td align=center class=size2 width=50>区域番号</td>";
@@ -383,7 +384,7 @@ function MENU6B()
 	for(num in Cards)
 		{
 		if ((Menu6_Filter_kubun!="")&&(Cards[num].kubun!=Menu6_Filter_kubun)) continue;
-		if (Cards[num].status.indexOf("使用中",0)!=-1) continue;
+		if (cobj[num].Status.indexOf("使用中",0)!=-1) continue;
 		mapnum=parseInt(Cards[num].count,10);
 		Markers=LoadMarker(num);
 		for(j=1;j<=mapnum;j++)
@@ -498,8 +499,11 @@ var SelectedClientUser;
 var TaskList;
 function MENU6C_Output()
 	{
-	var s,obj,i,cells,l,num,seq,trfunc,ctr,edited;
+	var s,obj,i,j,cells,l,num,seq,trfunc,ctr,edited;
 	var kubun,mmap,mapnum,m,vhist,vchar,dchar;
+
+	var cobj=getPublicLogs();
+
 	TaskList=new Array();
 	ClearKey();
 	ClearLayer("Stage");
@@ -519,7 +523,7 @@ function MENU6C_Output()
 	ctr=0;
 	for(num in Cards)
 		{
-		if (Cards[num].status.indexOf("使用中",0)!=-1) continue;
+		if (cobj[num].Status.indexOf("使用中",0)!=-1) continue;
 		mapnum=parseInt(Cards[num].count,10);
 		Markers=LoadMarker(num);
 		for(j=1;j<=mapnum;j++)
@@ -772,6 +776,8 @@ function GetRemoteWorks(filename)
 	var res,i,j,s;
 	var num,seq,f;
 
+	var cobj=getPublicLogs();
+
 	res=ReadXMLfromUTF8(filename,true);
 	if (res=="") return false;
 	if (!("Job" in res)) return false;
@@ -781,7 +787,7 @@ function GetRemoteWorks(filename)
 		num=parseInt(res.Job[i].Num,10);
 		seq=parseInt(res.Job[i].Seq,10);
 		if (!(num in Cards)) continue;								//	存在しない地図は無視
-		if (Cards[num].status.indexOf("使用中",0)!=-1) continue;	//	もう奉仕開始した
+		if (cobj[num].Status.indexOf("使用中",0)!=-1) continue;	//	もう奉仕開始した
 		Markers=LoadMarker(num);
 		if (!(seq in Markers.Map)) continue;				//	地図マーカーが無い
 		if (Markers.Map[seq].Edited!="Working")	continue;	//	編集中でない

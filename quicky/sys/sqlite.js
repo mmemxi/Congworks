@@ -147,7 +147,7 @@ function SQ_Exec(sqlArray)
 	SQWshShell.CurrentDirectory=SQ_Folder();
 	SQWshShell.Run(cmd,0,true);
 	SQWshShell.CurrentDirectory=cd;
-	if (SQfso.FileExists(inpfile)){try{SQfso.DeleteFile(inpfile,true);}catch(e){}};
+//	if (SQfso.FileExists(inpfile)){try{SQfso.DeleteFile(inpfile,true);}catch(e){}};
 	}
 //-----------------------------------------------------------------------------
 function SQ_Insert(sql_table,writeObj)

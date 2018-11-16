@@ -121,7 +121,7 @@ function CreateSummaryofPerson(congnum,num,mode)
 	card.kubun=cobj.kubun;	//	‹æˆæ‹æ•ª
 
 	//	‘ÎÛ‚Ì‹æˆæ‚ÌƒƒO“Ç
-	log=ReadXMLFile(NumFolder(congnum,num)+"log.xml",false);
+	log=LoadLog(congnum,num);
 	if (log=="")
 		{
 		card.NowUsing=false;

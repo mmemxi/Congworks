@@ -32,33 +32,65 @@ document.write("／ユーザー名："+UserID+"<br>");
 <img src="../img/lines/ライン１.png"><br>
 </div>
 <div id="LayerO" style="visibility:hidden;width:1px;height:1px;"><?php
-echo "<textarea id=\"PHP1\">";
+$pdo = new PDO('sqlite:../congworks.db');
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);    
+$sql = "select name,kubun from PublicList where congnum=" . $congnum . " and num=" . $num . ";";
+foreach ($pdo->query($sql) as $line)
+	{
+	$title=$line['name'];
+	$kubun=$line['kubun'];
+	break;
+	}
+$title="No." . $num . ":" . $title . "(" . $kubun . ")";
+
+$sql = "select body from JSON where key1='" . $congnum . "' and key2='config' and key3='all';";
+foreach ($pdo->query($sql) as $line)
+	{
+	$body=$line['body'];
+	$js=str_replace("'","\"",$body);
+	$jsobj=json_decode($js);
+	break;
+	}
+$campeigns="";
+for($i=0;$i<count($jsobj->Campeigns);$i++)
+	{
+	if ($i>0) $campeigns=$campeigns . ",";
+	$campeigns=$campeigns . $jsobj->Campeigns[$i]->Start . "-" . $jsobj->Campeigns[$i]->End;
+	}
+
+$sql = "select userid from CWUsers where congnum=" . $congnum . " and authority='publicservice' order by userid;";
+$userArray=array();
+foreach ($pdo->query($sql) as $line)
+	{
+	$userArray[]=$line['userid'];
+	}
+
 $cwpath=dirname(dirname(__FILE__)) . "\\quicky\\congworks\\";
 exec("cscript \"" . $cwpath . "verify.wsf\" $congnum $num //Nologo",$out);
 for($i=0;$i<count($out);$i++)
 	{
 	$out[$i]=mb_convert_encoding($out[$i],"UTF8","SJIS-WIN");
 	}
-echo $out[0];
-echo "</textarea>";
-echo "<textarea id=\"PHP4\">";
-echo $out[2];
-echo "</textarea>";
+echo "<script type=\"text/javascript\">";
+echo "const_nearest=" . $out[1] . ";";
+echo "const_campeigns=\"" . $campeigns . "\";";
+$constUsers="const_users=new Array(";
+for($i=0;$i<count($userArray);$i++)
+	{
+	if ($i>0) $constUsers=$constUsers . ",";
+	$constUsers=$constUsers . "\"" . $userArray[$i] . "\"";
+	}
+$constUsers=$constUsers . ");";
+echo $constUsers;
+echo "</script>";
 ?></div>
 <?php
-print "<b>" . $out[0] . "の貸し出し:</b><br>";
+print "<b>" . $title . "の貸し出し:</b><br>";
 ?>
 <table style="width:400px;margin:20px;" border=0 cellspacing=0 cellpadding=0>
 <tr><td valign=middle style="border:2px dashed red;padding:6px;height:50px;">
-<form>使用者：<select size=1>
-<?php
-print "<option value=''>自分（今操作しているあなた）</option>";
-for($i=3;$i<count($out);$i++)
-	{
-	print "<option value='" . $out[$i] . "'>" . $out[$i] . "</option>";
-	}
-?>
-</select></form></td></tr>
+<div id="userform"></div>
+</td></tr>
 <tr><td valign=middle id="MAIN" style="border:2px dashed red;padding:6px;height:50px;">開始日付をカレンダーから選択してください。</td></tr>
 </table>
 <div id="DRAW"></div>
@@ -75,9 +107,21 @@ var Gnum,Gstartday;
 var Campeigns;
 function Boot()
 	{
-	var s,s0;
+	var i,s,s0;
 	var tbl,obj;
-	s=document.getElementById("PHP4").value;
+	var str;
+	//	ユーザー一覧の処理
+	str="<form>使用者：<select size=1>";
+	str+="<option value=''>自分（今操作しているあなた）</option>";
+	for(i=0;i<const_users.length;i++)
+		{
+		str+="<option value='"+const_users[i]+"'>"+const_users[i]+"</option>";
+		}
+	str+="</select></form>";
+	document.getElementById("userform").innerHTML=str;
+
+	//	キャンペーン群の処理
+	s=const_campeigns;	//	キャンペーン群
 	if (s!="")	tbl=s.split(",");else tbl=new Array();
 	Campeigns=new Array();
 	for(i=0;i<tbl.length;i++)
@@ -88,6 +132,8 @@ function Boot()
 		obj.End=s0[1];
 		Campeigns.push(obj);
 		}
+
+	//	カレンダー表示
 	s=DrawCalender();
 	document.getElementById("DRAW").innerHTML=s;
 	Gnum=num;
@@ -131,19 +177,28 @@ function DrawCalender()
 			{
 			if (x==0) s+="<tr>";
 			cld=parseInt(yn,10)*10000+(parseInt(mn,10)+1)*100+parseInt(j,10);
-
 			cpflag=isBeforeCampeign(cld);	//	キャンペーン前の２週間に該当？
 
-			if (cld==Gstartday)
+			if (cld==Gstartday)		//	選択している日付
 				{
 				s+="<td align=right bgcolor='#ff0000' style='color:#ffffff;cursor:pointer;'";
 				}
-			else{
+			else{					//	今日の日付
 				if ((mn==tm)&&(j==td))	s+="<td align=right bgcolor='#00bb00' style='color:#ffffff;font-weight:bold;cursor:pointer;'";
 								else	s+="<td align=right";
 				}
-			if (cpflag)	s+=" style='background-color:#0000ff;color:#ffffff;cursor:no-drop;' onClick='DateError()'>";
-			else		s+=" style='cursor:pointer;' onClick='AutoInput(\""+cld+"\")'>";
+
+			if (cpflag)
+				{	//	キャンペーン前２週間である
+				s+=" style='background-color:#0000ff;color:#ffffff;cursor:no-drop;' onClick='DateError()'>";
+				}
+			else if(cld<const_nearest)	//	最短使用日より前である
+				{
+				s+=" style='color:#aaaaaa;cursor:no-drop;'>";
+				}
+			else{						//	指定可能な日である
+				s+=" style='cursor:pointer;' onClick='AutoInput(\""+cld+"\")'>";
+				}
 			s+=j+"</td>";
 			x++;
 			if (x>6)

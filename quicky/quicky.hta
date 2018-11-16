@@ -180,6 +180,9 @@ function boot2()
 	congname=ConfigAll.CongName;
 	document.title="Congworks for Ministry "+Version+"("+congnum+":"+congname+")";
 
+	//	SQliteセットアップ
+	SQliteSetup();
+
 	//	区域の強制終了
 	if ("ChiefClient" in ConfigAll)
 		{
@@ -194,9 +197,6 @@ function boot2()
 	ClearTemporaryFolder();
 	CreateSummaryofApartment();
 	CreateSummaryofAllPerson();		//	全区域のサマリ
-
-	//	SQliteセットアップ
-	SQliteSetup();
 
 	//	メインメニュー
 	MainMenu();
@@ -333,6 +333,7 @@ function GetCommandLine()
 </script>
 <script src="./sys/vml.js"></script>
 <script src="./sys/file.js"></script>
+<script src="./sys/rent.js"></script>
 <script src="./sys/menu1.js"></script>
 <script src="./sys/menu2.js"></script>
 <script src="./sys/menu3.js"></script>

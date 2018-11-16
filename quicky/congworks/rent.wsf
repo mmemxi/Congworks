@@ -4,6 +4,7 @@
 <script language="JavaScript" src="./lib/xml.js"></script>
 <script language="JavaScript" src="./lib/summary.js"></script>
 <script language="JavaScript" src="./lib/marker.js"></script>
+<script language="JavaScript" src="./lib/json.js"></script>
 <script language="JavaScript" src="./lib/log.js"></script>
 <script language="JavaScript" src="./lib/saveconfig.js"></script>
 <script language="JavaScript" src="./lib/campeign.js"></script>
@@ -16,13 +17,13 @@
 // 引数３＝開始日
 // 引数４＝使用ユーザー名
 //----------------------------------------------------------------
+SQ_Init("congworks.db");
 var congnum=WScript.Arguments(0);		//	会衆番号
 var num=WScript.Arguments(1);			//	区域番号
 var startday=WScript.Arguments(2);		//	開始日
 var user=WScript.Arguments(3);			//	ユーザー名
 var overday;
 var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
-SQ_Init("congworks.db");
 //----------------------------------------------------------------
 var Cards=new Array();
 var text,stream,Markers;

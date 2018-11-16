@@ -92,31 +92,12 @@ function LoadCard(congnum,num)
 		}
 
 	/*	ログ読込------------------------------------------*/
-	var log=ReadXMLFile(NumFolder(congnum,num)+"log.xml",false);
-	if (log=="")
-		{
-		log=new Object();
-		log.Status="Free";
-		log.Latest=new Object();
-		log.Latest.User="";
-		log.Latest.Rent=0;
-		log.Latest.Limit=0;
-		log.Latest.End=0;
-		log.History=new Array();
-		}
-	if (!("History" in log))
-		{
-		log.History=new Array();
-		}
-	var lastuse;
+	var log=LoadLog(congnum,num);
 	l=log.History.length-1;
 	if (l<=0) return "";
-	if (log.Status=="Using")	lastuse=log.Latest.Rent;
-						else	lastuse=log.Latest.End;
 	Cards[num].Status=log.Status;				//	現在の状態
 	Cards[num].Rent=log.Latest.Rent;			//	最終貸出日
 	Cards[num].Limit=log.Latest.Limit;			//	終了期限
-	Cards[num].LastUser=log.Latest.User;		//	最終使用者
 	if (l<=0)
 		{
 		Cards[num].BeforeStart="?";

@@ -4,6 +4,8 @@
 <script language="JavaScript" src="./lib/xml.js"></script>
 <script language="JavaScript" src="./lib/summary.js"></script>
 <script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="./lib/json.js"></script>
+<script language="JavaScript" src="./lib/log.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // requestB.wsf ’·Šú—¯ç‘î‚Ì‘İoŒó•â‚ğ•\¦‚·‚é

@@ -21,11 +21,8 @@ var Placenum,Placeseq,Placename;
 function MENU1()
 	{
 	SetOverflow("y");
-	var s;
-	var logline=new Array();
-	var now=new Date();
-	var today=now.getFullYear()*10000+(now.getMonth()+1)*100+now.getDate();
-	var kubun;
+	var i,s,ctbl,cobj,num,kubun,filtered;
+
 	PickFrom="List";
 	ClearKey();
 	ClearLayer("Stage");
@@ -41,70 +38,26 @@ function MENU1()
 	kubuncount=1;
 	Menu1_Filter_kubuncount=0;
 	
-	//	SQliteテーブルの読込--------------------------------------------------------------
-	var cwhere="congnum="+congnum;
-	var corder="num";
-	var clast;
-	var cobj;
-	var ctbl=SQ_Read("PublicList",cwhere,"");
-
-	//	使用状況を配列オブジェクトに追加する---------------------------------------------
-	for(i=0;i<ctbl.length;i++)
+	//	SQliteテーブルの読込(全カード)
+	ctbl=getPublicLogs();
+	for(i in ctbl)
 		{
 		cobj=ctbl[i];
 		num=cobj.num;
 		kubun=cobj.kubun;
+		//	フィルター（区分）の構築
 		if (!(kubun in kbn))
 			{
 			Menu1_Filter_kubuncount++;
 			kbn[kubun]=Menu1_Filter_kubuncount;
 			}
-		if ((Menu1_Filter_kubun!="")&&(Menu1_Filter_kubun!=kubun)){ctbl.splice(i,1);i--;continue;}
-
-		if (cobj.inuse=="true")
-			{
-			cobj.Lastuse=cobj.startday;
-			cobj.Blank=CalcDays(cobj.startday,"");					//	使用日数
-			cobj.Avail="false";										//	使用可能＝Ｎｏ
-			cobj.Status="使用中("+cobj.userid+"："+cobj.startday.substring(4,6)+"/"+cobj.startday.substring(6,8)+"～）";
-			}
-		else{
-			cobj.Lastuse=cobj.endday;
-			cobj.Blank=CalcDays(cobj.endday,"");					//	使用日数
-			if (isCampeign(today))			//	キャンペーン中
-				{
-				if (cobj.Blank<ConfigAll.BlankCampeign) cobj.Avail="disable";else cobj.Avail="true";
-				}
-			else{
-				if (isAfterCampeign(today))	//	ｷｬﾝﾍﾟｰﾝ期間後30日
-					{
-					if (cobj.Blank<ConfigAll.BlankAfterCampeign) cobj.Avail="disable";else cobj.Avail="true";
-					}
-				else{						//	通常の期間
-					if ((cobj.Blank<ConfigAll.BlankMin)&&(cobj.Blank!=-1)) cobj.Avail="disable";else cobj.Avail="true";
-					}
-				}
-			cobj.Status="未使用("+cobj.Blank+"日前)";
-			if (isBeforeCampeign(today))
-				{
-				cobj.Status="ｷｬﾝﾍﾟｰﾝ準備期間("+cobj.Blank+"日前)";
-				cobj.Avail="false";
-				}
-			}
-
 		//	フィルターによる表示制御
-		if ((Menu1_Filter_status=="使用可能")&&(cobj.Avail!="true"))
-			{
-			ctbl.splice(i,1);i--;continue;
-			}
-		if ((Menu1_Filter_status=="未使用")&&(cobj.inuse=="true"))
-			{
-			ctbl.splice(i,1);i--;continue;
-			}
-		if ((Menu1_Filter_status=="使用中")&&(cobj.inuse!="true"))
-			{
-			ctbl.splice(i,1);i--;continue;
-			}
+		filtered=true;
+		if ((Menu1_Filter_kubun!="")&&(Menu1_Filter_kubun!=kubun))		filtered=false;
+		if ((Menu1_Filter_status=="使用可能")&&(cobj.Avail!="true"))	filtered=false;
+		if ((Menu1_Filter_status=="未使用")&&(cobj.inuse=="true"))		filtered=false;
+		if ((Menu1_Filter_status=="使用中")&&(cobj.inuse!="true"))		filtered=false;
+		ctbl[i].visible=filtered;
 		}
 	//	ソートキー-----------------------------------------------------------------
 	s="<br>並び順：<select size=1 onChange='MENU1_Sort_Change(this.selectedIndex)'>";
@@ -154,11 +107,12 @@ function MENU1()
 	s+="</tr>";
 	//ソートキーの作成------------------------------------------------------------ 
 	maxsort=0;
-	SumMaps=0;SumRefuses=0;SumUsing=0;SumFree=0;SumTotal=0;SumBuildings=0;SumHouses=0;
+	var SumMaps=0,SumRefuses=0,SumUsing=0,SumFree=0,SumTotal=0,SumBuildings=0,SumHouses=0;
 	for(i in Sortkey) delete Sortkey[i];
 	for(i in ctbl)
 		{
 		num=ctbl[i].num;
+		if (ctbl[i].visible==false) continue;
 		if (ctbl[i].Status.indexOf("使用中",0)!=-1) SumUsing++;
 		if (ctbl[i].Status.indexOf("未使用",0)==0) SumFree++;
 		SumBuildings+=parseInt(ctbl[i].buildings,10);
@@ -185,11 +139,12 @@ function MENU1()
 		{
 		i=Sortkey[j].i;
 		num=ctbl[i].num;
+		if (ctbl[i].visible==false) continue;
 		s+="<tr>";
-		s+="<td style='cursor:pointer' title='詳細情報を修正します' onClick='MENU1B("+num+")' align=right>"+num+"</td>";				//	区域番号
-		s+="<td style='cursor:pointer' title='地図の一覧表示を行います' onClick='MENU1P("+num+")'>"+ctbl[i].name+"</td>";							//	区域名
-		s+="<td style='cursor:pointer' title='地図の一覧表示を行います' onClick='MENU1P("+num+")'>"+ctbl[i].kubun+"</td>";						//	区分名
-		s+="<td style='cursor:pointer' title='地図の一覧表示を行います' onClick='MENU1P("+num+")' align=right>"+ctbl[i].maps+"</td>";			//	分割数
+		s+="<td style='cursor:pointer' title='詳細情報を修正します' onClick='MENU1B("+num+")' align=right>"+num+"</td>";			//	区域番号
+		s+="<td style='cursor:pointer' title='地図の一覧表示を行います' onClick='MENU1P("+num+")'>"+ctbl[i].name+"</td>";			//	区域名
+		s+="<td style='cursor:pointer' title='地図の一覧表示を行います' onClick='MENU1P("+num+")'>"+ctbl[i].kubun+"</td>";			//	区分名
+		s+="<td style='cursor:pointer' title='地図の一覧表示を行います' onClick='MENU1P("+num+")' align=right>"+ctbl[i].maps+"</td>";	//	分割数
 		s+="<td align=right style='cursor:pointer' title='特記事項を修正します' onClick='Maint_Refuses("+num+")'>"+ctbl[i].refuses+"</td>";		//	特記件数
 		s+="<td nowrap style='cursor:pointer;font-size:12px;' title='地図の一覧表示を行います' onClick='MENU1P("+num+")'";
 		if (ctbl[i].buildings!=0)
@@ -841,30 +796,6 @@ function ExecMapEditor(num,seq)
 //------------------------------------------------------------------------------------
 //	区域の利用状況更新
 //------------------------------------------------------------------------------------
-function MENU1E(num)
-	{
-	var s,a;
-	var now=new Date();
-	if (Cards[num].Available=="false")
-		{
-		window.scrollTo(0,0);
-		MENU1E_End(num);
-		}
-	else{
-		if (Cards[num].Available=="disable")
-			{
-			s="前回の終了からの最低日数を満たしていないので、使用開始できません。\n";
-			s+="ロールバックしますか？";
-			a=confirm(s);
-			if (!a) return;
-			MENU1E_Start_RollBack(num);
-			return;
-			}
-		window.scrollTo(0,0);
-		MENU1E_Start(num);
-		}
-	}
-
 function MENU1E_Start(num)
 	{
 	window.scrollTo(0,0);
@@ -1827,7 +1758,8 @@ var MMP;
 
 function MoveMap(num)
 	{
-	if (Cards[num].NowUsing)
+	var cobj=getPublicLogs(num);
+	if (cobj.inuse=="true")
 		{
 		alert("地図のメンテナンスは、区域の利用中にはできません。\n区域の使用が終了してから使用してください。");
 		return;
@@ -1941,7 +1873,8 @@ function ExecMoveMap()
 		alert("移動先の区域番号が現在と同じです。\n移動できません。");
 		return;
 		}
-	if (Cards[num2].NowUsing)
+	var cobj=getPublicLogs(num2);
+	if (cobj.inuse=="true")
 		{
 		alert("移動先の区域は、現在使用中です。\n移動先の区域の使用が終了してから移動してください。");
 		return;
@@ -2706,65 +2639,6 @@ function RestoreMapImages(num)
 	MENU1P(num);
 	}
 
-//	特定のカードの使用状況を更新する------------------------------------------
-function CheckCardLog(num)
-	{
-	var text,f,lines,i,luse,nowstatus;
-	var maxlogs,lastuse,lastuser,nowusing,avail;
-	var obj,l;
-	obj=LoadLog(num);
-	l=obj.History.length;
-
-	// 2018/1/19追加 -----------------------------------
-	var now=new Date();
-	var today=now.getFullYear()*10000+(now.getMonth()+1)*100+now.getDate();
-	// 2018/1/19追加 -----------------------------------
-
-	if (obj.Status=="Using")
-		{
-		nowusing=true;
-		lastuse=obj.Latest.Rent;
-		}
-	else{
-		nowusing=false;
-		lastuse=obj.Latest.End;
-		}
-	lastuser=obj.Latest.User;
-	luse=CalcDays(lastuse,"");
-	if (!nowusing)
-		{
-		// 2018/1/19追加 -----------------------------------
-		if (isCampeign(today))		//	キャンペーン期間中
-			{
-			if (luse<ConfigAll.BlankCampeign) avail="disable";else avail="true";
-			}
-		else{
-			if (isAfterCampeign(today))	//	ｷｬﾝﾍﾟｰﾝ期間後30日
-				{
-				if (luse<ConfigAll.BlankAfterCampeign) avail="disable";else avail="true";
-				}
-			else{						//	通常の期間
-				if ((luse<ConfigAll.BlankMin)&&(luse!=-1)) avail="disable";else avail="true";
-				}
-			}
-		nowstatus="未使用("+luse+"日前)";
-		if (isBeforeCampeign(today))
-			{
-			nowstatus="ｷｬﾝﾍﾟｰﾝ準備期間("+luse+"日前)";
-			}
-		// 2018/1/19追加 -----------------------------------
-		}
-	else{
-		avail="false";
-		nowstatus="使用中("+lastuser+"："+lastuse.substring(4,6)+"/"+lastuse.substring(6,8)+"～）";
-		}
-	Cards[num].status=nowstatus;
-	Cards[num].lastuse=lastuse;
-	Cards[num].Available=avail;
-	Cards[num].Blank=luse;
-	Cards[num].NowUsing=nowusing;
-	Cards[num].LastUser=lastuser;
-	}
 //-----------------------------------------------------------------
 function LoadCard(num)
 	{
@@ -2829,7 +2703,6 @@ function LoadCard(num)
 	else{
 		Cards[num].Comments=new Array();
 		}
-	CheckCardLog(num);
 	}
 
 function LoadAllCards()
@@ -2855,6 +2728,7 @@ function GetAvailableDate(num)
 	{
 	var str,sts,atbl,d,i;
 	var d0,nisu;
+	var log=getPublicLogs(num);
 	if (isNaN(num))	//	アパートの場合
 		{
 		sts=GetApartmentStatus(num);
@@ -2865,9 +2739,9 @@ function GetAvailableDate(num)
 		}
 
 	//	通常の区域の場合
-	CheckCardLog(num);
-	d=Cards[num].lastuse;				//	最終使用日
-	if (Cards[num].NowUsing) return d;	//	使用中の場合は開始日を返す
+	d=log.Lastuse;						//	最終使用日
+	if (log.inuse=="true") return d;	//	使用中の場合は開始日を返す
+	//	未使用の場合、前回終了日の次の日から順に可能な日を模索する（ループ）
 	d0=d;
 	nisu=0;
 	while(1==1)

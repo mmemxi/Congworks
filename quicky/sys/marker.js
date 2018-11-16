@@ -180,11 +180,6 @@ function DrawEditMarker()
 function EditMarker(num,seq,Editor)
 	{
 	var c;
-	if (Cards[num].status.indexOf("使用中",0)!=-1)
-		{
-		c=confirm("通常は、マーカー編集は区域が未使用時に行います。\n今編集してもよろしいですか？");
-		if (!c) return;
-		}
 	if (Editor!="MasterClient") CloseFloatings();
 	MarkerEditor=Editor;
 	MarkerType=0;
@@ -349,6 +344,9 @@ function EndofEditMarker(num,seq,mode)
 		v=confirm("編集結果を保存せずに終了しますか？");
 		if (!v) return;
 		}
+
+	var cobj=getPublicLogs(num);
+
 	document.title=RDTitle;
 	window.onscroll="";
 	FloatingMenu.Close();
@@ -365,8 +363,8 @@ function EndofEditMarker(num,seq,mode)
 			Markers.Map[seq].Editor="";
 			Markers.Map[seq].Points=new Array();
 			}
-		if (Cards[num].status.indexOf("使用中",0)==-1)	Markers.Map[seq].Edited="True";
-												else	Markers.Map[seq].Edited="False";
+		if (cobj.Status.indexOf("使用中",0)==-1)	Markers.Map[seq].Edited="True";
+											else	Markers.Map[seq].Edited="False";
 		Markers.Map[seq].Editor=MarkerEditor;
 		Markers.Map[seq].Points=clone(TempMarker.Points);
 		if (Markers.Map[seq].Points.length==0)

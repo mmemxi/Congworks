@@ -6,12 +6,15 @@
 <script language="JavaScript" src="./lib/marker.js"></script>
 <script language="JavaScript" src="./lib/summary.js"></script>
 <script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="./lib/json.js"></script>
+<script language="JavaScript" src="./lib/log.js"></script>
 <script language="JavaScript" src="../sys/sqlite.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // rentB.wsf 長期留守宅の区域を貸し出す
 // 引数１＝会衆番号:ユーザー名:区域番号:地図番号
 //----------------------------------------------------------------
+SQ_Init("congworks.db");
 var targetstr=WScript.Arguments(0);
 //----------------------------------------------------------------
 	targetstr=targetstr.trim();
@@ -55,8 +58,7 @@ var targetstr=WScript.Arguments(0);
 		}
 
 	//	終了期限の取得
-	log=ReadXMLFile(NumFolder(congnum,num)+"log.xml",false);
-	f=fso.FileExists(NumFolder(congnum,num)+"log.xml");
+	log=LoadLog(congnum,num);
 	overday=log.Latest.Limit;
 	//	個人フォルダの編集
 	var pdffile=AddMyMap(user,"B",congnum,num,seq,0,mcount,overday);

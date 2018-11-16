@@ -2,12 +2,60 @@
 function SQliteSetup()
 	{
 //	CreatePublicList();		//	2018/10新設
+//	CreatePublicLogs();		//	2018/11/16新設
 //	CreateReportLogs();		//	2018/10新設
 //	CreateUsers();			//	2018/10新設
 //	CreateSpots();			//	2018/11新設
 //	CreateConfig();			//	2018/11/14新設
-	CreateBuildingFormat();	//	2018/11/14新設
+//	CreateBuildingFormat();	//	2018/11/14新設未完成
 	}
+//-----------------------------------------------------------------------------
+function CreatePublicLogs()
+	{
+	var dir,folders,fitem,num;
+	var log,obj,i;
+	var f;
+	var arr=new Array();
+
+	//	以前の定義を削除する
+	SQ_Exec("delete from PublicLogs where congnum="+congnum+";");
+
+	//	全区域をループする
+	dir=fso.GetFolder(DataFolder());
+	folders=new Enumerator(dir.SubFolders);
+	for(; !folders.atEnd(); folders.moveNext())
+		{
+		fitem=folders.item();
+		if (isNaN(fitem.Name)) continue;
+		num=fso.GetBaseName(fitem.Name);
+
+		f=LogXML(num);
+		log=ReadXMLFile(f,false);
+		if (log=="")
+			{
+			log=NewLog();
+			}
+		else{
+			if (!("History" in log))
+				{
+				log.History=new Array();
+				}
+			}
+		obj=new Object();
+		obj.congnum=congnum;
+		obj.num=num;
+		obj.status=log.Status;
+		obj.userid=log.Latest.User;
+		obj.startday=log.Latest.Rent;
+		obj.endday=log.Latest.End;
+		obj.limitday=log.Latest.Limit;
+		obj.body=JSON.stringify(log.History).replace(/\"/g,"'");
+		arr.push(obj);
+		}
+	SQ_Insert("PublicLogs",arr);
+	}
+//-----------------------------------------------------------------------------
+// 未完成
 //-----------------------------------------------------------------------------
 function CreateBuildingFormat()
 	{

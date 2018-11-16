@@ -104,7 +104,25 @@
 ・ConfigAll及びキャンペーン情報をJSONに保存する方式に切り替える（現時点では併用とし、最終的に旧ファイルを廃止する。newlist.wsf以外のwsfからはまだ撤去していない）
 ・newlist.wsfを廃止。pp/newlist.phpをwsf実行に依存しない形に書き換えた
 ・BuildingFormatテーブルを新設。（今のところ定義だけ）
+・ログファイル(log.xml)をSQlite化（作業中）
+・menu1.js/LoadCardからCheckCardLog処理の呼び出しを除去する。（作業済）
+・MENU1にあるSQ_Readで読んだ値を使用状況に転化して返す関数として独立させる。これをmenu1から文化させる最初の部分とする。(rent.js/getPublicLogs)
 
+*********************************************************
+※注意
+LoadLog(),CheckCardLog処理が毎回呼び出されて非常に遅くなっているのを改善する必要がある。
+
+・CheckCardLogによって作られているCards[num].プロパティの項目を廃止し、他の項目に置換する。
+	Cards[num].status=nowstatus;	//->廃止済
+	Cards[num].lastuse=lastuse;		//->CreateSummaryofPerson以外廃止済
+	Cards[num].Available=avail;		//->廃止済
+	Cards[num].Blank=luse;			//->廃止済
+	Cards[num].NowUsing=nowusing;	//->CreateSummaryofPerson以外廃止済
+	Cards[num].LastUser=lastuser;	//->廃止済
+
+CreateSummaryofPerson関係は、CongworksもQuickyもサマリ処理に問題があるので要改善
+
+・他にもLoadLog処理があるなら整理していく
 実施予定：2018/11/18
 実施日：
 

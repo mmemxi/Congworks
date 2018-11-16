@@ -1,11 +1,22 @@
 //------------------------------------------------------------------
-function LogXML(congnum,num)
-	{
-	return NumFolder(congnum,num)+"log.xml";
-	}
-//------------------------------------------------------------------
 function LoadLog(congnum,num)
 	{
+	var logobj=SQ_Read("PublicLogs","congnum="+congnum+" and num="+num,"");
+	var result=new Object();
+	if (logobj.length==0)	return NewLog();
+	var obj=logobj[0];
+	result.congnum=congnum;
+	result.num=num;
+	result.Status=obj.status;
+	result.Latest=new Object();
+	result.Latest.User=obj.userid;
+	result.Latest.Rent=obj.startday;
+	result.Latest.End=obj.endday;
+	result.Latest.Limit=obj.limitday;
+	result.History=JSON.parse(obj.body.replace(/'/g,"\""));
+	return result;
+
+/*
 	var f=LogXML(congnum,num);
 	var obj=ReadXMLFile(f,false);
 	if (obj=="")
@@ -18,10 +29,22 @@ function LoadLog(congnum,num)
 		obj.History=new Array();
 		}
 	return obj;
+*/
+
 	}
-function SaveLog(obj,congnum,num)
+function SaveLog(log,congnum,num)
 	{
-	WriteXMLFile(obj,LogXML(congnum,num));
+	var obj=new Object();
+	obj.congnum=congnum;
+	obj.num=num;
+	obj.status=log.Status;
+	obj.userid=log.Latest.User;
+	obj.startday=log.Latest.Rent;
+	obj.endday=log.Latest.End;
+	obj.limitday=log.Latest.Limit;
+	obj.body=JSON.stringify(log.History).replace(/\"/g,"'");
+	SQ_Replace("PublicLogs",obj);
+//	WriteXMLFile(obj,LogXML(congnum,num));
 	}
 function NewLog()
 	{

@@ -1,6 +1,22 @@
 //------------------------------------------------------------------
 function LoadLog(num)
 	{
+	var logobj=SQ_Read("PublicLogs","congnum="+congnum+" and num="+num,"");
+	var result=new Object();
+	if (logobj.length==0) return NewLog();
+	var obj=logobj[0];
+	result.congnum=congnum;
+	result.num=num;
+	result.Status=obj.status;
+	result.Latest=new Object();
+	result.Latest.User=obj.userid;
+	result.Latest.Rent=obj.startday;
+	result.Latest.End=obj.endday;
+	result.Latest.Limit=obj.limitday;
+	result.History=JSON.parse(obj.body.replace(/'/g,"\""));
+	return result;
+
+/*  SQliteÇÃèàóùÇ…íuä∑ÇµÇΩÇÃÇ≈îpé~
 	var f=LogXML(num);
 	var obj=ReadXMLFile(f,false);
 	if (obj=="")
@@ -13,18 +29,30 @@ function LoadLog(num)
 		obj.History=new Array();
 		}
 	return obj;
+*/
 	}
 
-function SaveLog(obj,num)
+function SaveLog(log,num)
 	{
-	WriteXMLFile(obj,LogXML(num));
+	var obj=new Object();
+	obj.congnum=congnum;
+	obj.num=num;
+	obj.status=log.Status;
+	obj.userid=log.Latest.User;
+	obj.startday=log.Latest.Rent;
+	obj.endday=log.Latest.End;
+	obj.limitday=log.Latest.Limit;
+	obj.body=JSON.stringify(log.History).replace(/\"/g,"'");
+	SQ_Replace("PublicLogs",obj);
+
+//	WriteXMLFile(obj,LogXML(num));	//	SQliteÇÃèàóùÇ…íuä∑ÇµÇΩÇÃÇ≈îpé~
 	var sql="update PublicList set ";
-	if (obj.Status=="Free")	sql+=" inuse='false',";
+	if (log.Status=="Free")	sql+=" inuse='false',";
 					else	sql+=" inuse='true',";
-	sql+="userid='"+obj.Latest.User+"',";
-	sql+="startday="+obj.Latest.Rent+",";
-	sql+="endday="+obj.Latest.End+",";
-	sql+="limitday="+obj.Latest.Limit;
+	sql+="userid='"+log.Latest.User+"',";
+	sql+="startday="+log.Latest.Rent+",";
+	sql+="endday="+log.Latest.End+",";
+	sql+="limitday="+log.Latest.Limit;
 	sql+=" where congnum="+congnum+" and num="+num+";";
 	SQ_Exec(sql);
 	}

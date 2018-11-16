@@ -3,6 +3,8 @@
 <script language="JavaScript" src="./lib/common.js"></script>
 <script language="JavaScript" src="./lib/xml.js"></script>
 <script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="./lib/json.js"></script>
+<script language="JavaScript" src="./lib/log.js"></script>
 <script language="JavaScript" src="../sys/sqlite.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
@@ -10,11 +12,11 @@
 // 引数１＝会衆番号
 // 引数２＝区域番号
 //----------------------------------------------------------------
+SQ_Init("congworks.db");
 var congnum=WScript.Arguments(0);
 var num=WScript.Arguments(1);
 var str;
 var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
-SQ_Init("congworks.db");
 //(1)１行目：区域名----------------------------------------------------------------
 var dfile=ConfigXML(congnum,num);
 var cobj;
@@ -28,6 +30,7 @@ WScript.StdOut.Write(str+"\n");
 str=GetAvailableDate(congnum,num);
 WScript.StdOut.Write(str+"\n");
 //(3)３行目：キャンペーン期間------------------------------------------------------
+/*
 var cpdays=true;
 var i;
 str="";
@@ -58,6 +61,62 @@ for(i=0;i<users.length;i++)
 	txt+=users[i].userid;
 	}
 WScript.StdOut.Write(txt);
+*/
 WScript.quit();
+//-------------------------------------------------------------------
+// 2018/11/16 campeign.jsから移動してきた
+//-------------------------------------------------------------------
+function GetAvailableDate(congnum,num)
+	{
+	var str,sts,atbl,d,i;
+	var d0,nisu;
+
+	//	その区域の使用状況を取得
+	var card=new Object();
+	var log=LoadLog(congnum,num);
+	if (log!="")
+		{
+		if ("Status" in log)
+			{
+			if (log.Status=="Using")
+				{
+				card.NowUsing=true;
+				card.lastuse=log.Latest.Rent;
+				}
+			else{
+				card.NowUsing=false;
+				card.lastuse=log.Latest.End;
+				}
+			}
+		}
+	else{
+		card.NowUsing=false;
+		card.lastuse="20000101";
+		}
+
+	d=card.lastuse;					//	最終使用日
+	if (card.NowUsing) return d;	//	使用中の場合は開始日を返す
+	d0=d;
+	nisu=0;
+	while(1==1)
+		{
+		d0=AddDays(d0,1);
+		nisu++;
+		if (isBeforeCampeign(d0)) continue;
+		if (isCampeign(d0))
+			{
+			if (nisu>=ConfigAll.BlankCampeign) break;
+			continue;
+			}
+		if (isAfterCampeign(d0))
+			{
+			if (nisu>=ConfigAll.BlankAfterCampeign) break;
+			continue;
+			}
+		if (nisu>=ConfigAll.BlankMin) break;
+		}
+	return d0;
+	}
+
 </script>
 </job>

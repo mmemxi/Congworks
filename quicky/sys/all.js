@@ -48,14 +48,19 @@ function All(mode)
 
 function SetAllMap()
 	{
-	var i,j;
+	var i,j,num;
 	var layer="";
 	var vml=new Poly();
 	var k,kp,cl,charcl;
 	var al,ct1,ct2,ct3;
+
+	//	使用状況テーブルの取得
+	var cobj=getPublicLogs();
+
 	vml.mapsize=1;
 	vml.width=AllMapX;
 	vml.height=AllMapY;
+
 	for(i in AllMaps)
 		{
 		k=AllMaps[i].Group;
@@ -65,18 +70,18 @@ function SetAllMap()
 			vcmd="CloseFloatings();ClearLayer(\"Popup\");MENU1E("+i+");";
 			vtitle=AllMaps[i].Name;
 			cl="";
-			if (Cards[i].Available=="true")		{cl="#00ffff";charcl="#0000ff";}
-			if (Cards[i].Available=="false")	{cl="#ffff00";charcl="#000000";}
-			if (Cards[i].Available=="disable")
+			if (cobj[i].Available=="true")	{cl="#00ffff";charcl="#0000ff";}
+			if (cobj[i].Available=="false")	{cl="#ffff00";charcl="#000000";}
+			if (cobj[i].Available=="disable")
 				{
 				cl="#ff0000";charcl="#ff0000";
 				vcmd='a=0;';
 				}
-			vtitle+="<br>"+Cards[i].status;
+			vtitle+="<br>"+cobj[i].Status;
 			al=i+"<br>";
-			if (Cards[i].Available=="true")
+			if (cobj[i].Available=="true")
 				{
-				ct1=Cards[i].Blank;
+				ct1=cobj[i].Blank;
 				ct2=Math.floor(ct1/28);
 				ct3=ct1%28;
 				ct3=Math.floor(ct3/7);
