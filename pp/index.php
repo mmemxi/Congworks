@@ -133,6 +133,8 @@ function GoFoward()
 	preload=true;
 	i=document.forms[0].congnum.selectedIndex;
 	userid=document.forms[0].UserID.value;
+	userid=userid.replace(/ /g, '');
+	userid=userid.replace(/　/g, '');
 	congnum=document.forms[0].congnum.value;
 	congname=document.forms[0].congnum.options[i].text;
 

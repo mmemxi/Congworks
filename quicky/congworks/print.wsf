@@ -21,11 +21,6 @@ if (!fso.FolderExists(dstfolder))					//	印刷キューのフォルダが無い
 	WScript.StdOut.Write("Error:NoQue");
 	WScript.quit();
 	}
-if (!fso.FileExists(dstfolder+qt+"waiting.txt"))		//	印刷用常駐アプリが動いていない
-	{
-	WScript.StdOut.Write("Error:NoPrintSystem");
-	WScript.quit();
-	}
 if (!fso.FileExists(pdffile))						//	印刷対象のＰＤＦファイルが無い
 	{
 	WScript.StdOut.Write("Error:NoPrintFile");

@@ -101,17 +101,14 @@
 ・ForceEndをディレクトリ一覧からではなく、PublicListから処理する
 ・Ezraをバッチファイル非依存、相対ディレクトリに対応させる
 ・ReadJSON,WriteJSONを実装する（最初に導入したのはspot.xmlの内容。引数は(会衆番号,"spots","")の３つ
-・ConfigAll及びキャンペーン情報をJSONに保存する方式に切り替える（現時点では併用とし、最終的に旧ファイルを廃止する。newlist.wsf以外のwsfからはまだ撤去していない）
-・newlist.wsfを廃止。pp/newlist.phpをwsf実行に依存しない形に書き換えた
+・ConfigAll及びキャンペーン情報をJSONに保存する方式に切り替える（現時点では併用とし、最終的に旧ファイルを廃止する）
+・PHPからwsfを呼び出す処理を廃止していく。まずはnewlist.wsf,verify.wsfを廃止。SQlite化が進むにつれ順次置換していく。
 ・BuildingFormatテーブルを新設。（今のところ定義だけ）
-・ログファイル(log.xml)をSQlite化（作業中）
+・区域ログファイル(log.xml)をSQlite化
 ・menu1.js/LoadCardからCheckCardLog処理の呼び出しを除去する。（作業済）
 ・MENU1にあるSQ_Readで読んだ値を使用状況に転化して返す関数として独立させる。これをmenu1から文化させる最初の部分とする。(rent.js/getPublicLogs)
-
-*********************************************************
-※注意
-LoadLog(),CheckCardLog処理が毎回呼び出されて非常に遅くなっているのを改善する必要がある。
-
+・PDFPrinter.jsの並列起動抑制がまだ効いていない→htaアプリに変更
+・Congworksの名前に空白が含まれている場合に除去する処理が働いていない→修正(index.php,pp/index.phpの２か所)
 ・CheckCardLogによって作られているCards[num].プロパティの項目を廃止し、他の項目に置換する。CheckCardLog自体を廃止。
 	Cards[num].status=nowstatus;	//->廃止済
 	Cards[num].lastuse=lastuse;		//->廃止済
@@ -121,20 +118,18 @@ LoadLog(),CheckCardLog処理が毎回呼び出されて非常に遅くなっているのを改善する必要
 	Cards[num].LastUser=lastuser;	//->廃止済
 ・CreateSummaryofPerson関係は、CongworksもQuickyもサマリ処理に問題があるので要改善（改善済）
 ・GetOverDayもログを読んでいたので廃止
-・他にもLoadLog処理があるなら整理していく
 実施予定：2018/11/18
 実施日：
 
 
 ===============================================
 ●後続バージョン
+・アパートログ(*.txt)をSQlite化
+・マーカーログ(marker.xml)をSQlite化
+・カード情報(config.xml)をSQlite化
 ・building.xml（カード別にある）をテーブルに変更する。(テーブル名：BuildingFormat)
 ・アパートおよび集合住宅の追加時、既存の物件名と同じにすることは許されない。物件名の変更時も他の物件と同じにできない。（会衆内で）
 ・サマリー情報(apartment.txt,person.txt)の生成処理をSQliteに置換する。
-・ConfigAllをXMLから読んでいる個所を、JSONからの読み取りに変更していく
 ・menu1.jsをメンテ部と貸し出し部に分ける
-・アパートログをSQlite化
 ・ビル構造をすべてbuildingフォルダに統一する
-・区域ログをSQlite化
-・個人ログをSQlite化
 ・アパート区域、前回から-1日が対象になっていないバグを修正

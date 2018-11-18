@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="shift-jis"?>
+<HTA:APPLICATION ID="PDFPrintServer"
+APPLICATIONNAME="PDFPrintServer"
+BORDER="dialog"
+BORDERSTYLE="static"
+CAPTION="yes"
+INNERBORDER="no"
+MAXIMIZEBUTTON="no"
+MINIMIZEBUTTON="yes"
+SHOWINTASKBAR="yes"
+SINGLEINSTANCE="yes"
+SYSMENU="no"
+VERSION="1.00"
+WINDOWSTATE="normal"
+SCROLL="no"
+SCROLLFLAT="yes"
+SELECTION="no"
+CONTEXTMENU="no"
+NAVIGABLE="no"
+/>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=shift-jis">
+<meta HTTP-EQUIV="imagetoolbar" CONTENT="no">
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+<title>PDF Printer Server</title>
+</head>
+<body onload="boot()" onbeforeunload="unboot()" style="overflow:hidden;" ondragstart="return false;" onselectstart="return false">
+<div style="font-size:14px;text-align:center;">待機中<br>
+<input type=button value="強制終了" onclick="terminate()"></div>
+<script language="JavaScript">
+//----------------------------------------------------------
+// PDF Print Server (For Congworks)
+// 常駐してPDFを印刷するHTAアプリケーション
+// 監視フォルダにPDFファイルが存在すると、それを印刷して処理済フォルダに移動する
+// 監視フォルダ  →c:\temp\quicky\pdfque
+// 処理済フォルダ→c:\temp\quicky\pdfque\done
+// 動作中ならc:\temp\quicky\pdfqueにwaiting.txtが存在する
+// 終了時waiting.txtを削除する
+//----------------------------------------------------------
+var WshShell = new ActiveXObject("WScript.Shell");
+var Shell = new ActiveXObject("Shell.Application");
+var fso=new ActiveXObject("Scripting.FileSystemObject");
+var path1="c:\\temp\\quicky\\pdfque";
+var path2="c:\\temp\\quicky\\pdfque\\done";
+var f,result;
+var exit=false;
+if (!fso.FolderExists("c:\\temp"))	fso.CreateFolder("c:\\temp");
+if (!fso.FolderExists("c:\\temp\\quicky"))	fso.CreateFolder("c:\\temp\\quicky");
+if (!fso.FolderExists("c:\\temp\\quicky\\pdfque"))	fso.CreateFolder("c:\\temp\\quicky\\pdfque");
+if (!fso.FolderExists("c:\\temp\\quicky\\pdfque\\done"))	fso.CreateFolder("c:\\temp\\quicky\\pdfque\\done");
+f=fso.CreateTextFile("c:\\temp\\quicky\\pdfque\\waiting.txt",true);f.close();
+WshShell.CurrentDirectory="C:\\Program Files\\Tracker Software\\PDF Viewer";
+//----------------------------------------------------------
+function boot()
+	{
+	window.resizeTo(120,120);
+	CheckDirectory();
+	}
+function unboot()
+	{
+	if (fso.FileExists("c:\\temp\\quicky\\pdfque\\waiting.txt"))	fso.DeleteFile("c:\\temp\\quicky\\pdfque\\waiting.txt",true);
+	}
+function terminate()
+	{
+	var r=confirm("このプログラムを終了すると、Congworksから地図が印刷されなくなります。\n終了してもよろしいですか？");
+	if (!r) return false;
+	window.close();
+	}
+function CheckDirectory()
+	{
+	var dir,files,file,ext,cmd,result;
+	dir=fso.GetFolder(path1);
+	files=new Enumerator(dir.Files);
+	for(; !files.atEnd(); files.moveNext())
+		{
+		file=files.item().Name+"";
+		ext=fso.GetExtensionName(file).toLowerCase();
+		if (ext!="pdf") continue;
+		cmd="PDFXCview.exe /print \""+path1+"\\"+file+"\"";
+		WshShell.Run(cmd,0,true);
+		fso.CopyFile(path1+"\\"+file,path2+"\\",true);
+		try	{
+			fso.DeleteFile(path1+"\\"+file,true);
+			}
+		catch(e){}
+		}
+	if (!exit) setTimeout("CheckDirectory()",2500);
+	}
+</script>
+</body>
+</html>
