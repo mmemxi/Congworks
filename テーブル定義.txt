@@ -1,6 +1,6 @@
 //------------------------------------------------------------------
 テーブル：
-	ReportLogs
+	ReportLogs(reportlog.txtの代替)
 定義：
 	create table ReportLogs (congnum integer,execdate integer,range_start integer,range_end integer);
 項目：
@@ -12,14 +12,14 @@
 	setup.jsのCreateReportLogs()
 //------------------------------------------------------------------
 テーブル：
-	CWTokens
+	CWTokens(新設)
 定義：
 	create table CWTokens (TokenNo integer);
 項目：
 	TokenNo			トークン通し番号（自動カウントアップされる）
 //------------------------------------------------------------------
 テーブル：
-	CWUsers
+	CWUsers(users.txt,users2.txtの代替)
 定義：
 	create table CWUsers(congnum integer,userid text,authority text,primary key(congnum,authority,userid));
 項目：
@@ -30,7 +30,7 @@
 	setup.jsのCreateUsers()
 //------------------------------------------------------------------
 テーブル：
-	PublicList
+	PublicList(カード情報とログ情報をミックスしたテーブルとして新設)
 定義：
 	create table PublicList(congnum integer,num integer,name text,kubun text,maps integer,refuses integer,buildings integer,persons integer,inuse boolean,userid text,startday integer,endday integer,limitday integer,primary key(congnum,num));
 項目：
@@ -49,10 +49,9 @@
 	limitday	終了予定日（数値）
 作成：
 	setup.jsのCreatePublicList()
-
 //------------------------------------------------------------------
 テーブル：
-	JSON
+	JSON(ＪＳＯＮ情報を保存する汎用テーブルとして使用)
 定義：
 	create table JSON(key1 text,key2 text,key3 text,body text,primary key(key1,key2,key3));
 項目：
@@ -60,9 +59,12 @@
 	key2		キー２
 	key3		キー３
 	body		JSON文字列
+用途：
+	34173+config+all  会衆別コンフィグ内容
+	34173+spots+""    スポット情報
 //------------------------------------------------------------------
 テーブル：
-	PublicLogs
+	PublicLogs(log.xmlの代替)
 定義：
 	create table PublicLogs(congnum integer,num integer,status text,userid text,startday integer,endday integer,limitday integer,body text,primary key(congnum,num));
 項目：
@@ -75,6 +77,29 @@
 	limitday	期限日（最新状況）
 	body		ログ本体(JSON)
 	※status～limitdayの部分は、ログ本体の最終サマリーから取得する「最新状況」。
+//------------------------------------------------------------------
+テーブル：
+	Cards(config.xmlの代替)
+定義：
+create table Cards(congnum integer,num integer,name text,count integer,kubun text,MapType integer,HeaderType integer,spanDays integer,AllMapPosition text,AllMapTitle text,BuildingsCount integer,BuildingsHouse integer,JSON_Clip text,JSON_RTB text,JSON_Comments,JSON_Condominium text,primary key(congnum,num));
+項目：
+	congnum			会衆番号（数値）
+	num				区域番号（数値）
+	name			区域名（文字）
+	count			地図枚数（数値）
+	kubun			区分（文字）
+	Maptype			地図タイプ(1=通常,2=集合住宅)
+	HeaderType		見出しタイプ(1=新規/留守/留守2  2=1回目/2回目/3回目)
+	spanDays		この区域の終了までの日数（０なら他の区域と同じ）
+	AllMapPosition	全体地図内における位置（VML文字列）
+	AllMapTitle		全体地図内における区域番号の配置位置
+	BuildingsCount	この区域内の集合住宅の建物数
+	BuildingsHouse	この区域内の集合住宅の世帯数
+	JSON_Clip		地図裏面のクリップ情報(JSON形式,地図枚数分の配列)
+	JSON_RTB		特記情報(JSON形式,特記情報件数分の配列)
+	JSON_Comments	コメント情報(JSON形式,コメント数分の配列)
+	JSON_Condominium	集合住宅情報(JSON形式,物件数分の配列)
+//------------------------------------------------------------------
 
 
 

@@ -4,6 +4,8 @@
 <script language="JavaScript" src="./lib/xml.js"></script>
 <script language="JavaScript" src="./lib/building.js"></script>
 <script language="JavaScript" src="./lib/vml.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript" src="../sys/card.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // viewA.wsf 集中インターホンの詳細を表示する
@@ -19,6 +21,8 @@ var targetstr=WScript.Arguments(0);
 	num=tbl[2];
 	seq=tbl[3];
 
+	SQ_Init("congworks.db");
+
 	var i,id,s;
 	var BTB;
 	var vml=new Poly();
@@ -32,7 +36,8 @@ var targetstr=WScript.Arguments(0);
 	vml.height=2362;
 
 	//	建物ＩＤを取得
-	card=ReadXMLFile(ConfigXML(congnum,num),true);
+	var obj=SQ_Read("Cards","congnum="+congnum+" and num="+num,"");
+	card=GetCardInfo(obj[0]);
 	BTB=card.RTB;
 	id=-1;
 	for(i=0;i<BTB.length;i++)

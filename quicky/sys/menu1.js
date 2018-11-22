@@ -373,11 +373,7 @@ function MENU1B(num)
 			cm.Top=parseInt(cm.Top,10);
 			cm.Left=parseInt(cm.Left,10);
 			cm.Size=parseInt(cm.Size,10);
-			while(1==1)
-				{
-				if (cm.Text.indexOf("@br@",0)==-1) break;
-				cm.Text=cm.Text.replace("@br@","\r\n");
-				}
+			cm.Text=cm.Text.replace(/@br@/g,"\r\n");
 			s+="<tr><td><textarea name='CM"+i+"' cols=80 rows=4>"+cm.Text+"</textarea>";
 			s+="</td>";
 			s+="<td><input type=button style='width:120px;' value='à íuéwíË(";
@@ -420,11 +416,8 @@ function MENU1B_Store(num)
 	for(i=0;i<Cards[num].Comments.length;i++)
 		{
 		s=document.forms[0].elements["CM"+i].value;
-		while(1==1)
-			{
-			if (s.indexOf("\r\n",0)==-1) break;
-			s=s.replace("\r\n","@br@");
-			}
+		s=s.replace(/\r\n/g,"@br@");
+		s=s.replace(/\n/g,"@br@");
 		cd.Comments[i].Text=s;
 		}
 	}
@@ -703,11 +696,7 @@ function MENU1PBig(num,seq)
 		s+="<div style='position:absolute;z-index:2;font-size:"+cm.Size+"px;color:#0000ff;";
 		s+="left:"+cm.Left+"px;top:"+cm.Top+"px;'>";
 		cms=cm.Text;
-		while(1==1)
-			{
-			if (cms.indexOf("@br@",0)==-1) break;
-			cms=cms.replace("@br@","<br>");
-			}
+		cms=cms.replace(/@br@/g,"<br>");
 		s+=cms+"</div>";
 		}
 
@@ -1386,53 +1375,8 @@ function AddDays(ymd,adds)
 
 function SaveConfig(num)
 	{
-	var obj=new Object();
-	var i,j;
-	obj.name=Cards[num].name;
-	obj.count=Cards[num].count;
-	obj.kubun=Cards[num].kubun;
-	if ("MapType" in Cards[num]) obj.MapType=Cards[num].MapType;
-					else	obj.MapType=0;
-	if ("HeaderType" in Cards[num]) obj.HeaderType=Cards[num].HeaderType;
-					else	obj.HeaderType=0;
-	if ("spanDays" in Cards[num]) obj.spanDays=Cards[num].spanDays;
-	if ("AllMapPosition" in Cards[num])	obj.AllMapPosition=Cards[num].AllMapPosition;
-	if ("AllMapTitle" in Cards[num])	obj.AllMapTitle=Cards[num].AllMapTitle;
-	if ("Buildings" in Cards[num])
-		{
-		obj.Buildings=new Object();
-		obj.Buildings.Count=Cards[num].Buildings.Count;
-		obj.Buildings.House=Cards[num].Buildings.House;
-		}
-	if ("Clip" in Cards[num])
-		{
-		obj.Clip=new Array();
-		j=0;
-		for(i in Cards[num].Clip)
-			{
-			obj.Clip[j]=new Object();
-			obj.Clip[j].Seq=i;
-			obj.Clip[j].Area=Cards[num].Clip[i].Area;
-			if ("Zoom" in Cards[num].Clip[i])
-				{
-				obj.Clip[j].Zoom=Cards[num].Clip[i].Zoom;
-				obj.Clip[j].Top=Cards[num].Clip[i].Top;
-				obj.Clip[j].Left=Cards[num].Clip[i].Left;
-				}
-			j++;
-			}
-		}
-	if ("Condominium" in Cards[num])
-		{
-		obj.Condominium=clone(Cards[num].Condominium);
-		}
-	if ("Comments" in Cards[num])
-		{
-		obj.Comments=clone(Cards[num].Comments);
-		}
-	obj.RTB=clone(Cards[num].RTB);
-	WriteXMLFile(obj,ConfigXML(num));
-	//	SQliteèàóùÇí«â¡(2018/11/10)
+	var obj=SetCardInfo(num);
+	SQ_Replace("Cards",obj);
 	var sqobj=CreatePublicList_One(num);
 	SQ_Replace("PublicList",sqobj);
 	}
@@ -2636,82 +2580,29 @@ function RestoreMapImages(num)
 //-----------------------------------------------------------------
 function LoadCard(num)
 	{
-	var text,p1,p2,count,name,kubun;
-	var i,j,f,lines,obj,almap,o,s,ovr;
-	Cards[num]=new Object();
-	obj=new Object();
-	obj=ReadXMLFile(ConfigXML(num),false)
-	Cards[num].name=obj.name;
-	Cards[num].count=obj.count;
-	Cards[num].kubun=obj.kubun;
-	if ("MapType" in obj) Cards[num].MapType=parseInt(obj.MapType,10);else Cards[num].MapType=0;
-	if ("HeaderType" in obj) Cards[num].HeaderType=parseInt(obj.HeaderType,10);else Cards[num].HeaderType=1;
-	if ("spanDays" in obj) Cards[num].spanDays=parseInt(obj.spanDays,10);
-	if ("AllMapPosition" in obj) Cards[num].AllMapPosition=obj.AllMapPosition;
-	if ("AllMapTitle" in obj) Cards[num].AllMapTitle=obj.AllMapTitle;
-	if ("RTB" in obj)	Cards[num].RTB=clone(obj.RTB);
-				else	Cards[num].RTB=new Array();
-	Cards[num].refuses=Cards[num].RTB.length;
-	if ("Buildings" in obj)
-		{
-		Cards[num].Buildings=new Object();
-		Cards[num].Buildings.Count=parseInt(obj.Buildings.Count,10);
-		Cards[num].Buildings.House=parseInt(obj.Buildings.House,10);
-		}
-	else{
-		Cards[num].Buildings=GetBuildingSummeryInfo(num);
-		SaveConfig(num);
-		}
-	if (Cards[num].MapType==1)	//	èWçáèZëÓÇÃèÍçá
+	var obj=SQ_Read("Cards","congnum="+congnum+" and num="+num,"");
+	Cards[num]=GetCardInfo(obj[0]);
+	if (Cards[num].MapType==1)
 		{
 		Cards[num].Buildings.Count=Condominiums[num].Buildings;
 		Cards[num].Buildings.House=Condominiums[num].Rooms;
-		}
-	Cards[num].Clip=new Array();
-	if ("Clip" in obj)
-		{
-		for(i=0;i<obj.Clip.length;i++)
-			{
-			j=parseInt(obj.Clip[i].Seq,10);
-			Cards[num].Clip[j]=new Object();
-			Cards[num].Clip[j].Area=obj.Clip[i].Area;
-			if ("Zoom" in obj.Clip[i])
-				{
-				Cards[num].Clip[j].Zoom=obj.Clip[i].Zoom;
-				Cards[num].Clip[j].Top=obj.Clip[i].Top;
-				Cards[num].Clip[j].Left=obj.Clip[i].Left;
-				}
-			}
-		}
-	if ("Condominium" in obj)
-		{
-		Cards[num].Condominium=clone(obj.Condominium);
-		}
-	else{
-		Cards[num].Condominium=new Array();
-		}
-	if ("Comments" in obj)
-		{
-		Cards[num].Comments=clone(obj.Comments);
-		}
-	else{
-		Cards[num].Comments=new Array();
 		}
 	}
 
 function LoadAllCards()
 	{
 	Cards=new Array();
-	var dir,folders,obj,num;
-	dir=fso.GetFolder(DataFolder());
-	folders=new Enumerator(dir.SubFolders);
-	for(; !folders.atEnd(); folders.moveNext())
+	var i,num;
+	var obj=SQ_Read("Cards","congnum="+congnum,"");
+	for(i=0;i<obj.length;i++)
 		{
-		obj=folders.item();
-		if (isNaN(obj.Name)) continue;
-		num=fso.GetBaseName(obj.Name);
-		num=parseInt(num,10);
-		LoadCard(num);
+		num=parseInt(obj[i].num,10);
+		Cards[num]=GetCardInfo(obj[i]);
+		if (Cards[num].MapType==1)
+			{
+			Cards[num].Buildings.Count=Condominiums[num].Buildings;
+			Cards[num].Buildings.House=Condominiums[num].Rooms;
+			}
 		}
 	}
 //-------------------------------------------------------------------

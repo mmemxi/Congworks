@@ -1,13 +1,69 @@
 //-----------------------------------------------------------------------------
 function SQliteSetup()
 	{
-//	CreatePublicList();		//	2018/10新設
-//	CreatePublicLogs();		//	2018/11/16新設
-//	CreateReportLogs();		//	2018/10新設
-//	CreateUsers();			//	2018/10新設
-//	CreateSpots();			//	2018/11新設
-//	CreateConfig();			//	2018/11/14新設
+	CreateCards();			//	カード情報の移行		2018/11/22新設、3.05セットアップ時に必要
+//	CreatePublicList();		//	会衆用区域一覧の作成	2018/10新設		3.04セットアップ時に実行
+//	CreatePublicLogs();		//	log.xmlの移行			2018/11/16新設	3.04セットアップ時に実行
+//	CreateReportLogs();		//	レポート作成ログの作成	2018/10新設		3.04セットアップ時に実行
+//	CreateUsers();			//	ユーザー情報の作成		2018/10新設		3.04セットアップ時に実行
+//	CreateSpots();			//	スポット情報の作成		2018/11新設		3.04セットアップ時に実行
+//	CreateConfig();			//	環境設定Allの作成		2018/11/14新設	3.04セットアップ時に実行
 //	CreateBuildingFormat();	//	2018/11/14新設未完成
+	}
+//-----------------------------------------------------------------------------
+function CreateCards()
+	{
+	var dir,folders,fitem,num;
+	var obj,cd,i;
+	var f,str;
+	var arr=new Array();
+
+	//	以前の定義を削除する
+	SQ_Exec("delete from Cards where congnum="+congnum+";");
+
+	//	全区域をループする
+	dir=fso.GetFolder(DataFolder());
+	folders=new Enumerator(dir.SubFolders);
+	for(; !folders.atEnd(); folders.moveNext())
+		{
+		fitem=folders.item();
+		if (isNaN(fitem.Name)) continue;
+		num=fso.GetBaseName(fitem.Name);
+		if (!fso.FileExists(ConfigXML(num))) continue;
+		obj=ReadXMLFile(ConfigXML(num),false);
+		cd=new Object();
+		cd.congnum=congnum;
+		cd.num=num;
+		cd.name=obj.name;
+		cd.count=obj.count;
+		cd.kubun=obj.kubun;
+		cd.MapType=obj.MapType;
+		cd.HeaderType=obj.HeaderType;
+		if ("spanDays" in obj)	cd.spanDays=obj.spanDays;
+						else	cd.spanDays=0;
+		if (!("AllMapPosition" in obj)) obj.AllMapPosition="";
+		cd.AllMapPosition=obj.AllMapPosition;
+		if (!("AllMapTitle" in obj)) obj.AllMapTitle="";
+		cd.AllMapTitle=obj.AllMapTitle;
+		cd.BuildingsCount=obj.Buildings.Count;
+		cd.BuildingsHouse=obj.Buildings.House;
+
+		if (!("Clip" in obj))	obj.Clip=new Array();
+		str=JSON.stringify(obj.Clip);
+		cd.JSON_Clip=str.replace(/\"/g,"'");
+		if (!("RTB" in obj))	obj.RTB=new Array();
+		str=JSON.stringify(obj.RTB);
+		cd.JSON_RTB=str.replace(/\"/g,"'");;
+		if (!("Comments" in obj))	obj.Comments=new Array();
+		str=JSON.stringify(obj.Comments);
+		cd.JSON_Comments=str.replace(/\"/g,"'");;
+		if (!("Condominium" in obj))	obj.Condominium=new Array();
+		str=JSON.stringify(obj.Condominium);
+		cd.JSON_Condominium=str.replace(/\"/g,"'");;
+		
+		arr.push(cd);
+		}
+	SQ_Insert("Cards",arr);
 	}
 //-----------------------------------------------------------------------------
 function CreatePublicLogs()

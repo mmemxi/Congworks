@@ -6,8 +6,9 @@
 <script language="JavaScript" src="./lib/marker.js"></script>
 <script language="JavaScript" src="./lib/json.js"></script>
 <script language="JavaScript" src="./lib/log.js"></script>
-<script language="JavaScript" src="./lib/saveconfig.js"></script>
+
 <script language="JavaScript" src="./lib/campeign.js"></script>
+<script language="JavaScript" src="../sys/card.js"></script>
 <script language="JavaScript" src="../sys/sqlite.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
@@ -18,15 +19,16 @@
 SQ_Init("congworks.db");
 var congnum=WScript.Arguments(0);
 var num=WScript.Arguments(1);
-var Cards=new Array();
 var text,stream,Markers;
 var BTB,i,j,logobj,r;
 //	環境設定を取得
 var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
 // カード情報の読込-----------------------------------------------------------
-LoadCard(congnum,num);
+var Cards=new Array();
+var obj=SQ_Read("Cards","congnum="+congnum+" and num="+num,"");
+Cards[num]=GetCardInfo(obj[0]);
 // ログの処理----------------------------------------------------------------
-var obj=LoadLog(congnum,num);
+obj=LoadLog(congnum,num);
 if (obj.Status!="Using")		//	使用中でない
 	{
 	WScript.StdOut.Write("ng");
@@ -75,69 +77,17 @@ for(i=0;i<BTB.length;i++)
 			}
 		}
 	}
-if (j>0)	SaveConfig(congnum,num);
+if (j>0)
+	{
+	obj=SetCardInfo(num);
+	SQ_Replace("Cards",obj);
+	}
 //----------------------------------------------------------------
 // 個人用留守宅情報の更新
 CreateSummaryofPerson(congnum,num);
 //----------------------------------------------------------------
 WScript.StdOut.Write("ok");
 WScript.quit();
-//----------------------------------------------------------------
-function LoadCard(congnum,num)
-	{
-	var text,p1,p2,count,name,kubun;
-	var i,j,f,lines,obj,almap,o,s,ovr;
-	Cards[num]=new Object();
-	obj=new Object();
-	obj=ReadXMLFile(ConfigXML(congnum,num),false);
-	Cards[num].name=obj.name;
-	Cards[num].count=obj.count;
-	Cards[num].kubun=obj.kubun;
-	if ("MapType" in obj) Cards[num].MapType=parseInt(obj.MapType,10);else Cards[num].MapType=0;
-	if ("HeaderType" in obj) Cards[num].HeaderType=parseInt(obj.HeaderType,10);else Cards[num].HeaderType=1;
-	if ("spanDays" in obj) Cards[num].spanDays=parseInt(obj.spanDays,10);
-	if ("AllMapPosition" in obj) Cards[num].AllMapPosition=obj.AllMapPosition;
-	if ("AllMapTitle" in obj) Cards[num].AllMapTitle=obj.AllMapTitle;
-	if ("RTB" in obj)	Cards[num].RTB=clone(obj.RTB);
-				else	Cards[num].RTB=new Array();
-	Cards[num].refuses=Cards[num].RTB.length;
-	if ("Buildings" in obj)
-		{
-		Cards[num].Buildings=new Object();
-		Cards[num].Buildings.Count=parseInt(obj.Buildings.Count,10);
-		Cards[num].Buildings.House=parseInt(obj.Buildings.House,10);
-		}
-	Cards[num].Clip=new Array();
-	if ("Clip" in obj)
-		{
-		for(i=0;i<obj.Clip.length;i++)
-			{
-			j=parseInt(obj.Clip[i].Seq,10);
-			Cards[num].Clip[j]=new Object();
-			Cards[num].Clip[j].Area=obj.Clip[i].Area;
-			if ("Zoom" in obj.Clip[i])
-				{
-				Cards[num].Clip[j].Zoom=obj.Clip[i].Zoom;
-				Cards[num].Clip[j].Top=obj.Clip[i].Top;
-				Cards[num].Clip[j].Left=obj.Clip[i].Left;
-				}
-			}
-		}
-	if ("Condominium" in obj)
-		{
-		Cards[num].Condominium=clone(obj.Condominium);
-		}
-	else{
-		Cards[num].Condominium=new Array();
-		}
-	if ("Comments" in obj)
-		{
-		Cards[num].Comments=clone(obj.Comments);
-		}
-	else{
-		Cards[num].Comments=new Array();
-		}
-	}
 
 function Log(message)
 	{

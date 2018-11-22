@@ -108,6 +108,8 @@ function DrawMarker(mobj,seq,zoomx,zoomy,printmode)
 //---------------------------------------------------------
 // マーカー情報をビルに反映   mode=0:会衆用  mode=1:個人用
 //---------------------------------------------------------
+var debugname="";
+//---------------------------------------------------------
 function SetMarkersToBuilding(Bobj,mobj,mode)
 	{
 	var ABobj=GetBobj(Bobj);
@@ -126,20 +128,28 @@ function SetMarkersToBuilding(Bobj,mobj,mode)
 			for(k=0;k<=ABobj.building.length;k++)
 				{
 				try{
-				if (ABobj.building[k].id==mtbl[0])
-					{
-					isequence=parseInt(mtbl[1],10);
-					istair=parseInt(mtbl[2],10);
-					ifloor=parseInt(mtbl[3],10);
-					iroom=parseInt(mtbl[4],10);
-					iobj=ABobj.building[k].sequence[isequence].stair[istair].floor[ifloor].room[iroom];
-					iobj.Mark=new Object();
-					if (mh==0) 	iobj.Mark.type="NewO";
-					if (mh==1) 	iobj.Mark.type="oldOO";
-					if (mh==2)	iobj.Mark.type="star";
-					break;
+					if (ABobj.building[k].id==mtbl[0])
+						{
+						isequence=parseInt(mtbl[1],10);
+						istair=parseInt(mtbl[2],10);
+						ifloor=parseInt(mtbl[3],10);
+						iroom=parseInt(mtbl[4],10);
+						iobj=ABobj.building[k].sequence[isequence].stair[istair].floor[ifloor].room[iroom];
+						iobj.Mark=new Object();
+						if (mh==0) 	iobj.Mark.type="NewO";
+						if (mh==1) 	iobj.Mark.type="oldOO";
+						if (mh==2)	iobj.Mark.type="star";
+						break;
+						}
 					}
-				}catch(e){alert("マーカー情報が異常です。\n物件名:"+mtbl[0]+"\n棟番号:"+isequence+"\n階段番号:"+istair+"\n階:"+ifloor+"部屋番号:"+iroom);}
+				catch(e)
+					{
+					if (mtbl[0]!=debugname)
+						{
+						debugname=mtbl[0];
+						alert("マーカー情報が異常です。\n物件名:"+mtbl[0]+"\n棟番号:"+isequence+"\n階段番号:"+istair+"\n階:"+ifloor+"部屋番号:"+iroom);
+						}
+					}
 				}
 			}
 		}

@@ -9,6 +9,7 @@
 <script language="JavaScript" src="./lib/json.js"></script>
 <script language="JavaScript" src="./lib/log.js"></script>
 <script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript" src="../sys/card.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // rentA.wsf 集中インターホンの区域を貸し出す
@@ -27,6 +28,8 @@ var targetstr=WScript.Arguments(0);
 	tbl[4]=tbl[4].replace("_"," ");
 	Id=tbl[4];
 
+	SQ_Init("congworks.db");
+
 	//	環境設定を取得
 	var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
 
@@ -38,7 +41,8 @@ var targetstr=WScript.Arguments(0);
 		}
 
 	//	区域詳細を取得
-	card=ReadXMLFile(ConfigXML(congnum,num),true);
+	var obj=SQ_Read("Cards","congnum="+congnum+" and num="+num,"");
+	card=GetCardInfo(obj[0]);
 
 	//	建物ＩＤを取得
 	var BTB=card.RTB;
@@ -75,7 +79,6 @@ var targetstr=WScript.Arguments(0);
 	WshShell.Run(cmd,0,true);
 
 	//	ユーザー名を登録
-	SQ_Init("congworks.db");
 	var uobj=new Object();
 	uobj.congnum=congnum;
 	uobj.userid=user;

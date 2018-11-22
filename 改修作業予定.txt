@@ -119,7 +119,17 @@
 ・CreateSummaryofPerson関係は、CongworksもQuickyもサマリ処理に問題があるので要改善（改善済）
 ・GetOverDayもログを読んでいたので廃止
 実施予定：2018/11/18
-実施日：
+実施日：2018/11/19
+===============================================
+●2018/11/22（バージョン3.05）
+・config.xmlをSQlite化（作業中）
+※LoadCard,SaveConfigは置換済み。ConfigXML()を撤去中。残っているモジュール多数あり
+SQ_initを入れないと動かないことに注意
+
+・marker.xmlをSQlite化
+・markerhistory.xmlをSQlite化
+・再編成処理からヒストリーデータの整理を除外（3.04の残留バグ）
+・再編成処理でlog.xml,config.xml,marker.xml,markerhistory.xmlを削除する
 
 
 ===============================================
