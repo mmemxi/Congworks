@@ -1377,7 +1377,7 @@ function SaveConfig(num)
 	{
 	var obj=SetCardInfo(num);
 	SQ_Replace("Cards",obj);
-	var sqobj=CreatePublicList_One(num);
+	var sqobj=CreatePublicList_One(obj);
 	SQ_Replace("PublicList",sqobj);
 	}
 

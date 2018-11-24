@@ -4,26 +4,21 @@
 function CreateSummaryofApartment(congnum)
 	{
 	var afile=SummaryFolder(congnum)+"apartment.txt";
-	var f,f1,s,i,j,k;
+	var f,f1,s,i,j,k,l;
 	var num,BTB,sds,sts,atbl,str,kubun;
 	var ary=new Array();
 	var alogs=new Array();
-	var dir,folders,fitem,obj,num;
-	dir=fso.GetFolder(DataFolder(congnum));
-	folders=new Enumerator(dir.SubFolders);
+	var tbl,obj,num;
 	f=fso.CreateTextFile(afile,true);
-	for(; !folders.atEnd(); folders.moveNext())
+
+	//	区域一覧の読込
+	var obj=SQ_Read("Cards","congnum="+congnum,"num");
+	for(l=0;l<obj.length;i++)
 		{
-		fitem=folders.item();
-		if (isNaN(fitem.Name)) continue;
-		num=fso.GetBaseName(fitem.Name);
-		obj=ReadXMLFile(ConfigXML(congnum,num),false)
-		if (!("RTB" in obj))
-			{
-			continue;		//	特記情報がない
-			}
-		kubun=obj.kubun;					//	群れ分類
-		BTB=clone(obj.RTB);
+		tbl=GetCardInfo(obj[l]);
+		num=parseInt(tbl.num,10);
+		kubun=tbl.kubun;					//	群れ分類
+		BTB=clone(tbl.RTB);
 		for(i in BTB)
 			{
 			if (BTB[i].KBN1!="集中インターホン") continue;
@@ -56,7 +51,7 @@ function CreateSummaryofApartment(congnum)
 function CreateSummaryofPerson(congnum,num)
 	{
 	var mapnum,mnum,i,j,vhist,s,ss,str,f,tmk,log;
-	var card,cobj,mobj,tmk,c;
+	var card,obj,cobj,mobj,tmk,c;
 	var bfile=SummaryFolder(congnum)+"person.txt";
 	var ary1=new Array();
 	var ary2=new Array();
@@ -77,9 +72,8 @@ function CreateSummaryofPerson(congnum,num)
 	j--;
 
 	//	対象の区域の詳細読込
-	card=new Object();
-	cobj=ReadXMLFile(ConfigXML(congnum,num),false);
-	if (cobj=="")
+	obj=SQ_Read("Cards","congnum="+congnum+" and num="+num,"");
+	if (obj.length==0)
 		{
 		f=fso.CreateTextFile(bfile,true);
 		str=ary2.join("\r\n");
@@ -87,6 +81,8 @@ function CreateSummaryofPerson(congnum,num)
 		f.close();
 		return;
 		}
+	cobj=GetCardInfo(obj[0]);
+	card=new Object();
 	card.count=cobj.count;	//	地図枚数
 	card.name=cobj.name;	//	区域名
 	card.kubun=cobj.kubun;	//	区域区分

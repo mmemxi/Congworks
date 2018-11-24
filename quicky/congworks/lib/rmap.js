@@ -211,6 +211,7 @@ function CreateRMAP(congnum,num,seq,rmode)
 		s+=rchk;
 		}
 	return s;
+	
 	}
 
 function SortSpots(a,b)

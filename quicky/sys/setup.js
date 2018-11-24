@@ -197,13 +197,14 @@ function CreateBuildingFormat()
 //-----------------------------------------------------------------------------
 function CreatePublicList()
 	{
-	var obj;
+	var obj,l;
 	var carray=new Array();
 
 	//	以前の定義を削除する
 	SQ_Exec("delete from PublicList where congnum="+congnum+";");
 
-	//	全区域をループする
+	//	全区域をループする(セットアップ時の動作)
+	/*
 	dir=fso.GetFolder(DataFolder());
 	folders=new Enumerator(dir.SubFolders);
 	for(; !folders.atEnd(); folders.moveNext())
@@ -214,15 +215,24 @@ function CreatePublicList()
 		obj=CreatePublicList_One(num);
 		carray.push(obj);
 		}
+	*/
+	//	全区域をループする（新動作）
+	var tbl=SQ_Read("Cards","congnum="+congnum,"num");
+	for(l=0;l<tbl.length;i++)
+		{
+		obj=CreatePublicList_One(tbl[l]);
+		carray.push(obj);
+		}
 	SQ_Insert("PublicList",carray);
 	}
 //-----------------------------------------------------------------------------
-function CreatePublicList_One(num)
+function CreatePublicList_One(obj)
 	{
 	var card=new Object();
-	var cobj=ReadXMLFile(ConfigXML(num),false);
+	var num=obj.num;
+	var cobj=GetCardInfo(obj);
 	card.congnum=congnum;					//	会衆番号
-	card.num=num;							//	区域番号
+	card.num=cobj.num;						//	区域番号
 	card.name=cobj.name;					//	区域名
 	card.kubun=cobj.kubun;					//	区域区分
 	card.maps=cobj.count;					//	地図枚数
@@ -236,7 +246,7 @@ function CreatePublicList_One(num)
 	card.endday=0;							//	使用終了日
 	card.limitday=0;						//	終了期限日
 
-	var log=ReadXMLFile(NumFolder(num)+"log.xml",false);
+	var log=LoadLog(num);
 	if (log!="")
 		{
 		if ("Status" in log)

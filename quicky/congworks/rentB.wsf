@@ -9,6 +9,7 @@
 <script language="JavaScript" src="./lib/json.js"></script>
 <script language="JavaScript" src="./lib/log.js"></script>
 <script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript" src="../sys/card.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // rentB.wsf 長期留守宅の区域を貸し出す
@@ -22,6 +23,7 @@ var targetstr=WScript.Arguments(0);
 	var tbl=targetstr.split(":");
 	var result,user,congnum,num,seq;
 	var tmk,i,j,s,log,overday,mcount;
+	var Cards=new Array();
 	congnum=tbl[0];
 	user=tbl[1];
 	num=tbl[2];
@@ -36,6 +38,10 @@ var targetstr=WScript.Arguments(0);
 		WScript.StdOut.Write("ng");
 		WScript.quit();
 		}
+
+	//	区域詳細を取得
+	var obj=SQ_Read("Cards","congnum="+congnum+" and num="+num,"");
+	Cards[num]=GetCardInfo(obj[0]);
 
 	//使用開始情報の書き込み
 	tmk=LoadMarker(congnum,num);

@@ -6,7 +6,6 @@
 <script language="JavaScript" src="./lib/marker.js"></script>
 <script language="JavaScript" src="./lib/json.js"></script>
 <script language="JavaScript" src="./lib/log.js"></script>
-
 <script language="JavaScript" src="./lib/campeign.js"></script>
 <script language="JavaScript" src="../sys/card.js"></script>
 <script language="JavaScript" src="../sys/sqlite.js"></script>

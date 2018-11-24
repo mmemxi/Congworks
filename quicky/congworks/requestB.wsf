@@ -6,6 +6,8 @@
 <script language="JavaScript" src="./lib/campeign.js"></script>
 <script language="JavaScript" src="./lib/json.js"></script>
 <script language="JavaScript" src="./lib/log.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
+<script language="JavaScript" src="../sys/card.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // requestB.wsf 長期留守宅の貸出候補を表示する
@@ -14,6 +16,7 @@
 //----------------------------------------------------------------
 var congnum=WScript.Arguments(0);
 var username=WScript.Arguments(1);
+SQ_Init("congworks.db");
 //----------------------------------------------------------------
 // キャンペーン期間中は出さない
 var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);

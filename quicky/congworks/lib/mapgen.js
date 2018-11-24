@@ -34,63 +34,8 @@ function PublishPDF(html,outfilename)
 //----------------------------------------------------------------
 function LoadCard(congnum,num)
 	{
-	var text,p1,p2,count,name,kubun;
-	var i,j,f,lines,obj,almap,o,s,ovr;
-	var log,l,jc;
-
-	Cards[num]=new Object();
-	obj=new Object();
-	obj=ReadXMLFile(ConfigXML(congnum,num),false);
-	Cards[num].name=obj.name;
-	Cards[num].count=obj.count;
-	Cards[num].kubun=obj.kubun;
-	if ("MapType" in obj) Cards[num].MapType=parseInt(obj.MapType,10);else Cards[num].MapType=0;
-	if ("HeaderType" in obj) Cards[num].HeaderType=parseInt(obj.HeaderType,10);else Cards[num].HeaderType=1;
-	if ("spanDays" in obj) Cards[num].spanDays=parseInt(obj.spanDays,10);
-	if ("AllMapPosition" in obj) Cards[num].AllMapPosition=obj.AllMapPosition;
-	if ("AllMapTitle" in obj) Cards[num].AllMapTitle=obj.AllMapTitle;
-
-	/*	特機情報 ------------------------------------------*/
-	if ("RTB" in obj)	Cards[num].RTB=clone(obj.RTB);
-				else	Cards[num].RTB=new Array();
-	Cards[num].refuses=Cards[num].RTB.length;
-
-	/*	裏面の全体マップ情報 ------------------------------*/
-	Cards[num].Clip=new Array();
-	if ("Clip" in obj)
-		{
-		for(i=0;i<obj.Clip.length;i++)
-			{
-			j=parseInt(obj.Clip[i].Seq,10);
-			Cards[num].Clip[j]=new Object();
-			Cards[num].Clip[j].Area=obj.Clip[i].Area;
-			if ("Zoom" in obj.Clip[i])
-				{
-				Cards[num].Clip[j].Zoom=obj.Clip[i].Zoom;
-				Cards[num].Clip[j].Top=obj.Clip[i].Top;
-				Cards[num].Clip[j].Left=obj.Clip[i].Left;
-				}
-			}
-		}
-
-	/*	集合住宅情報--------------------------------------*/
-	if ("Condominium" in obj)
-		{
-		Cards[num].Condominium=clone(obj.Condominium);
-		}
-	else{
-		Cards[num].Condominium=new Array();
-		}
-
-	/*	コメント情報--------------------------------------*/
-	if ("Comments" in obj)
-		{
-		Cards[num].Comments=clone(obj.Comments);
-		}
-	else{
-		Cards[num].Comments=new Array();
-		}
-
+	var obj=SQ_Read("Cards","congnum="+congnum+" and num="+num,"");
+	Cards[num]=GetCardInfo(obj[0]);
 	/*	ログ読込------------------------------------------*/
 	var log=LoadLog(congnum,num);
 	l=log.History.length-1;

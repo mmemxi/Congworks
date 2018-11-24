@@ -15,21 +15,6 @@ function LoadLog(num)
 	result.Latest.Limit=obj.limitday;
 	result.History=JSON.parse(obj.body.replace(/'/g,"\""));
 	return result;
-
-/*  SQlite‚Ìˆ—‚É’uŠ·‚µ‚½‚Ì‚Å”p~
-	var f=LogXML(num);
-	var obj=ReadXMLFile(f,false);
-	if (obj=="")
-		{
-		obj=NewLog();
-		return obj;
-		}
-	if (!("History" in obj))
-		{
-		obj.History=new Array();
-		}
-	return obj;
-*/
 	}
 
 function SaveLog(log,num)
@@ -44,8 +29,6 @@ function SaveLog(log,num)
 	obj.limitday=log.Latest.Limit;
 	obj.body=JSON.stringify(log.History).replace(/\"/g,"'");
 	SQ_Replace("PublicLogs",obj);
-
-//	WriteXMLFile(obj,LogXML(num));	//	SQlite‚Ìˆ—‚É’uŠ·‚µ‚½‚Ì‚Å”p~
 	var sql="update PublicList set ";
 	if (log.Status=="Free")	sql+=" inuse='false',";
 					else	sql+=" inuse='true',";

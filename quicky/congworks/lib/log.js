@@ -15,22 +15,6 @@ function LoadLog(congnum,num)
 	result.Latest.Limit=obj.limitday;
 	result.History=JSON.parse(obj.body.replace(/'/g,"\""));
 	return result;
-
-/*
-	var f=LogXML(congnum,num);
-	var obj=ReadXMLFile(f,false);
-	if (obj=="")
-		{
-		obj=NewLog();
-		return obj;
-		}
-	if (!("History" in obj))
-		{
-		obj.History=new Array();
-		}
-	return obj;
-*/
-
 	}
 function SaveLog(log,congnum,num)
 	{
@@ -44,7 +28,6 @@ function SaveLog(log,congnum,num)
 	obj.limitday=log.Latest.Limit;
 	obj.body=JSON.stringify(log.History).replace(/\"/g,"'");
 	SQ_Replace("PublicLogs",obj);
-//	WriteXMLFile(obj,LogXML(congnum,num));
 	}
 function NewLog()
 	{

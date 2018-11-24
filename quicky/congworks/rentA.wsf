@@ -15,20 +15,20 @@
 // rentA.wsf 集中インターホンの区域を貸し出す
 // 引数１＝会衆番号:ユーザー名:区域番号:地図番号:建物名
 //----------------------------------------------------------------
+SQ_Init("congworks.db");
 var targetstr=WScript.Arguments(0);
 //----------------------------------------------------------------
 	targetstr=targetstr.trim();
 	var tbl=targetstr.split(":");
 	var result,user,congnum,num,seq,inx;
-	var i,Id,s,ifile,card;
+	var i,Id,s,ifile;
+	var Cards=new Array();
 	congnum=tbl[0];
 	user=tbl[1];
 	num=tbl[2];
 	seq=tbl[3];
 	tbl[4]=tbl[4].replace("_"," ");
 	Id=tbl[4];
-
-	SQ_Init("congworks.db");
 
 	//	環境設定を取得
 	var ConfigAll=ReadXMLFile(IniXML(congnum,"all"),false);
@@ -42,7 +42,7 @@ var targetstr=WScript.Arguments(0);
 
 	//	区域詳細を取得
 	var obj=SQ_Read("Cards","congnum="+congnum+" and num="+num,"");
-	card=GetCardInfo(obj[0]);
+	Cards[num]=GetCardInfo(obj[0]);
 
 	//	建物ＩＤを取得
 	var BTB=card.RTB;

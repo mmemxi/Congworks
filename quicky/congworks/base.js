@@ -25,10 +25,6 @@ function NumFolder(xnum,num)
 	{
 	return DataFolder(xnum)+num+qt;
 	}
-function ConfigXML(xnum,num)
-	{
-	return NumFolder(xnum,num)+"config.xml";
-	}
 function PersonalFolder(xnum)
 	{
 	return DataFolder(xnum)+"personal"+qt;

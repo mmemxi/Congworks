@@ -5,6 +5,7 @@ function GetCardInfo(obj)
 	var str,tbl;
 	var num=parseInt(obj.num,10);
 	var dst=new Object();
+	dst.num=num;
 	dst.name=obj.name;
 	dst.count=obj.count;
 	dst.kubun=obj.kubun;
@@ -80,26 +81,25 @@ function SetCardInfo(num)
 	str=JSON.stringify(src.Comments);
 	obj.JSON_Comments=str.replace(/\"/g,"'");
 
-	if ("Clip" in src)
+	if (!("Clip" in src)) src.Clip=new Array();
+	tbl=new Array();
+	j=0;
+	for(i in src.Clip)
 		{
-		tbl=new Array();
-		j=0;
-		for(i in src.Clip)
+		tbl[j]=new Object();
+		tbl[j].Seq=i;
+		tbl[j].Area=src.Clip[i].Area;
+		if ("Zoom" in src.Clip[i])
 			{
-			tbl[j]=new Object();
-			tbl[j].Seq=i;
-			tbl[j].Area=src.Clip[i].Area;
-			if ("Zoom" in src.Clip[i])
-				{
-				tbl[j].Zoom=src.Clip[i].Zoom;
-				tbl[j].Top=src.Clip[i].Top;
-				tbl[j].Left=src.Clip[i].Left;
-				}
-			j++;
+			tbl[j].Zoom=src.Clip[i].Zoom;
+			tbl[j].Top=src.Clip[i].Top;
+			tbl[j].Left=src.Clip[i].Left;
 			}
+		j++;
 		}
 	str=JSON.stringify(tbl);
 	obj.JSON_Clip=str.replace(/\"/g,"'");
+	alert(str);
 
 	return obj;
 	}

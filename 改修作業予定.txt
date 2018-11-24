@@ -122,9 +122,9 @@
 実施日：2018/11/19
 ===============================================
 ●2018/11/22（バージョン3.05）
-・config.xmlをSQlite化（作業中）
-※LoadCard,SaveConfigは置換済み。ConfigXML()を撤去中。残っているモジュール多数あり
-SQ_initを入れないと動かないことに注意
+・config.xmlをSQlite化→テーブル「Cards」を新設(2018/11/25)
+  LoadCard,SaveConfig,ConfigXML()を撤去
+  mapgen.js,personal.js,summary.jsから撤去済。
 
 ・marker.xmlをSQlite化
 ・markerhistory.xmlをSQlite化

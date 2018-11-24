@@ -4,8 +4,7 @@
 function AddMyMap(userid,kbn,congnum,num,seq,id,counts,finish)
 	{
 	var obj,bak,i,j,k,p,result;
-	var card=ReadXMLFile(ConfigXML(congnum,num),true);
-	var BTB=card.RTB;
+	var BTB=Cards[num].RTB;
 	var personalpath=PersonalFolder(congnum);
 	var mypath=personalpath+userid;
 	var mybook=mypath+qt+"mybook.xml";
@@ -52,7 +51,7 @@ function AddMyMap(userid,kbn,congnum,num,seq,id,counts,finish)
 		obj.Map[p].name=BTB[id].Name;		//	A:•¨Œ–¼
 		}
 	else{
-		obj.Map[p].name=card.name;			//	B:‹æˆæ–¼
+		obj.Map[p].name=Cards[num].name;	//	B:‹æˆæ–¼
 		}
 	obj.Map[p].counts=counts;				//	Œ”
 	obj.Map[p].finish=finish;				//	I—¹“úi¼—ï‚WŒ…j
