@@ -4,6 +4,7 @@
 ・ヒストリー機能を廃止
 ・SQliteモジュールの導入
 ・SQlite化の初期段階として、報告書発行ログ(reportlog.txt)をテーブル(ReportLogs)に置換
+
 実施予定：2018/10/28
 実施日：2018/10/28済
 ===============================================
@@ -15,46 +16,7 @@
 ②Quicky側では、起動時にトークンIDがLocalコンフィグに保存されていなければ生成し保存。
 ③Congworks側では、ログイン時にトークンIDが保存されていなければ生成し保存。ローカルストレージに保存する。
 ④Xampp側プログラムで、テキストファイルを介さず標準出力で処理結果を返すテスト。※主要な変更点
-対象プログラム
-	mainbody.hta					バージョン表記修正のみ
-	\sys\config.js					ローカルコンフィグOpen時、ConfigLocal.TokenIDがなければ生成して保存。
-	\congworks\getcwtoken.wsf		新設。８桁のトークンを生成して標準出力に返す。
-	xampp\htdocs\congworks\以下
-	index.php						CookieにCWTokenがあるかチェックし、なければ生成。次画面移行時にCookieに保存。
-	mylist.php						テキストファイルを介さないよう変更
-	viewA.php						テキストファイルを介さないよう変更
-	viewB.php						テキストファイルを介さないよう変更
-	rentA.php						テキストファイルを介さないよう変更
-	rentB.php						テキストファイルを介さないよう変更
-	cancel.php						テキストファイルを介さないよう変更
-	download.php					テキストファイルを介さないよう変更
-	requestA.php					テキストファイルを介さないよう変更
-	requestB.php					テキストファイルを介さないよう変更
-	print.php						テキストファイルを介さないよう変更
-	mylist.bat						廃止
-	viewA.bat						廃止
-	viewB.bat						廃止
-	rentA.bat						廃止
-	rentB.bat						廃止
-	download.bat					廃止
-	cancel.bat						廃止
-	requestA.bat					廃止
-	requestB.bat					廃止
-	print.bat						廃止
 
-	xampp\htdocs\congworks\pp以下
-	index.php						CookieにCWTokenがあるかチェックし、なければ生成。次画面移行時にCookieに保存。
-	newlist.php						テキストファイルを介さないよう変更
-	verify.php						テキストファイルを介さないよう変更
-	rent.php						テキストファイルを介さないよう変更
-	cancelpp.php					テキストファイルを介さないよう変更
-	newlist.bat						廃止
-	verify.bat						廃止
-	rent.bat						廃止
-	cancelpp.bat					廃止
-
-
-※とりあえずトークンは生成するが、まだ何も使用しない。
 実施予定：2018/11/1（木）
 実施日：2018/11/1済
 ===============================================
@@ -88,7 +50,6 @@
 
 実施予定：2018/11/8
 実施日：2018/11/8
-
 ===============================================
 ●2018/11/10（バージョン3.04）
 ・ベースをcongworks側とし、XAMPPの基準ディレクトリとする
@@ -118,6 +79,7 @@
 	Cards[num].LastUser=lastuser;	//->廃止済
 ・CreateSummaryofPerson関係は、CongworksもQuickyもサマリ処理に問題があるので要改善（改善済）
 ・GetOverDayもログを読んでいたので廃止
+
 実施予定：2018/11/18
 実施日：2018/11/19
 ===============================================
@@ -125,13 +87,22 @@
 ・config.xmlをSQlite化→テーブル「Cards」を新設(2018/11/25)
   LoadCard,SaveConfig,ConfigXML()を撤去
   mapgen.js,personal.js,summary.jsから撤去済。
-
+（作業中）
 ・marker.xmlをSQlite化
+  marker.jsからはLoadMarker,SaveMarkerを修正。PopMarkerHistory,PushMarkerHistoryは撤去(congworks側からしか使わないから)
+  他の個所から「MarkerFile()」およびmarker.xmlを参照している箇所を撤去済
 ・markerhistory.xmlをSQlite化
+  PushMarkerHistory,PopMarkerHistoryはrent.wsfとcancelpp.wsfしか使用していない
+  ヒストリーは貸し出し日をキーとする（会衆番号＋区域番号＋地図番号＋貸し出し日でユニーク）
+  PushMarkerHistory,PopMarkerHistoryに引数３（開始日）を追加
+
+
+（未作業）
 ・再編成処理からヒストリーデータの整理を除外（3.04の残留バグ）
 ・再編成処理でlog.xml,config.xml,marker.xml,markerhistory.xmlを削除する
 
-
+実施予定：2018/12/1
+実施日：
 ===============================================
 ●後続バージョン
 ・アパートログ(*.txt)をSQlite化

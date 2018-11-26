@@ -100,6 +100,33 @@ create table Cards(congnum integer,num integer,name text,count integer,kubun tex
 	JSON_Comments	コメント情報(JSON形式,コメント数分の配列)
 	JSON_Condominium	集合住宅情報(JSON形式,物件数分の配列)
 //------------------------------------------------------------------
+テーブル：
+	Markers(marker.xmlの代替)
+定義：
+create table Markers(congnum integer,num integer,seq integer,count integer,user text,edited boolean,editor text,JSON_Points text,primary key(congnum,num,seq));
+項目：
+	congnum			会衆番号（数値）
+	num				区域番号（数値）
+	seq				地図番号（数値）
+	count			ポイント数（数値）
+	user			使用者名（現在）文字列
+	edited			編集済か(boolean)
+	editor			編集者名（文字列）
+	JSON_Points		ポイント配列（JSON形式）
+//------------------------------------------------------------------
+テーブル：
+	MarkerHistory(markerhistory.xmlの代替)
+定義：
+create table MarkerHistory(congnum integer,num integer,seq integer,history integer,user text,edited boolean,editor text,primary key(congnum,num,seq,history));
+項目：
+	congnum			会衆番号（数値）
+	num				区域番号（数値）
+	seq				地図番号（数値）
+	history			貸出日（日付８桁）
+	user			使用者名（現在）文字列
+	edited			編集済か(boolean)
+	editor			編集者名（文字列）
+//------------------------------------------------------------------
 
 
 

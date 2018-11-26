@@ -109,29 +109,5 @@ function LoadCard(congnum,num)
 		}
 
 	//	マーカー情報の読込(Markers) ---------------------------------------
-	var c;
-	obj=ReadXMLFile(NumFolder(congnum,num)+"marker.xml",true);
-	if (obj=="")
-		{
-		obj=new Object();
-		obj.Map=new Array();
-		}
-	if (!("Map" in obj))
-		{
-		obj.Map=new Array();
-		}
-	Markers=new Object();
-	Markers.Map=new Array();
-	c=0;
-	for(i in obj.Map)
-		{
-		if ("Id" in obj.Map[i])
-			{
-			j=parseInt(obj.Map[i].Id,10);
-			Markers.Map[j]=clone(obj.Map[i]);
-			if (!("Points" in Markers.Map[j])) Markers.Map[j].Points=new Array();
-			c+=Markers.Map[j].Points.length;
-			}
-		}
-	Markers.Count=c;
+	Markers=LoadMarker(congnum,num);
 	}

@@ -1,49 +1,47 @@
+//---------------------------------------------------------
 function LoadMarker(congnum,num)
 	{
-	var obj,i,j,c;
-	var result;
-	obj=ReadXMLFile(NumFolder(congnum,num)+"marker.xml",true);
-	if (obj=="")
-		{
-		obj=new Object();
-		obj.Map=new Array();
-		}
-	if (!("Map" in obj))
-		{
-		obj.Map=new Array();
-		}
-	result=new Object();
+	var i,seq,str,ctr;
+	var obj=SQ_Read("Markers","congnum="+congnum+" and num="+num,"seq");
+	var result=new Object();
 	result.Map=new Array();
-	c=0;
-	for(i in obj.Map)
+	ctr=0;
+	for(i=0;i<obj.length;i++)
 		{
-		if ("Id" in obj.Map[i])
-			{
-			j=parseInt(obj.Map[i].Id,10);
-			result.Map[j]=clone(obj.Map[i]);
-			if (!("Points" in result.Map[j])) result.Map[j].Points=new Array();
-			c+=result.Map[j].Points.length;
-			}
+		seq=parseInt(obj[i].seq,10);
+		result.Map[seq]=new Object();
+		result.Map[seq].User=obj[i].user;
+		result.Map[seq].Edited=obj[i].edited;
+		result.Map[seq].Editor=obj[i].editor;
+		str=obj[i].JSON_Points.replace(/'/g,"\"");
+		result.Map[seq].Points=JSON.parse(str);
+		ctr+=result.Map[seq].Points.length;
 		}
-	result.Count=c;
+	result.Count=ctr;
 	return result;
 	}
 
 function SaveMarker(congnum,num,mobj)
 	{
-	var obj,i,j;
-	obj=new Object();
-	obj.Map=new Array();
-	obj.Count=0;
-	j=0;
+	var old,obj,str,i;
+	var f,str;
+	var arr=new Array();
+
 	for(i in mobj.Map)
 		{
-		mobj.Map[i].Id=i;
-		obj.Map[j]=clone(mobj.Map[i]);
-		obj.Count+=mobj.Map[i].Points.length;
-		j++;
+		obj=new Object();
+		obj.congnum=congnum;
+		obj.num=num;
+		obj.seq=i;
+		obj.count=mobj.Map[i].Points.length;
+		obj.user=mobj.Map[i].User;
+		obj.edited=mobj.Map[i].Edited;
+		obj.editor=mobj.Map[i].Editor;
+		str=JSON.stringify(mobj.Map[i].Points);
+		obj.JSON_Points=str.replace(/\"/g,"'");
+		arr.push(obj);
 		}
-	WriteXMLFile(obj,NumFolder(congnum,num)+"marker.xml");
+	SQ_Replace("Markers",arr);
 	}
 //-------------------------------------------------------------------------------
 // マーカー表示(0:画面表示 1:通常区域印刷 2:ピックアップ表示中 3:個人区域印刷)
@@ -174,73 +172,51 @@ function DecMarkerHistory()
 		}
 	}
 //---------------------------------------------------------
-function PushMarkerHistory(congnum,num)
+function PushMarkerHistory(congnum,num,startday)
 	{
-	var f,ln,s,i,fc;
-	f=ReadFile(NumFolder(congnum,num)+"marker.xml");
-	if (f=="") return;
-	ln=f.split("\r\n");
-	s="<split>\r\n";
-	for(i=0;i<ln.length;i++)
+	var i,j,mobj,obj;
+	mobj=LoadMarker(congnum,num);
+	if (mobj.Count==0) return;
+	var arr=new Array();
+
+	for(i in mobj.Map)
 		{
-		if (ln[i].indexOf("<Map",0)!=0) continue;
-		s+=ln[i]+"\r\n";
+		obj=new Object();
+		obj.congnum=congnum;
+		obj.num=num;
+		obj.seq=i;
+		obj.history=startday;
+		obj.user=mobj.Map[i].User;
+		obj.edited=mobj.Map[i].Edited;
+		obj.editor=mobj.Map[i].Editor;
+		arr.push(obj);
 		}
-	fc=fso.OpenTextFile(NumFolder(congnum,num)+"markerhistory.xml",8,true);
-	fc.write(s);
-	fc.close();
+	SQ_Replace("MarkerHistory",arr);
 	}
 //---------------------------------------------------------
-function PopMarkerHistory(congnum,num)
+function PopMarkerHistory(congnum,num,startday)
 	{
-	var f,f1,f2,ln,s,p1,p2,i,j,fc;
-	var bodyo,bodyn,tbl;
-	var TBL1=new Array();
-	var TBL2=new Array();
-	//	マーカー履歴読込
-	f1=ReadFile(NumFolder(congnum,num)+"markerhistory.xml");
-	if (f1=="") return "no markerhistory";
-	p=f1.lastIndexOf("<split>");
-	if (p==-1) return "no split";
-	p2=f1.indexOf("<Map",p);
-	if (p2==-1) return "no maptag";
-	//	現行マーカーファイル読込
-	f2=ReadFile(NumFolder(congnum,num)+"marker.xml");
-	if (f2=="") return "no marker";
-	//	マーカー履歴から最新分を削って出力
-	bodyo=f1.substring(0,p);
-	bodyn=f1.substring(p2,f1.length);
-	fc=fso.CreateTextFile(NumFolder(congnum,num)+"markerhistory.xml",true);
-	fc.Write(bodyo);
-	fc.close();
-	//	マーカー履歴を地図ID別に保存
-	tbl=bodyn.split("\r\n");
-	for(i=0;i<tbl.length;i++)
+	var i,seq,str,sql;
+	var mhobj=SQ_Read("MarkerHistory","congnum="+congnum+" and num="+num+" and history="+startday,"seq");
+	if (mhobj.length==0) return "no markerhistory";
+
+	//	マーカー読込
+	var mobj=LoadMarker(congnum,num);
+
+	//	マーカー履歴の最新レコードを削除
+	SQ_Delete("MarkerHistory","congnum="+congnum+" and num="+num+" and history="+startday);
+
+	//	マーカー情報を履歴に基づいて更新
+	for(i=0;i<mhobj.length;i++)
 		{
-		p1=tbl[i].indexOf("Id=",0);
-		if (p1==-1) continue;
-		p2=tbl[i].indexOf("\"",p1+4);
-		if (p2==-1) continue;
-		s=tbl[i].substring(p1+4,p2);
-		TBL1[s]=tbl[i];
+		seq=parseInt(mhobj[i].seq);
+		mobj.Map[seq].User=mhobj[i].user;
+		mobj.Map[seq].Edited=mhobj[i].edited;
+		mobj.Map[seq].Editor=mhobj[i].editor;
 		}
-	//	マーカーファイルを地図ID別に置換していく
-	tbl=f2.split("\r\n");
-	for(i=0;i<tbl.length;i++)
-		{
-		p=tbl[i].indexOf("<Map",0);
-		if (p!=0) continue;
-		p1=tbl[i].indexOf("Id=",p);
-		if (p1==-1) continue;
-		p2=tbl[i].indexOf("\"",p1+4);
-		if (p2==-1) continue;
-		s=tbl[i].substring(p1+4,p2);
-		tbl[i]=TBL1[s];
-		}
-	//	マーカー最新版ファイルを出力
-	s=tbl.join("\r\n");
-	fc=fso.CreateTextFile(NumFolder(congnum,num)+"marker.xml",true);
-	fc.Write(s);
-	fc.close();
+
+	//	マーカー保存
+	SaveMarker(congnum,num,mobj)
+
 	return "Done";
 	}

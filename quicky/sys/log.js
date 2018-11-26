@@ -67,10 +67,10 @@ function AddLog(obj,num,user,rent,limit)
 	t.End=0;
 	t.Map=new Array();
 	t.Compress=0;
-	for(i=1;i<=Cards[num].count;i++)
+	for(i=0;i<Cards[num].count;i++)
 		{
 		t.Map[i]=new Object();
-		t.Map[i].Sequence=i;
+		t.Map[i].Sequence=i+1;
 		t.Map[i].Start=0;
 		t.Map[i].End=0;
 		}

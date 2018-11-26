@@ -71,7 +71,7 @@ uobj.authority="publicservice";
 SQ_Replace("CWUsers",uobj);
 //----------------------------------------------------------------
 //	マーカーの送り処理
-PushMarkerHistory(congnum,num);		//	20170514追加
+PushMarkerHistory(congnum,num,startday);
 Markers=LoadMarker(congnum,num);
 if (Markers.Count>0)
 	{
@@ -96,8 +96,8 @@ for(i=0;i<BTB.length;i++)
 	}
 if (j>0)
 	{
-	obj=SetCardInfo(num);
-	SQ_Replace("Cards",obj);
+	var cobj=SetCardInfo(num);
+	SQ_Replace("Cards",cobj);
 	}
 //----------------------------------------------------------------
 // 個人用留守宅情報の更新

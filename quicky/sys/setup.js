@@ -2,8 +2,9 @@
 function SQliteSetup()
 	{
 	CreateCards();			//	カード情報の移行		2018/11/22新設、3.05セットアップ時に必要
-//	CreatePublicList();		//	会衆用区域一覧の作成	2018/10新設		3.04セットアップ時に実行
-//	CreatePublicLogs();		//	log.xmlの移行			2018/11/16新設	3.04セットアップ時に実行
+	CreateMarkers();		//	マーカー情報の移行		2018/11/25新設、3.05セットアップ時に必要
+	CreatePublicLogs();		//	log.xmlの移行			2018/11/16新設	3.04セットアップ時に実行
+	CreatePublicList();		//	会衆用区域一覧の作成	2018/10新設		3.04セットアップ時に実行
 //	CreateReportLogs();		//	レポート作成ログの作成	2018/10新設		3.04セットアップ時に実行
 //	CreateUsers();			//	ユーザー情報の作成		2018/10新設		3.04セットアップ時に実行
 //	CreateSpots();			//	スポット情報の作成		2018/11新設		3.04セットアップ時に実行
@@ -24,12 +25,14 @@ function CreateCards()
 	//	全区域をループする
 	dir=fso.GetFolder(DataFolder());
 	folders=new Enumerator(dir.SubFolders);
+	WriteLayer("Stage","Start:CreateCards<br>");
 	for(; !folders.atEnd(); folders.moveNext())
 		{
 		fitem=folders.item();
 		if (isNaN(fitem.Name)) continue;
 		num=fso.GetBaseName(fitem.Name);
 		if (!fso.FileExists(ConfigXML(num))) continue;
+		WriteLayer("Stage","Process:CreateCards("+num+")<br>");
 		obj=ReadXMLFile(ConfigXML(num),false);
 		cd=new Object();
 		cd.congnum=congnum;
@@ -64,6 +67,56 @@ function CreateCards()
 		arr.push(cd);
 		}
 	SQ_Insert("Cards",arr);
+	ClearLayer("Stage");
+	}
+//-----------------------------------------------------------------------------
+function CreateMarkers()
+	{
+	var dir,folders,fitem,num;
+	var old,obj,str,i;
+	var f,str;
+	var arr=new Array();
+
+	WriteLayer("Stage","Start:CreateMarkers<br>");
+
+	//	以前の定義を削除する
+	SQ_Exec("delete from Markers where congnum="+congnum+";");
+
+	//	全区域をループする
+	dir=fso.GetFolder(DataFolder());
+	folders=new Enumerator(dir.SubFolders);
+	for(; !folders.atEnd(); folders.moveNext())
+		{
+		fitem=folders.item();
+		if (isNaN(fitem.Name)) continue;
+		num=fso.GetBaseName(fitem.Name);
+		if (!fso.FileExists(MarkerFile(num))) continue;
+
+		WriteLayer("Stage","Process:CreateMarkers("+num+")<br>");
+		old=LoadMarker_old(num);
+		for(i in old.Map)
+			{
+			obj=new Object();
+			obj.congnum=congnum;
+			obj.num=num;
+			obj.seq=i;
+			obj.count=old.Map[i].Points.length;
+			obj.user=old.Map[i].User;
+			obj.edited=old.Map[i].Edited;
+			obj.editor=old.Map[i].Editor;
+			str=JSON.stringify(old.Map[i].Points);
+			obj.JSON_Points=str.replace(/\"/g,"'");
+			arr.push(obj);
+			}
+		}
+	SQ_Insert("Markers",arr);
+	ClearLayer("Stage");
+	}
+//-----------------------------------------------------------------------------
+function CreateMarkerHistory()
+	{
+	//	以前の定義を削除する
+	SQ_Exec("delete from MarkerHistory where congnum="+congnum+";");
 	}
 //-----------------------------------------------------------------------------
 function CreatePublicLogs()
@@ -72,6 +125,8 @@ function CreatePublicLogs()
 	var log,obj,i;
 	var f;
 	var arr=new Array();
+
+	WriteLayer("Stage","Start:CreatePublicLogs<br>");
 
 	//	以前の定義を削除する
 	SQ_Exec("delete from PublicLogs where congnum="+congnum+";");
@@ -85,8 +140,8 @@ function CreatePublicLogs()
 		if (isNaN(fitem.Name)) continue;
 		num=fso.GetBaseName(fitem.Name);
 
-		f=LogXML(num);
-		log=ReadXMLFile(f,false);
+		WriteLayer("Stage","Process:CreatePublicLogs("+num+")<br>");
+		log=ReadXMLFile(LogXML(num),false);
 		if (log=="")
 			{
 			log=NewLog();
@@ -109,6 +164,7 @@ function CreatePublicLogs()
 		arr.push(obj);
 		}
 	SQ_Insert("PublicLogs",arr);
+	ClearLayer("Stage");
 	}
 //-----------------------------------------------------------------------------
 // 未完成
@@ -200,6 +256,8 @@ function CreatePublicList()
 	var obj,l;
 	var carray=new Array();
 
+	WriteLayer("Stage","Start:CreatePublicList<br>");
+
 	//	以前の定義を削除する
 	SQ_Exec("delete from PublicList where congnum="+congnum+";");
 
@@ -218,12 +276,14 @@ function CreatePublicList()
 	*/
 	//	全区域をループする（新動作）
 	var tbl=SQ_Read("Cards","congnum="+congnum,"num");
-	for(l=0;l<tbl.length;i++)
+	for(l=0;l<tbl.length;l++)
 		{
+		WriteLayer("Stage","Process:CreatePublicList("+tbl[l].num+")<br>");
 		obj=CreatePublicList_One(tbl[l]);
 		carray.push(obj);
 		}
 	SQ_Insert("PublicList",carray);
+	ClearLayer("Stage");
 	}
 //-----------------------------------------------------------------------------
 function CreatePublicList_One(obj)

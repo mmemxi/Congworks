@@ -40,7 +40,7 @@ function GetCardInfo(obj)
 //-----------------------------------------------------------------
 function SetCardInfo(num)
 	{
-	var i,j,src,str,tbl;
+	var i,j,src,str,tbl,tmp;
 	var obj=new Object();
 	src=Cards[num];
 
@@ -83,23 +83,18 @@ function SetCardInfo(num)
 
 	if (!("Clip" in src)) src.Clip=new Array();
 	tbl=new Array();
-	j=0;
 	for(i in src.Clip)
 		{
-		tbl[j]=new Object();
-		tbl[j].Seq=i;
-		tbl[j].Area=src.Clip[i].Area;
-		if ("Zoom" in src.Clip[i])
-			{
-			tbl[j].Zoom=src.Clip[i].Zoom;
-			tbl[j].Top=src.Clip[i].Top;
-			tbl[j].Left=src.Clip[i].Left;
-			}
-		j++;
+		tmp=new Object();
+		tmp.Seq=i;
+		tmp.Area=src.Clip[i].Area;
+		tmp.Zoom=src.Clip[i].Zoom;
+		tmp.Top=src.Clip[i].Top;
+		tmp.Left=src.Clip[i].Left;
+		tbl.push(tmp);
 		}
 	str=JSON.stringify(tbl);
 	obj.JSON_Clip=str.replace(/\"/g,"'");
-	alert(str);
 
 	return obj;
 	}

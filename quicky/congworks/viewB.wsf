@@ -5,11 +5,13 @@
 <script language="JavaScript" src="./lib/marker.js"></script>
 <script language="JavaScript" src="./lib/building.js"></script>
 <script language="JavaScript" src="./lib/vml.js"></script>
+<script language="JavaScript" src="../sys/sqlite.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------
 // viewB.wsf 長期留守宅の詳細を表示する
 // 引数１＝会衆番号:ユーザー名:区域番号:地図番号
 //----------------------------------------------------------------
+SQ_Init("congworks.db");
 var Building=new Object();
 var Markers;
 //----------------------------------------------------------------

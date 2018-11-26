@@ -125,33 +125,8 @@ function CreateSummaryofPerson(congnum,num)
 		}
 
 	//	マーカー情報の読込
-	mobj=ReadXMLFile(NumFolder(congnum,num)+"marker.xml",true);
-	if (mobj=="")
-		{
-		mobj=new Object();
-		mobj.Map=new Array();
-		}
-	if (!("Map" in mobj))
-		{
-		mobj.Map=new Array();
-		}
-	tmk=new Object();
-	tmk.Map=new Array();
-	c=0;
-	for(i in mobj.Map)
-		{
-		if ("Id" in mobj.Map[i])
-			{
-			j=parseInt(mobj.Map[i].Id,10);
-			tmk.Map[j]=clone(mobj.Map[i]);
-			if (!("Points" in tmk.Map[j])) tmk.Map[j].Points=new Array();
-			c+=tmk.Map[j].Points.length;
-			}
-		}
-	tmk.Count=c;
-
-	//	対象のマーカーが０個のとき、終了
-	if (tmk.Count<1)
+	tmk=LoadMarker(congnum,num);
+	if (tmk.Count<1)				//	マーカーがない
 		{
 		f=fso.CreateTextFile(bfile,true);
 		str=ary2.join("\r\n");

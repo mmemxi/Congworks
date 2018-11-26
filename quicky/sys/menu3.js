@@ -238,10 +238,10 @@ function MENU3F()
 		SetLogSummary(obj);
 		SaveLog(obj,num);
 		//	’·Šú—¯ç‘î‚ÌÄ•Ò¬------------------------------------
-		if (fso.FileExists(MarkerFile(num)))
+		tmk=LoadMarker(num);
+		if (tmk.Count>0)
 			{
 			k=0;kremain=0;
-			tmk=LoadMarker(num);
 			for(i in tmk.Map)
 				{
 				j=tmk.Map[i].Points.length;

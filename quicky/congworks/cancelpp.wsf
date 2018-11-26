@@ -39,6 +39,7 @@ if (l==0)
 	WScript.StdOut.Write("ng");
 	WScript.quit();	//	ログが無い
 	}
+var startday=obj.Latest.Rent;		//	キャンセルしたい貸出日をキープ
 obj.History.splice(l-1,1);
 SetLogSummary(obj);
 SaveLog(obj,congnum,num);
@@ -51,10 +52,9 @@ var old_limitday=obj.Latest.Limit;
 var old_endday=obj.Latest.End;
 sql="update PublicList set inuse='false',userid='"+old_userid+"',startday="+old_startday+",endday="+old_endday+",limitday="+old_limitday;
 sql+=" where congnum="+congnum+" and num="+num+";";
-SQ_Init("congworks.db");
 SQ_Exec(sql);
 // マーカーの戻し------------------------------------------------------------
-s=PopMarkerHistory(congnum,num);		//	20170514追加
+s=PopMarkerHistory(congnum,num,startday);
 Markers=LoadMarker(congnum,num);
 if (Markers.Count>0)
 	{

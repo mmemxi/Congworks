@@ -1460,8 +1460,8 @@ function PopupBuildingPlace(num,seq,Id)
 function ChangeMarkersName(num)
 	{
 	if (BuildingNamesChanged.length<1) return;		//	名前変更バッファに何もなければ終了
-	if (!fso.FileExists(MarkerFile(num))) return;	//	マーカー情報なし
 	var tobj=LoadMarker(num);
+	if (tobj.Count==0) return;						//	マーカー情報なし
 	var i,j,k,s,stbl;
 	var ctr=0;
 
@@ -1488,8 +1488,8 @@ function ChangeMarkersName(num)
 //---------------------------------------------------------------------------------
 function DeleteMarkersName(num,id)
 	{
-	if (!fso.FileExists(MarkerFile(num))) return;	//	マーカー情報なし
 	var tobj=LoadMarker(num);
+	if (tobj.Count==0) return;				//	マーカー情報なし
 	var i,j,k,s,stbl;
 	var ctr=0;
 

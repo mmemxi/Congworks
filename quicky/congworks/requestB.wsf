@@ -2,6 +2,7 @@
 <script language="JavaScript" src="base.js"></script>
 <script language="JavaScript" src="./lib/common.js"></script>
 <script language="JavaScript" src="./lib/xml.js"></script>
+<script language="JavaScript" src="./lib/marker.js"></script>
 <script language="JavaScript" src="./lib/summary.js"></script>
 <script language="JavaScript" src="./lib/campeign.js"></script>
 <script language="JavaScript" src="./lib/json.js"></script>

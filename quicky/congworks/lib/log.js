@@ -18,6 +18,7 @@ function LoadLog(congnum,num)
 	}
 function SaveLog(log,congnum,num)
 	{
+	var str;
 	var obj=new Object();
 	obj.congnum=congnum;
 	obj.num=num;
@@ -26,7 +27,8 @@ function SaveLog(log,congnum,num)
 	obj.startday=log.Latest.Rent;
 	obj.endday=log.Latest.End;
 	obj.limitday=log.Latest.Limit;
-	obj.body=JSON.stringify(log.History).replace(/\"/g,"'");
+	str=JSON.stringify(log.History);
+	obj.body=str.replace(/\"/g,"'");
 	SQ_Replace("PublicLogs",obj);
 	}
 function NewLog()
@@ -55,10 +57,10 @@ function AddLog(obj,congnum,num,user,rent,limit)
 	t.End=0;
 	t.Map=new Array();
 	t.Compress=0;
-	for(i=1;i<=Cards[num].count;i++)
+	for(i=0;i<Cards[num].count;i++)
 		{
 		t.Map[i]=new Object();
-		t.Map[i].Sequence=i;
+		t.Map[i].Sequence=i+1;
 		t.Map[i].Start=0;
 		t.Map[i].End=0;
 		}
