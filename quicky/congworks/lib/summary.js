@@ -13,7 +13,7 @@ function CreateSummaryofApartment(congnum)
 
 	//	‹æˆæˆê——‚Ì“Ç
 	var obj=SQ_Read("Cards","congnum="+congnum,"num");
-	for(l=0;l<obj.length;i++)
+	for(l=0;l<obj.length;l++)
 		{
 		tbl=GetCardInfo(obj[l]);
 		num=parseInt(tbl.num,10);
@@ -33,7 +33,12 @@ function CreateSummaryofApartment(congnum)
 			else{
 				ary=s.split(/\r\n/);
 				j=ary.length-1;
-				if (ary[j]=="") j--;
+				while(1==1)
+					{
+					if (ary[j]!="") break;
+					j--;
+					if (j<1) break;
+					}
 				sts=ary[j];
 				}
 			if (sts=="")	sts=",,,,";

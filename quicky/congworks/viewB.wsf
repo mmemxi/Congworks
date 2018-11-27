@@ -5,6 +5,7 @@
 <script language="JavaScript" src="./lib/marker.js"></script>
 <script language="JavaScript" src="./lib/building.js"></script>
 <script language="JavaScript" src="./lib/vml.js"></script>
+<script language="JavaScript" src="./lib/json.js"></script>
 <script language="JavaScript" src="../sys/sqlite.js"></script>
 <script language="JavaScript">
 //----------------------------------------------------------------

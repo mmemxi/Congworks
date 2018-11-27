@@ -23,7 +23,7 @@ function CreateSummaryofApartment()
 				fso.CreateTextFile(sds,true);
 				}
 			sts=GetApartmentStatus(BTB[i].Name);	//	物件の使用状況を取得
-			if (sts=="")	{alert(BTB[i].Name);sts=",,,,";}
+			if (sts=="")	{sts=",,,,";}
 			//	区域番号,地図番号,建物名,物件番号,件数,群れ区分,使用者名,使用開始日,使用終了日,使用期限
 			str=num+","+BTB[i].Num+","+BTB[i].Name+","+i+","+BTB[i].Person+","+kubun;
 			str+=","+sts;

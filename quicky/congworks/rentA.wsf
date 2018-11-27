@@ -45,7 +45,7 @@ var targetstr=WScript.Arguments(0);
 	Cards[num]=GetCardInfo(obj[0]);
 
 	//	Œš•¨‚h‚c‚ðŽæ“¾
-	var BTB=card.RTB;
+	var BTB=Cards[num].RTB;
 	inx=-1;
 	for(i=0;i<BTB.length;i++)
 		{
