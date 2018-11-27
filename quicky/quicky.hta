@@ -171,8 +171,8 @@ function SelectCongnum_Exec()
 // 会衆が決定してからのメイン処理-----------------------------------------
 function boot2()
 	{
-
 	//	会衆別の処理
+	WriteLayer("Stage","会衆情報を開いています…<br>");
 	OpenConfig();
 	CountCondominiums();
 
@@ -181,6 +181,7 @@ function boot2()
 	document.title="Congworks for Ministry "+Version+"("+congnum+":"+congname+")";
 
 	//	SQliteセットアップ
+	WriteLayer("Stage","データのセットアップをしています…<br>");
 	SQliteSetup();
 
 	//	区域の強制終了
@@ -191,8 +192,10 @@ function boot2()
 	else{
 		ForceEnd();
 		}
+	WriteLayer("Stage","カード情報を読込中です…<br>");
 	LoadAllCards();
 
+	WriteLayer("Stage","サマリ情報を作成しています…<br>");
 	//	サマリ情報の作成
 	ClearTemporaryFolder();
 	CreateSummaryofApartment();

@@ -93,59 +93,39 @@ function MENU6A()
 	s+="</select></td>";
 	s+="</tr>";
 	//	一覧表---------------------------------------------------------------------
-	for(num in Cards)
+//	CreateSummaryofAllPerson();
+	var bfile=SummaryFolder()+"person.txt";
+	var btext=ReadFile(bfile);
+	if (btext!="")
 		{
-		if (cobj[num].inuse!="true") continue;				//	使用中でない区域は除く
-		if (isCampeign(cobj[num].Lastuse)) continue;		//	キャンペーン中に開始した区域は対象外
-		if ((Menu6_Filter_kubun!="")&&(Cards[num].kubun!=Menu6_Filter_kubun)) continue;
-		Markers=LoadMarker(num);
-		if (Markers.Count<1) continue;
-		mapnum=parseInt(Cards[num].count,10);
-		mmap=new Array();
-		for(i=1;i<=mapnum;i++)
+		var btbl=btext.split("\r\n");
+		for(i=0;i<btbl.length;i++)
 			{
-			mmap[i]=new Object();
-			mmap[i].Count=0;
-			mmap[i].Using=false;
-			mmap[i].User="";
-			}
-		for(i in Markers.Map)
-			{
-			for(j=0;j<Markers.Map[i].Points.length;j++)
-				{
-				vhist=parseInt(Markers.Map[i].Points[j].History,10);
-				if (vhist!=2) continue;
-				mmap[i].Count++;
-				if (Markers.Map[i].User!="")
-					{
-					mmap[i].Using=true;
-					mmap[i].User=Markers.Map[i].User;
-					}
-				}
-			}
-		for(j=1;j<=mapnum;j++)
-			{
-			if (mmap[j].Count==0) continue;
-			if ((Menu6_Filter_status==1)&&(mmap[j].Using)) continue;
-			if ((Menu6_Filter_status==2)&&(!mmap[j].Using)) continue;
+			if (btbl[i].indexOf(",",0)==-1) continue;
+			ctbl=btbl[i].split(",");
+			if ((Menu6_Filter_kubun!="")&&(ctbl[3]!=Menu6_Filter_kubun)) continue;
+			if ((Menu6_Filter_status==1)&&(ctbl[6]!="")) continue;
+			if ((Menu6_Filter_status==2)&&(ctbl[6]=="")) continue;
+			num=ctbl[0];
+			seq=ctbl[1];
 			trfunc="";
-			if (!mmap[j].Using)
+			if (ctbl[6]=="")
 				{
-				trfunc=" style='cursor:pointer;' onclick='MENU6Big("+num+","+j+")' title='この地図を貸出します'";
+				trfunc=" style='cursor:pointer;' onclick='MENU6Big("+num+","+seq+")' title='この地図を貸出します'";
 				}
 			else{
-				trfunc=" style='cursor:pointer;' onclick='MENU6Return("+num+","+j+",\""+mmap[j].User+"\")' title='この地図の貸出を取り消します'";
+				trfunc=" style='cursor:pointer;' onclick='MENU6Return("+num+","+seq+",\""+ctbl[6]+"\")' title='この地図の貸出を取り消します'";
 				}
 			s+="<tr>";
 			s+="<td align=right"+trfunc+">"+num+"</td>";				//	区域番号
-			s+="<td"+trfunc+">"+Cards[num].name+"</td>";				//	区域名
-			s+="<td"+trfunc+">"+Cards[num].kubun+"</td>";				//	区分名
-			s+="<td align=right"+trfunc+">"+j+"</td>";					//	地図番号
-			s+="<td align=right"+trfunc+">"+mmap[j].Count+"</td>";		//	留守宅件数
-			s+="<td align=center"+trfunc+">"+SplitDate(cobj[num].limitday)+"</td>";
-			if (mmap[j].Using)
+			s+="<td"+trfunc+">"+ctbl[2]+"</td>";						//	区域名
+			s+="<td"+trfunc+">"+ctbl[3]+"</td>";						//	区分名
+			s+="<td align=right"+trfunc+">"+seq+"</td>";				//	地図番号
+			s+="<td align=right"+trfunc+">"+ctbl[4]+"</td>";			//	留守宅件数
+			s+="<td align=center"+trfunc+">"+SplitDate(ctbl[5])+"</td>";//	期限日
+			if (ctbl[6]!="")
 				{
-				s+="<td"+trfunc+" bgcolor='#ffff00'>使用中（"+mmap[j].User+"）</td>";
+				s+="<td"+trfunc+" bgcolor='#ffff00'>使用中（"+ctbl[6]+"）</td>";
 				}
 			else{
 				s+="<td"+trfunc+" bgcolor='#00ffff'>未使用</td>";

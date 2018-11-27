@@ -35,23 +35,17 @@ document.write("／ユーザー名："+UserID+"<br>");
 $pdo = new PDO('sqlite:../congworks.db');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);    
 // (1)区域名の取得-------------------------------------------------
-$sql = "select name,kubun from PublicList where congnum=" . $congnum . " and num=" . $num . ";";
-foreach ($pdo->query($sql) as $line)
-	{
-	$title=$line['name'];
-	$kubun=$line['kubun'];
-	break;
-	}
-$title="No." . $num . ":" . $title . "(" . $kubun . ")";
+$sql = "select name,kubun from PublicList where congnum=$congnum and num=$num;";
+$data=$pdo->query($sql)->fetchAll();
+$name=$data[0]['name'];
+$kubun=$data[0]['kubun'];
+$title="No.$num:$name($kubun)";
 // (2)ConfigAllの取得（キャンペーン情報）--------------------------
 $sql = "select body from JSON where key1='" . $congnum . "' and key2='config' and key3='all';";
-foreach ($pdo->query($sql) as $line)
-	{
-	$body=$line['body'];
-	$js=str_replace("'","\"",$body);
-	$jsobj=json_decode($js);
-	break;
-	}
+$data=$pdo->query($sql)->fetchAll();
+$body=$data[0]['body'];
+$js=str_replace("'","\"",$body);
+$jsobj=json_decode($js);
 $BlankMin=$jsobj->BlankMin;
 $BlankCampeign=$jsobj->BlankCampeign;
 $BlankAfterCampeign=$jsobj->BlankAfterCampeign;
@@ -62,7 +56,7 @@ for($i=0;$i<count($jsobj->Campeigns);$i++)
 	$campeigns=$campeigns . $jsobj->Campeigns[$i]->Start . "-" . $jsobj->Campeigns[$i]->End;
 	}
 // (3)ユーザー一覧の取得-------------------------------------------
-$sql = "select userid from CWUsers where congnum=" . $congnum . " and authority='publicservice' order by userid;";
+$sql = "select userid from CWUsers where congnum=$congnum and authority='publicservice' order by userid;";
 $userArray=array();
 foreach ($pdo->query($sql) as $line)
 	{
@@ -70,12 +64,9 @@ foreach ($pdo->query($sql) as $line)
 	}
 
 // (4)区域ログの取得（前回の終了日を取得）-------------------------
-$sql = "select endday from PublicLogs where congnum=" . $congnum . " and num=" . $num . ";";
-foreach ($pdo->query($sql) as $line)
-	{
-	$lastuse=$line['endday'];
-	break;
-	}
+$sql = "select endday from PublicLogs where congnum=$congnum and num=$num;";
+$data=$pdo->query($sql)->fetchAll();
+$lastuse=$data[0]['endday'];
 //----------------------------------------------------------------
 echo "<script type=\"text/javascript\">";
 echo "const_LastUse=" . $lastuse . ";";
@@ -94,7 +85,7 @@ echo $constUsers;
 echo "</script>";
 ?></div>
 <?php
-print "<b>" . $title . "の貸し出し:</b><br>";
+print "<b>$title の貸し出し:</b><br>";
 ?>
 <table style="width:400px;margin:20px;" border=0 cellspacing=0 cellpadding=0>
 <tr><td valign=middle style="border:2px dashed red;padding:6px;height:50px;">

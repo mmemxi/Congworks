@@ -23,7 +23,7 @@ function CreateSummaryofApartment()
 				fso.CreateTextFile(sds,true);
 				}
 			sts=GetApartmentStatus(BTB[i].Name);	//	物件の使用状況を取得
-			if (sts=="")	sts=",,,,";
+			if (sts=="")	{alert(BTB[i].Name);sts=",,,,";}
 			//	区域番号,地図番号,建物名,物件番号,件数,群れ区分,使用者名,使用開始日,使用終了日,使用期限
 			str=num+","+BTB[i].Num+","+BTB[i].Name+","+i+","+BTB[i].Person+","+kubun;
 			str+=","+sts;
@@ -39,18 +39,26 @@ function CreateSummaryofAllPerson()
 	var bfile=SummaryFolder()+"person.txt";
 	var cobj=getPublicLogs(0);
 
+	var mobj=LoadMarkers();
+
 	f=fso.CreateTextFile(bfile,true);
 	for(num in Cards)
 		{
-		s=CreateSummaryofPerson(num,false,cobj[num]);
+		if (!(num in mobj))
+			{
+			mobj[num]=new Object();
+			mobj[num].Count=0;
+			mobj[num].Map=new Array();
+			}
+		s=CreateSummaryofPerson(num,false,cobj[num],mobj[num]);
 		if (s!="") f.WriteLine(s);
 		}
 	f.close();
 	}
-
-function CreateSummaryofPerson(num,mode,cobj)
+//------------------------------------------------------------------------------------
+function CreateSummaryofPerson(num,mode,cobj,mobj)
 	{
-	var mapnum,mnum,i,j,vhist,s,ss,str,f,result,tmk;
+	var mapnum,mnum,i,j,vhist,s,ss,str,f,result;
 	var bfile=SummaryFolder()+"person.txt";
 	var ary1=new Array();
 	var ary2=new Array();
@@ -92,10 +100,10 @@ function CreateSummaryofPerson(num,mode,cobj)
 		return "";
 		}
 
-	tmk=LoadMarker(num);
+	if (mode)	mobj=LoadMarker(num);	//	単独の区域
 
 	//	対象のマーカーが０個のとき
-	if (tmk.Count<1)
+	if (mobj.Count<1)
 		{
 		if (mode)
 			{
@@ -116,17 +124,17 @@ function CreateSummaryofPerson(num,mode,cobj)
 		mmap[i].Using=false;
 		mmap[i].User="";
 		}
-	for(i in tmk.Map)
+	for(i in mobj.Map)
 		{
-		for(j=0;j<tmk.Map[i].Points.length;j++)
+		for(j=0;j<mobj.Map[i].Points.length;j++)
 			{
-			vhist=parseInt(tmk.Map[i].Points[j].History,10);
+			vhist=parseInt(mobj.Map[i].Points[j].History,10);
 			if (vhist!=2) continue;
 			mmap[i].Count++;
-			if (tmk.Map[i].User!="")
+			if (mobj.Map[i].User!="")
 				{
 				mmap[i].Using=true;
-				mmap[i].User=tmk.Map[i].User;
+				mmap[i].User=mobj.Map[i].User;
 				}
 			}
 		}

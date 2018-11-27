@@ -390,7 +390,12 @@ function GetApartmentStatus(id)
 	if (s=="") return s;
 	ary=s.split(/\r\n/);
 	j=ary.length-1;
-	if (ary[j]=="") j--;
+	while(1==1)
+		{
+		if (ary[j]!="") break;
+		j--;
+		if (j==0) break;
+		}
 	return ary[j];
 	}
 //------------------------------------------------------------------------------------

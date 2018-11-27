@@ -61,6 +61,33 @@ function LoadMarker(num)
 	return result;
 	}
 //---------------------------------------------------------
+function LoadMarkers()
+	{
+	var i,c,num,seq,str;
+	var obj=SQ_Read("Markers","congnum="+congnum,"num,seq");
+	var result=new Array();
+	for(i=0;i<obj.length;i++)
+		{
+		num=parseInt(obj[i].num,10);
+		seq=parseInt(obj[i].seq,10);
+		if (!(num in result))
+			{
+			result[num]=new Object();
+			result[num].Count=0;
+			result[num].Map=new Array();
+			}
+		result[num].Map[seq]=new Object();
+		result[num].Map[seq].User=obj[i].user;
+		result[num].Map[seq].Edited=obj[i].edited;
+		result[num].Map[seq].Editor=obj[i].editor;
+		str=obj[i].JSON_Points.replace(/'/g,"\"");
+		result[num].Map[seq].Points=JSON.parse(str);
+		c=result[num].Map[seq].Points.length;
+		result[num].Count+=c;
+		}
+	return result;
+	}
+//---------------------------------------------------------
 function SaveMarker(num,mobj)
 	{
 	var old,obj,str,i;

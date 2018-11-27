@@ -31,6 +31,13 @@ function ReadFile(filename)
 	return text;
 	}
 //------------------------------------------------------------------------------------
+function WriteFile(filename,buf)
+	{
+	var f=fso.CreateTextFile(filename,true);
+	f.write(buf);
+	f.close();
+	}
+//------------------------------------------------------------------------------------
 function clone(src)
 	{
 	var dest,i,prop,sl;

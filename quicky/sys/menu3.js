@@ -294,20 +294,6 @@ function MENU3F()
 		f.Write(s);
 		f.close();
 		}
-
-	//	ヒストリーの再編成------------------------------------
-	dir=fso.GetFolder(HistoryFolder());
-	files=new Enumerator(dir.Files);
-	for(; !files.atEnd(); files.moveNext())
-		{
-		file=files.item().Name+"";
-		fullpath=HistoryFolder()+file;
-		ext=fso.GetExtensionName(file).toLowerCase();
-		if (ext=="hs0")
-			{
-			fso.Deletefile(fullpath,true);
-			}
-		}
 	alert("再編成が終了しました。");
 	}
 //---------------------------------------------------------------------------------------------

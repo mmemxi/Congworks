@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------
 function SQliteSetup()
 	{
-	CreateCards();			//	カード情報の移行		2018/11/22新設、3.05セットアップ時に必要
-	CreateMarkers();		//	マーカー情報の移行		2018/11/25新設、3.05セットアップ時に必要
-	CreatePublicLogs();		//	log.xmlの移行			2018/11/16新設	3.04セットアップ時に実行
-	CreatePublicList();		//	会衆用区域一覧の作成	2018/10新設		3.04セットアップ時に実行
+//	CreateCards();			//	カード情報の移行		2018/11/22新設、3.05セットアップ時に必要
+//	CreateMarkers();		//	マーカー情報の移行		2018/11/25新設、3.05セットアップ時に必要
+//	CreatePublicLogs();		//	log.xmlの移行			2018/11/16新設	3.04セットアップ時に実行
+//	CreatePublicList();		//	会衆用区域一覧の作成	2018/10新設		3.04セットアップ時に実行
 //	CreateReportLogs();		//	レポート作成ログの作成	2018/10新設		3.04セットアップ時に実行
 //	CreateUsers();			//	ユーザー情報の作成		2018/10新設		3.04セットアップ時に実行
 //	CreateSpots();			//	スポット情報の作成		2018/11新設		3.04セットアップ時に実行
@@ -261,19 +261,6 @@ function CreatePublicList()
 	//	以前の定義を削除する
 	SQ_Exec("delete from PublicList where congnum="+congnum+";");
 
-	//	全区域をループする(セットアップ時の動作)
-	/*
-	dir=fso.GetFolder(DataFolder());
-	folders=new Enumerator(dir.SubFolders);
-	for(; !folders.atEnd(); folders.moveNext())
-		{
-		fitem=folders.item();
-		if (isNaN(fitem.Name)) continue;
-		num=fso.GetBaseName(fitem.Name);
-		obj=CreatePublicList_One(num);
-		carray.push(obj);
-		}
-	*/
 	//	全区域をループする（新動作）
 	var tbl=SQ_Read("Cards","congnum="+congnum,"num");
 	for(l=0;l<tbl.length;l++)

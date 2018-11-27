@@ -20,6 +20,9 @@
 <script type="text/javascript" src="cookie.js"></script>
 <title>会衆の区域 - Congworks for Public Preacing</title>
 <?php
+$pdo = new PDO('sqlite:../congworks.db');
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);    
+
 if (isset($_COOKIE['CWPP_UserID']))		$UIDC=$_COOKIE["CWPP_UserID"];
 	else $UIDC="";
 if (isset($_COOKIE['CWPP_congnum']))	$congnum=$_COOKIE["CWPP_congnum"];
@@ -69,9 +72,10 @@ echo "congnames=\"$congnames\";";
 echo "</script>";
 
 if (isset($_COOKIE['CWToken']))		$CWToken=$_COOKIE["CWToken"];
-else	{
-		exec("cscript \"" . $cwpath . "getcwtoken.wsf\" //Nologo",$out);
-		$CWToken=$out[0];
+	else{
+		$pdo->query("update CWTokens set TokenNo=TokenNo+1;");
+		$data=$pdo->query("select TokenNo from CWTokens;")->fetchAll();
+		$CWToken=sprintf('%08d',$data[0]['TokenNo']);
 		}
 echo "<script type='text/javascript'>";
 echo "CWToken=\"$CWToken\";";
@@ -84,7 +88,7 @@ echo "</script>";
 <div style="width:100%;margin:0 auto;text-align:center;">
 <img src="../img/icons/congworks.png"><br>
 <img src="../img/buttons/会衆の区域.png"><br>
-Version 3.04<br>
+Version 3.05<br>
 <img src="../img/lines/ライン１.png"><br><br>
 <form onsubmit="GoFoward();return false;">
 会衆名：<select name=congnum size=1>

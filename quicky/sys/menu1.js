@@ -337,7 +337,7 @@ function MENU1A_Exec()
 	SaveLog(obj,num);
 	AllMaps=new Array();
 	LoadCard(num);
-	CreateSummaryofPerson(num,true,"");
+	CreateSummaryofPerson(num,true,"","");
 	MENU1();
 	}
 //------------------------------------------------------------------------------------
@@ -462,7 +462,7 @@ function MENU1B_Exec(num)
 		}
 	SaveConfig(num);
 	LoadCard(num);
-	CreateSummaryofPerson(num,true,"");
+	CreateSummaryofPerson(num,true,"","");
 	MENU1();
 	}
 
@@ -1023,7 +1023,7 @@ function MENU1E_Start_RollBack(num)
 	RollBackLog(obj,num);
 	SaveLog(obj,num);
 	LoadCard(num);
-	CreateSummaryofPerson(num,true,"");
+	CreateSummaryofPerson(num,true,"","");
 	MENU1EExit();
 	}
 
@@ -1182,7 +1182,7 @@ function MENU1E_End_Exec(num)
 	SetLogSummary(obj);
 	SaveLog(obj,num);
 	LoadCard(num);
-	CreateSummaryofPerson(num,true,"");
+	CreateSummaryofPerson(num,true,"","");
 	MENU1EExit();
 	}
 
@@ -1263,7 +1263,7 @@ function MENU1E_Complete_Exec(num)
 	FinishLog(obj,num,true);
 	SaveLog(obj,num);
 	LoadCard(num);
-	CreateSummaryofPerson(num,true,"");
+	CreateSummaryofPerson(num,true,"","");
 	MENU1EExit();
 	}
 
@@ -1284,7 +1284,7 @@ function MENU1E_End_Cancel(num)
 		}
 
 	LoadCard(num);
-	CreateSummaryofPerson(num,true,"");
+	CreateSummaryofPerson(num,true,"","");
 	MENU1EExit();
 	}
 
@@ -2060,8 +2060,8 @@ function ExecMoveMap()
 	s="‹æˆæ"+num+"-"+s+"¨‹æˆæ"+num2+"‚Ö";
 	LoadCard(num);
 	LoadCard(num2);
-	CreateSummaryofPerson(num,true,"");
-	CreateSummaryofPerson(num2,true,"");
+	CreateSummaryofPerson(num,true,"","");
+	CreateSummaryofPerson(num2,true,"","");
 
 	Cards[num].count-=enc;
 	if (Cards[num].count>0)
@@ -2294,7 +2294,7 @@ function ExecDeleteMap()
 		}
 	str+="j‚ðíœ‚µ‚Ü‚µ‚½B";
 	LoadCard(num);
-	CreateSummaryofPerson(num,true,"");
+	CreateSummaryofPerson(num,true,"","");
 	Cards[num].count-=enc;
 	if (Cards[num].count>0)
 		{

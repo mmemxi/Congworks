@@ -63,12 +63,22 @@ var targetstr=WScript.Arguments(0);
 	var overday;
 
 	//使用開始情報の書き込み
-	stream = fso.OpenTextFile(ApartFolder(congnum)+Id+".txt", 8,true,-2);
+	var ltext=ReadFile(ApartFolder(congnum)+Id+".txt");
+	var lbody="";
+	if (ltext!="")
+		{
+		var ltbl=ltext.split("\r\n");
+		for(i=0;i<ltbl.length;i++)
+			{
+			if (ltbl[i]=="") continue;
+			lbody+=ltbl[i]+"\r\n";
+			}
+		}
 	ymd=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
 	overday=AddDays(ymd,ConfigAll.AutoEndApart);
 	s=user+","+ymd+",,"+overday;
-	stream.WriteLine(s);
-	stream.Close();
+	lbody+=s;
+	WriteFile(ApartFolder(congnum)+Id+".txt",lbody);
 	CreateSummaryofApartment(congnum);		//	サマリ情報の作り直し
 
 	//	個人フォルダの編集

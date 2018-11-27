@@ -65,7 +65,7 @@
 ・ConfigAll及びキャンペーン情報をJSONに保存する方式に切り替える（現時点では併用とし、最終的に旧ファイルを廃止する）
 ・PHPからwsfを呼び出す処理を廃止していく。まずはnewlist.wsf,verify.wsfを廃止。SQlite化が進むにつれ順次置換していく。
 ・BuildingFormatテーブルを新設。（今のところ定義だけ）
-・区域ログファイル(log.xml)をSQlite化
+・区域ログファイル(log.xml)をSQlite化(PublicLogs)
 ・menu1.js/LoadCardからCheckCardLog処理の呼び出しを除去する。（作業済）
 ・MENU1にあるSQ_Readで読んだ値を使用状況に転化して返す関数として独立させる。これをmenu1から文化させる最初の部分とする。(rent.js/getPublicLogs)
 ・PDFPrinter.jsの並列起動抑制がまだ効いていない→htaアプリに変更
@@ -87,7 +87,6 @@
 ・config.xmlをSQlite化→テーブル「Cards」を新設(2018/11/25)
   LoadCard,SaveConfig,ConfigXML()を撤去
   mapgen.js,personal.js,summary.jsから撤去済。
-（作業中）
 ・marker.xmlをSQlite化
   marker.jsからはLoadMarker,SaveMarkerを修正。PopMarkerHistory,PushMarkerHistoryは撤去(congworks側からしか使わないから)
   他の個所から「MarkerFile()」およびmarker.xmlを参照している箇所を撤去済
@@ -95,17 +94,24 @@
   PushMarkerHistory,PopMarkerHistoryはrent.wsfとcancelpp.wsfしか使用していない
   ヒストリーは貸し出し日をキーとする（会衆番号＋区域番号＋地図番号＋貸し出し日でユニーク）
   PushMarkerHistory,PopMarkerHistoryに引数３（開始日）を追加
-
-
-（未作業）
+・getcwtoken.wsfを廃止。index.php,pp/index.phpで自前処理で生成するようにした。
 ・再編成処理からヒストリーデータの整理を除外（3.04の残留バグ）
-・再編成処理でlog.xml,config.xml,marker.xml,markerhistory.xmlを削除する
+・長期留守宅一覧をperson.txtから取得するよう変更。menu6.js。requestB.wsfと同じ処理になるよう改良した。
+・アパートの使用状況がすべて未使用になってしまうバグが発生。アパートログの再編成時、最終行に空白が入ってしまうことが原因。修正済
+
 
 実施予定：2018/12/1
 実施日：
 ===============================================
 ●後続バージョン
-・アパートログ(*.txt)をSQlite化
+・アパートログ(*.txt)をSQlite化(PersonalApart)←個人用アパートだけが対象。アパートXMLとアパートログを一体にしたテーブル。
+・CreateSummaryofApartmentはApartLogsから作成するように変更
+・rentA.wsf、cancel.wsfはApartLogsを更新対象に
+・menu3.jsの再編成メニューで、アパートログをテキストファイルでなくSQliteテーブルに変更
+
+
+
+・再編成処理でlog.xml,config.xml,marker.xml,markerhistory.xmlを削除する
 ・マーカーログ(marker.xml)をSQlite化
 ・カード情報(config.xml)をSQlite化
 ・building.xml（カード別にある）をテーブルに変更する。(テーブル名：BuildingFormat)
